@@ -77,6 +77,8 @@ public:
         Snapshot = 2,
         //! Unit will be hidden to enemies.
         Hidden = 3,
+        // Building that hasn't started construction.
+        Placeholder = 4,
     };
 
     //! Relationship to this player.

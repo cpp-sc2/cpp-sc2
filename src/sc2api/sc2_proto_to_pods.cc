@@ -130,9 +130,10 @@ bool Convert(const ObservationPtr& observation_ptr, Score& score) {
 
 bool Convert(const SC2APIProtocol::DisplayType& type_proto, Unit::DisplayType& type) {
     switch (type_proto) {
-        case SC2APIProtocol::DisplayType::Visible:   type = Unit::Visible; return true;
-        case SC2APIProtocol::DisplayType::Snapshot:  type = Unit::Snapshot; return true;
-        case SC2APIProtocol::DisplayType::Hidden:    type = Unit::Hidden; return true;
+        case SC2APIProtocol::DisplayType::Visible:        type = Unit::Visible; return true;
+        case SC2APIProtocol::DisplayType::Snapshot:       type = Unit::Snapshot; return true;
+        case SC2APIProtocol::DisplayType::Hidden:         type = Unit::Hidden; return true;
+        case SC2APIProtocol::DisplayType::Placeholder:    type = Unit::Placeholder; return true;
     }
     return false;
 }
