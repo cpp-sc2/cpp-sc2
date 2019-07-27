@@ -1438,8 +1438,8 @@ public:
     void ClearProtocolErrors() override { protocol_errors_.clear(); };
     void UseGeneralizedAbility(bool value) override { observation_imp_->use_generalized_ability_ = value; };
 
-    virtual void Save();
-    virtual void Load();
+    void Save() override;
+    void Load() override;
 };
 
 ControlImp::ControlImp(Client& client) :
