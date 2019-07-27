@@ -396,7 +396,7 @@ namespace sc2 {
         EFFECT_CALLDOWNMULE = 171,   // Target: Unit, Point.
         EFFECT_CAUSTICSPRAY = 2324,  // Target: Unit.
         EFFECT_CHARGE = 1819,  // Target: Unit.
-        EFFECT_CHRONOBOOST = 261,   // Target: Unit.
+        EFFECT_CHRONOBOOST = 3755,   // Target: Unit.
         EFFECT_CONTAMINATE = 1825,  // Target: Unit.
         EFFECT_CORROSIVEBILE = 2338,  // Target: Point.
         EFFECT_EMP = 1628,  // Target: Point.
@@ -861,6 +861,7 @@ namespace sc2 {
         CARRYHARVESTABLEVESPENEGEYSERGAS = 273,
         CARRYHARVESTABLEVESPENEGEYSERGASPROTOSS = 274,
         CARRYHARVESTABLEVESPENEGEYSERGASZERG = 275,
+        CHRONOBOOSTED = 281,
     };
 
     //! Converts a UNIT_TYPEID into a string of the same name.
