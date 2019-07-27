@@ -205,6 +205,7 @@ namespace sc2 {
         case UNIT_TYPEID::ZERG_TRANSPORTOVERLORDCOCOON:     return "ZERG_TRANSPORTOVERLORDCOCOON"; // 8
         case UNIT_TYPEID::ZERG_OVERLORDTRANSPORT:           return "ZERG_OVERLORDTRANSPORT"; // 236
         case UNIT_TYPEID::PROTOSS_PYLONOVERCHARGED:         return "PROTOSS_PYLONOVERCHARGED"; // 216
+        case UNIT_TYPEID::INVALID:                          return "INVALID";
         }
 
         return "UNKNOWN";
@@ -679,6 +680,7 @@ namespace sc2 {
         case ABILITY_ID::RESEARCH_ZERGGROUNDARMOR:          return "RESEARCH_ZERGGROUNDARMOR"; // 1
         case ABILITY_ID::RESEARCH_ZERGMELEEWEAPONS:         return "RESEARCH_ZERGMELEEWEAPONS"; // 1
         case ABILITY_ID::RESEARCH_ZERGMISSILEWEAPONS:       return "RESEARCH_ZERGMISSILEWEAPONS"; // 1
+        case ABILITY_ID::INVALID:                           return "INVALID";
         }
 
         return "UNKNOWN";
@@ -774,6 +776,7 @@ namespace sc2 {
         case UPGRADE_ID::SMARTSERVOS:                       return "SMARTSERVOS";
         case UPGRADE_ID::RAPIDFIRELAUNCHERS:                return "RAPIDFIRELAUNCHERS";
         case UPGRADE_ID::ENHANCEDMUNITIONS:                 return "ENHANCEDMUNITIONS";
+        case UPGRADE_ID::INVALID:                           return "INVALID";
         }
 
         return "UNKNOWN";
@@ -826,6 +829,7 @@ namespace sc2 {
         case BUFF_ID::CARRYHARVESTABLEVESPENEGEYSERGASPROTOSS: return "CARRYHARVESTABLEVESPENEGEYSERGASPROTOSS";
         case BUFF_ID::CARRYHARVESTABLEVESPENEGEYSERGASZERG: return "CARRYHARVESTABLEVESPENEGEYSERGASZERG";
         case BUFF_ID::CHRONOBOOSTED:                        return "CHRONOBOOSTED";
+        case BUFF_ID::INVALID:                              return "INVALID";
         }
 
         return "UNKNOWN";
