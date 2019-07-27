@@ -1255,7 +1255,7 @@ namespace sc2 {
             if (target_units.front()->is_blip != true) {
                 ReportError("Target unit is not a blip.");
             }
-            if (target_units.front()->cloak != Unit::CloakState::Unknown) {
+            if (target_units.front()->cloak != Unit::CloakState::CloakedAllied) {
                 ReportError("Target unit cloak state is incorrect.");
             }
             if (target_units.front()->display_type != Unit::DisplayType::Hidden) {
