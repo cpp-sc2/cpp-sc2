@@ -1,7 +1,7 @@
-s2client-api
+cpp-sc2
 ============
 
-[![Build Status](https://travis-ci.org/alkurbatov/cpp-sc2.png?branch=master)](https://travis-ci.org/alkurbatov/cpp-sc2)
+[![Build Status](https://travis-ci.org/alkurbatov/cpp-sc2.svg?branch=master)](https://travis-ci.org/alkurbatov/cpp-sc2)
 
 The StarCraft II API provides access to in-game state observation and unit control. The API is a wrapper around protobuf defined protocol over a websocket connection.
 
