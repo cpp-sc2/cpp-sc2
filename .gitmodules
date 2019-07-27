@@ -10,3 +10,6 @@
 [submodule "contrib/ipv6-parse"]
 	path = contrib/ipv6-parse
 	url = https://github.com/jrepp/ipv6-parse
+[submodule "contrib/civetweb"]
+	path = contrib/civetweb
+	url = https://github.com/alkurbatov/civetweb.git
