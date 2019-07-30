@@ -1,107 +1,108 @@
-CMake
-=====
-> If you are already familiar with cmake skip to your platform's building instructions.
+# Build instructions
 
+## Prerequisites
 1. Download and install [CMake](https://cmake.org/download/).
-2. Add CMake to your path if the installer didn't add it for you.
 
-Windows
--------
-1. Open your Environment Variables in the System properties menu.
-2. Under System Variables select Path and click 'Edit...'
-3. Append to the Path a semicolon and the string: C:\Program Files\CMake\bin
-4. Save, start a new cmd prompt and type cmake, you should see output from cmake.
+2. A compiler with C++14 support.
 
-
-Building
-========
-
-Windows
--------
-
-To build on windows generate a Visual Studio 2017 solution file with CMake.
-
-1. Make sure a recursive clone of the project is done to download all submodules.
-2. Enter the working directory.
-3. Create a build directory for CMake artifacts.
-4. Create visual studio project files.
-5. Build with visual studio.
-
+3. If you are already cloned the repository, make sure a recursive clone of the project is done to download all submodules.
+If you already cloned the repository without specifying `--recursive` you can initialize and checkout
+the required submodules with the following git command:
 ```bash
-git clone --recursive https://github.com/Blizzard/s2client-api
-cd s2client-api
-mkdir build
-cd build
-cmake ../ -G "Visual Studio 15 2017 Win64"
-start s2client-api.sln
+$ git submodule update --init --recursive
 ```
 
-Mac
--------
+## Windows (Visual Studio 2017)
+```bat
+:: Clone the project.
+$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 
-To build on Mac generate an Xcode project with CMake.
+:: Enter the working directory.
+$ cd cpp-sc2
 
-1. Make sure a recursive clone of the project is done to download all submodules.
-2. Enter the working directory.
-3. Create a build directory for CMake artifacts.
-4. Create Xcode project files.
-5. Build with Xcode.
+:: Create build directory.
+$ mkdir build
+$ cd build
 
-```bash
-git clone --recursive https://github.com/Blizzard/s2client-api
-cd s2client-api
-mkdir build
-cd build
-cmake ../ -G Xcode
-open s2client-api.xcodeproj/
+:: Create Visual Studio project files.
+$ cmake ../ -G "Visual Studio 15 2017 Win64"
+
+:: Build the project using Visual Studio.
+$ start cpp-sc2.sln
 ```
 
-Linux (make)
------
-
-To build on Linux generate makefiles with CMake.
-
-1. Make sure a recursive clone of the project is done to download all submodules.
-2. Enter the working directory
-3. Create a build directory for CMake artifacts.
-4. Create makefiles
-5. Build with make
-
+## Mac (Xcode)
 ```bash
-git clone --recursive https://github.com/Blizzard/s2client-api
-cd s2client-api
-mkdir build
-cd build
-cmake ../
-make
+# Clone the project.
+$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+
+# Enter the working directory.
+$ cd cpp-sc2
+
+# Create build directory.
+$ mkdir build
+$ cd build
+
+# Create Xcode project files.
+$ cmake ../ -G Xcode
+
+# Build the project using Xcode.
+$open cpp-sc2.xcodeproj/
 ```
 
-Linux (gmake)
------
-
-To build on Linux generate makefiles with CMake.
-
-1. Make sure a recursive clone of the project is done to download all submodules.
-2. Enter the working directory
-3. Create a build directory for CMake artifacts.
-4. Create makefiles
-5. Build with make
-
+## Mac (make)
 ```bash
-git clone --recursive https://github.com/Blizzard/s2client-api
-cd s2client-api
-mkdir build
-cd build
-cmake -G "Unix Makefiles" ..
-gmake
+# Clone the project.
+$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+
+# Enter the working directory.
+$ cd cpp-sc2
+
+# Create build directory.
+$ mkdir build
+$ cd build
+
+# Create makefiles.
+$ cmake ../
+
+# Build the project with make.
+$ make
 ```
 
-Working with submodules
-=======================
-
-If you cloned the repo without specifying --recursive you can initialize and checkout
-the required submodules with the following git command -
-
+## Linux (make)
 ```bash
-git submodule update --init --recursive
+# Clone the project.
+$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+
+# Enter the working directory.
+$ cd cpp-sc2
+
+# Create build directory.
+$ mkdir build
+$ cd build
+
+# Create makefiles.
+$ cmake ../
+
+# Build the project with make.
+$ make
+```
+
+## Linux (gmake)
+```bash
+# Clone the project.
+$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+
+# Enter the working directory.
+$ cd cpp-sc2
+
+# Create build directory.
+$ mkdir build
+$ cd build
+
+# Create makefiles.
+$ cmake ../ -G "Unix Makefiles"
+
+# Build the project with gmake.
+$ gmake
 ```
