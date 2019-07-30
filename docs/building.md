@@ -56,7 +56,7 @@ cmake ../ -G Xcode
 open s2client-api.xcodeproj/
 ```
 
-Linux
+Linux (make)
 -----
 
 To build on Linux generate makefiles with CMake.
@@ -74,6 +74,26 @@ mkdir build
 cd build
 cmake ../
 make
+```
+
+Linux (gmake)
+-----
+
+To build on Linux generate makefiles with CMake.
+
+1. Make sure a recursive clone of the project is done to download all submodules.
+2. Enter the working directory
+3. Create a build directory for CMake artifacts.
+4. Create makefiles
+5. Build with make
+
+```bash
+git clone --recursive https://github.com/Blizzard/s2client-api
+cd s2client-api
+mkdir build
+cd build
+cmake -G "Unix Makefiles" ..
+gmake
 ```
 
 Working with submodules
