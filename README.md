@@ -52,7 +52,7 @@ Documentation
 
 You can find API in documentation on our [github pages site](http://blizzard.github.io/s2client-api). The documentation is generated from code automatically, using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
 
-To editor and generate the documentation yourself.
+To edit and generate the documentation yourself:
 
 1. Download and install [doxygen](http://www.stack.nl/~dimitri/doxygen/download.html#srcbin)
 2. Fork the repository and clone it locally
