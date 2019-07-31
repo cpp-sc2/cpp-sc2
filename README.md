@@ -50,7 +50,7 @@ You can find a detailed tutorial on what this code does in [docs/tutorial1.md](d
 Documentation
 -------------
 
-You can find API in documentation on our [github pages site](http://blizzard.github.io/s2client-api). The documentation is generated from code automatically, using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
+You can find API in documentation on our [github pages site](https://alkurbatov.github.io/cpp-sc2). The documentation is generated from code automatically, using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
 
 To edit and generate the documentation yourself:
 
