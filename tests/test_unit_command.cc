@@ -39,7 +39,7 @@ namespace sc2 {
                 ReportError("Could not find the test unit.");
             }
 
-            if (test_unit_ && test_unit_->cloak != Unit::CloakState::Cloaked) {
+            if (test_unit_ && test_unit_->cloak != Unit::CloakState::CloakedAllied) {
                 ReportError("Unit is not cloaked as expected.");
             }
 
@@ -315,12 +315,16 @@ namespace sc2 {
         }
 
         void OnTestFinish() override {
-            VerifyUnitExistsAndComplete(UNIT_TYPEID::PROTOSS_GATEWAY);
+            // Due to a balance change that causes Gateways to auto morph into WarpGates when
+            // the warpgate tech is researched, and we unlock all research at the start of the test,
+            // so verify that the gateway has transformed to a warpgate
+            VerifyUnitExistsAndComplete(UNIT_TYPEID::PROTOSS_WARPGATE);
             VerifyUnitIdleAfterOrder(test_unit_type_);
-            VerifyUnitIdleAfterOrder(UNIT_TYPEID::PROTOSS_GATEWAY);
+            VerifyUnitIdleAfterOrder(UNIT_TYPEID::PROTOSS_WARPGATE);
+
             const ObservationInterface* obs = agent_->Observation();
-            if (obs->GetWarpGateCount() != 0) {
-                ReportError("Gateway is being incorrectly identified as a Warp Gate.");
+            if (obs->GetWarpGateCount() != 1) {
+                ReportError("Expected to found single warpgate but failed.");
             }
             KillAllUnits();
         }
@@ -392,7 +396,7 @@ namespace sc2 {
 
     class TestCancelBuildInProgressFactory : public TestUnitCommandNoTarget {
     public:
-        const Unit* test_factory_;
+        const Unit* test_factory_ = nullptr;
         bool factory_built_ = false;
 
         TestCancelBuildInProgressFactory() {
@@ -680,7 +684,7 @@ namespace sc2 {
 
     class TestEffectScan : public TestUnitCommandTargetingPoint {
     public:
-        const Unit* test_hatchery_;
+        const Unit* test_hatchery_ = nullptr;
         bool hatchery_spawned_ = false;
         bool verify_pre_scan_ = false;
         bool verify_post_scan_ = false;
@@ -717,7 +721,7 @@ namespace sc2 {
 
             Units units = obs->GetUnits();
 
-            const Unit* test_unit;
+            const Unit* test_unit = nullptr;
             for (const auto& unit : units) {
                 if (unit->unit_type == test_unit_type_) {
                     test_unit_ = unit;
@@ -1255,7 +1259,7 @@ namespace sc2 {
             if (target_units.front()->is_blip != true) {
                 ReportError("Target unit is not a blip.");
             }
-            if (target_units.front()->cloak != Unit::CloakState::CloakedAllied) {
+            if (target_units.front()->cloak != Unit::CloakState::CloakedUnknown) {
                 ReportError("Target unit cloak state is incorrect.");
             }
             if (target_units.front()->display_type != Unit::DisplayType::Hidden) {
@@ -1604,7 +1608,7 @@ namespace sc2 {
             if (test_unit_ && test_unit_->passengers.size() != 1) {
                 ReportError("Unit count in bunker is not 1.");
             }
-            if (test_unit_ && test_unit_->cargo_space_max != 6) {
+            if (test_unit_ && test_unit_->cargo_space_max != 8) {
                 ReportError("Bunker cargo space max is not correct.");
             }
             if (test_unit_ && test_unit_->cargo_space_taken != 2) {
@@ -1672,7 +1676,7 @@ namespace sc2 {
                 return;
             }
 
-            if (!ability_command_sent_ && test_unit->cargo_space_taken != 6) {
+            if (!ability_command_sent_ && test_unit->cargo_space_taken != 8) {
                 ReportError("Units are not present in bunker as expected.");
             }
 
@@ -1687,7 +1691,7 @@ namespace sc2 {
             if (test_unit_ && test_unit_->passengers.size() != 0) {
                 ReportError("Unit count in bunker is not 0.");
             }
-            if (test_unit_ && test_unit_->cargo_space_max != 6) {
+            if (test_unit_ && test_unit_->cargo_space_max != 8) {
                 ReportError("Bunker cargo space max is not correct.");
             }
             if (test_unit_ && test_unit_->cargo_space_taken != 0) {
