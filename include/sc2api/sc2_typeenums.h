@@ -531,8 +531,8 @@ namespace sc2 {
         MORPH_WARPGATE = 1518,  // Target: None.
         MORPH_WARPPRISMPHASINGMODE = 1528,  // Target: None.
         MORPH_WARPPRISMTRANSPORTMODE = 1530,  // Target: None.
-        MOVE = 16,    // Target: Unit, Point.
-        PATROL = 17,    // Target: Unit, Point.
+        MOVE = 3794,    // Target: Unit, Point.
+        PATROL = 3795,    // Target: Unit, Point.
         RALLY_BUILDING = 195,   // Target: Unit, Point.
         RALLY_COMMANDCENTER = 203,   // Target: Unit, Point.
         RALLY_HATCHERY_UNITS = 211,   // Target: Unit, Point.
