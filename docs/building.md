@@ -12,6 +12,16 @@ the required submodules with the following git command:
 $ git submodule update --init --recursive
 ```
 
+4. Windows: Download and install [Visual Studio 2017](https://www.visualstudio.com/downloads/)
+
+5. Linux: Install 'gcc-c++'.
+
+6. Linux: Install the 'make' utility.
+
+7. OS X: Install XCode.
+
+8. OS X: Install XCode command-line tools.
+
 ## Windows (Visual Studio 2017)
 ```bat
 :: Clone the project.
@@ -47,7 +57,7 @@ $ cd build
 $ cmake ../ -G Xcode
 
 # Build the project using Xcode.
-$open cpp-sc2.xcodeproj/
+$ open cpp-sc2.xcodeproj/
 ```
 
 ## Mac (make)
