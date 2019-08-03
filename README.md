@@ -47,6 +47,11 @@ int main(int argc, char* argv[]) {
 
 You can find a detailed tutorial on what this code does in [docs/tutorial1.md](docs/tutorial1.md).
 
+Support
+-------
+
+Feel free to post questions on the unofficial Starcraft II AI Discord server. [Invite Link](https://discordapp.com/invite/Emm5Ztz)
+
 Documentation
 -------------
 
