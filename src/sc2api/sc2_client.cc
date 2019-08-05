@@ -50,8 +50,8 @@ public:
     mutable bool use_generalized_ability_ = true;
 
     // Player data.
-    int32_t minerals_;
-    int32_t vespene_;
+    uint32_t minerals_;
+    uint32_t vespene_;
     int32_t food_cap_;
     int32_t food_used_;
     int32_t food_army_;
@@ -111,8 +111,8 @@ public:
     bool IsPlacable(const Point2D& point) const final;
     float TerrainHeight(const Point2D& point) const final;
 
-    int32_t GetMinerals() const final { return minerals_; }
-    int32_t GetVespene() const final { return vespene_;  }
+    uint32_t GetMinerals() const final { return minerals_; }
+    uint32_t GetVespene() const final { return vespene_;  }
     int32_t GetFoodCap() const final { return food_cap_; }
     int32_t GetFoodUsed() const final { return food_used_; }
     int32_t GetFoodArmy() const final { return food_army_; }

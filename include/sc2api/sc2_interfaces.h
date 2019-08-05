@@ -141,11 +141,11 @@ public:
 
     //! The mineral count of the player.
     //!< \return The mineral count.
-    virtual int32_t GetMinerals() const = 0;
+    virtual uint32_t GetMinerals() const = 0;
 
     //! The vespene count of the player.
     //!< \return The vespene count.
-    virtual int32_t GetVespene() const = 0;
+    virtual uint32_t GetVespene() const = 0;
 
     //! The total supply cap given the players max possible supply.
     //!< \return Food cap.

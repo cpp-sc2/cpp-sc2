@@ -160,9 +160,9 @@ struct UnitTypeData {
     //! Number of cargo slots they occupy in a transport.
     uint32_t cargo_size;
     //! Cost in minerals to build this unit type.
-    int mineral_cost;
+    uint32_t mineral_cost;
     //! Cost in vespene to build this unit type.
-    int vespene_cost;
+    uint32_t vespene_cost;
 
     //! Unit attributes, may change based on upgrades.
     std::vector<Attribute> attributes;
