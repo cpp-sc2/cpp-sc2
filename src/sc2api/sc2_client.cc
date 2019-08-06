@@ -16,6 +16,43 @@
 
 #include "s2clientprotocol/sc2api.pb.h"
 
+namespace {
+
+int8_t getBit(std::string const& str, int j)
+{
+    div_t d = div(j, 8);
+    unsigned char data = str[d.quot] >> (7 - d.rem);
+    return data & 1;
+}
+
+bool SampleImageData(const std::string& data, int width, int height, int bits_per_pixel, const sc2::Point2D& point, unsigned char& result) {
+    sc2::Point2DI pointI(int(point.x), int(point.y));
+    if (pointI.x < 0 || pointI.x >= width || pointI.y < 0 || pointI.y >= height) {
+        return false;
+    }
+
+    if (bits_per_pixel == 1) {
+        const int idx = pointI.x + pointI.y * width;
+        result = getBit(data, idx);
+        return true;
+    }
+
+    // Image data is stored with an upper left origin.
+    assert(data.size() == width * height);
+    result = data[pointI.x + (height - 1 - pointI.y) * width];
+    return true;
+}
+
+bool SampleImageData(const SC2APIProtocol::ImageData& data, const sc2::Point2D& point, unsigned char& result) {
+    return SampleImageData(data.data(), data.size().x(), data.size().y(), data.bits_per_pixel(), point, result);
+}
+
+bool SampleImageData(const sc2::ImageData& data, const sc2::Point2D& point, unsigned char& result) {
+    return SampleImageData(data.data, data.width, data.height, data.bits_per_pixel, point, result);
+}
+
+}  // namespace
+
 namespace sc2 {
 
 //-------------------------------------------------------------------------------------------------
@@ -427,26 +464,6 @@ const GameInfo& ObservationImp::GetGameInfo() const {
 
     game_info_cached_ = true;
     return game_info_;
-}
-
-static bool SampleImageData(const std::string& data, int width, int height, const Point2D& point, unsigned char& result) {
-    Point2DI pointI(int(point.x), int(point.y));
-    if (pointI.x < 0 || pointI.x >= width || pointI.y < 0 || pointI.y >= height) {
-        return false;
-    }
-
-    // Image data is stored with an upper left origin.
-    assert(data.size() == width * height);
-    result = data[pointI.x + (height - 1 - pointI.y) * width];
-    return true;
-}
-
-static bool SampleImageData(const SC2APIProtocol::ImageData& data, const Point2D& point, unsigned char& result) {
-    return SampleImageData(data.data(), data.size().x(), data.size().y(), point, result);
-}
-
-static bool SampleImageData(const ImageData& data, const Point2D& point, unsigned char& result) {
-    return SampleImageData(data.data, data.width, data.height, point, result);
 }
 
 bool ObservationImp::HasCreep(const Point2D& point) const {
