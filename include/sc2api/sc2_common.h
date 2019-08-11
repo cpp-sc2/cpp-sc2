@@ -109,6 +109,20 @@ struct Point2DI {
 struct Rect2DI {
     Point2DI from;
     Point2DI to;
+
+    Rect2DI() {
+    }
+
+    Rect2DI(const Point2DI& in_from, const Point2DI& in_to) :
+        from(in_from),
+        to(in_to) {
+    }
+
+    int Width() const;
+
+    int Height() const;
+
+    bool Contain(const sc2::Point2DI& point) const;
 };
 
 //! RGB Color.
