@@ -49,6 +49,7 @@ Debug/
 Release/
 CodeAnalyst/
 .vs/
+.vscode/
 
 project/include
 project/lib
