@@ -5,6 +5,9 @@
 
 #include "sc2_common.h"
 #include "sc2_gametypes.h"
+
+#include "s2clientprotocol/sc2api.pb.h"
+
 #include <string>
 #include <vector>
 
@@ -96,6 +99,61 @@ struct GameInfo {
     std::vector<PlayerInfo> player_info;
 
     GameInfo();
+};
+
+struct SampleImage {
+    explicit SampleImage(const SC2APIProtocol::ImageData& data);
+
+    explicit SampleImage(const ImageData& data);
+
+    bool GetBit(const Point2DI& point, bool* dst) const;
+
+    bool GetBit(const Point2DI& point, unsigned char* dst) const;
+
+    int BPP() const;
+
+    Rect2DI Area() const;
+
+private:
+    const std::string& data_;
+    Rect2DI area_;
+
+    // NOTE (alkurbatov): Possible bits per pixel values specified in
+    // protocol/s2clientprotocol/raw.proto
+    int bits_per_pixel_;
+};
+
+struct PathingGrid {
+    explicit PathingGrid(const GameInfo& info);
+
+    bool IsPathable(const Point2DI& point) const;
+
+    void Dump(const std::string& file_path) const;
+
+private:
+    SampleImage pathing_grid_;
+};
+
+struct PlacementGrid {
+    explicit PlacementGrid(const GameInfo& info);
+
+    bool IsPlacable(const Point2DI& point) const;
+
+    void Dump(const std::string& file_path) const;
+
+private:
+    SampleImage placement_grid_;
+};
+
+struct HeightMap {
+    explicit HeightMap(const GameInfo& info);
+
+    float TerrainHeight(const Point2DI& point) const;
+
+    void Dump(const std::string& file_path) const;
+
+private:
+    SampleImage height_map_;
 };
 
 }

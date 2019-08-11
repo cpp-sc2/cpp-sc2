@@ -1,4 +1,5 @@
 #include "sc2api/sc2_client.h"
+#include "sc2api/sc2_common.h"
 #include "sc2api/sc2_proto_interface.h"
 #include "sc2api/sc2_interfaces.h"
 #include "sc2api/sc2_control_interfaces.h"
@@ -18,37 +19,53 @@
 
 namespace {
 
-int8_t getBit(std::string const& str, int j)
-{
-    div_t d = div(j, 8);
-    unsigned char data = str[d.quot] >> (7 - d.rem);
-    return data & 1;
+struct MapState {
+    explicit MapState(const SC2APIProtocol::MapState& map);
+
+    bool HasCreep(const sc2::Point2D& point) const;
+
+    sc2::Visibility GetVisibility(const sc2::Point2D& point) const;
+
+private:
+    sc2::SampleImage creep_data_;
+    sc2::SampleImage visibility_data_;
+};
+
+MapState::MapState(const SC2APIProtocol::MapState& map):
+    creep_data_(map.creep()), visibility_data_(map.visibility()) {
 }
 
-bool SampleImageData(const std::string& data, int width, int height, int bits_per_pixel, const sc2::Point2D& point, unsigned char& result) {
-    sc2::Point2DI pointI(int(point.x), int(point.y));
-    if (pointI.x < 0 || pointI.x >= width || pointI.y < 0 || pointI.y >= height) {
+bool MapState::HasCreep(const sc2::Point2D& point) const {
+    if (creep_data_.BPP() == 1) {
+        bool value;
+        if (!creep_data_.GetBit(point, &value))
+            return false;
+
+        return value;
+    }
+
+    unsigned char value;
+    if (!creep_data_.GetBit(point, &value))
         return false;
-    }
 
-    if (bits_per_pixel == 1) {
-        const int idx = pointI.x + pointI.y * width;
-        result = getBit(data, idx);
-        return true;
-    }
-
-    // Image data is stored with an upper left origin.
-    assert(data.size() == width * height);
-    result = data[pointI.x + (height - 1 - pointI.y) * width];
-    return true;
+    return value > 0;
 }
 
-bool SampleImageData(const SC2APIProtocol::ImageData& data, const sc2::Point2D& point, unsigned char& result) {
-    return SampleImageData(data.data(), data.size().x(), data.size().y(), data.bits_per_pixel(), point, result);
-}
+sc2::Visibility MapState::GetVisibility(const sc2::Point2D& point) const {
+    unsigned char value;
+    if (!visibility_data_.GetBit(point, &value))
+        return sc2::Visibility::FullHidden;
 
-bool SampleImageData(const sc2::ImageData& data, const sc2::Point2D& point, unsigned char& result) {
-    return SampleImageData(data.data, data.width, data.height, data.bits_per_pixel, point, result);
+    if (value == 0)
+        return sc2::Visibility::Hidden;
+
+    if (value == 1)
+        return sc2::Visibility::Fogged;
+
+    if (value == 2)
+        return sc2::Visibility::Visible;
+
+    return sc2::Visibility::FullHidden;
 }
 
 }  // namespace
@@ -473,14 +490,7 @@ bool ObservationImp::HasCreep(const Point2D& point) const {
         return false;
     }
 
-    const SC2APIProtocol::MapState& map_state = observation_raw->map_state();
-    const SC2APIProtocol::ImageData& creep = map_state.creep();
-
-    unsigned char value;
-    if (!SampleImageData(creep, point, value))
-        return false;
-
-    return value > 0 ? true : false;
+    return MapState(observation_raw->map_state()).HasCreep(point);
 }
 
 Visibility ObservationImp::GetVisibility(const Point2D& point) const {
@@ -490,52 +500,19 @@ Visibility ObservationImp::GetVisibility(const Point2D& point) const {
         return Visibility::FullHidden;
     }
 
-    const SC2APIProtocol::MapState& map_state = observation_raw->map_state();
-    const SC2APIProtocol::ImageData& visibility = map_state.visibility();
-
-    unsigned char value;
-    if (!SampleImageData(visibility, point, value))
-        return Visibility::FullHidden;
-
-    if (value == 0)
-        return Visibility::Hidden;
-    else if (value == 1)
-        return Visibility::Fogged;
-    else if (value == 2)
-        return Visibility::Visible;
-    else
-        return Visibility::FullHidden;
+    return MapState(observation_raw->map_state()).GetVisibility(point);
 }
 
 bool ObservationImp::IsPathable(const Point2D& point) const {
-    const GameInfo& game_info = GetGameInfo();
-
-    unsigned char value;
-    if (!SampleImageData(game_info.pathing_grid, point, value))
-        return false;
-
-    return value == 255 ? false : true;
+    return PathingGrid(GetGameInfo()).IsPathable(point);
 }
 
 bool ObservationImp::IsPlacable(const Point2D& point) const {
-    const GameInfo& game_info = GetGameInfo();
-
-    unsigned char value;
-    if (!SampleImageData(game_info.placement_grid, point, value))
-        return false;
-
-    return value == 255 ? true : false;
+    return PlacementGrid(GetGameInfo()).IsPlacable(point);
 }
 
 float ObservationImp::TerrainHeight(const Point2D& point) const {
-    const GameInfo& game_info = GetGameInfo();
-
-    unsigned char value;
-    if (!SampleImageData(game_info.terrain_height, point, value))
-        return false;
-
-    float decodedHeight = -100.0f + 200.0f * float(value) / 255.0f;
-    return decodedHeight;
+    return HeightMap(GetGameInfo()).TerrainHeight(point);
 }
 
 bool ObservationImp::UpdateObservation() {
