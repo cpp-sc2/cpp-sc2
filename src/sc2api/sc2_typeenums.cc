@@ -690,6 +690,7 @@ namespace sc2 {
         case ABILITY_ID::RESEARCH_ZERGMELEEWEAPONS:         return "RESEARCH_ZERGMELEEWEAPONS"; // 1
         case ABILITY_ID::RESEARCH_ZERGMISSILEWEAPONS:       return "RESEARCH_ZERGMISSILEWEAPONS"; // 1
         case ABILITY_ID::INVALID:                           return "INVALID";
+        case ABILITY_ID::RESEARCH_CYCLONELOCKONDAMAGE:      return "RESEARCH_CYCLONELOCKONDAMAGE";
         }
 
         return "UNKNOWN";
@@ -786,6 +787,7 @@ namespace sc2 {
         case UPGRADE_ID::RAPIDFIRELAUNCHERS:                return "RAPIDFIRELAUNCHERS";
         case UPGRADE_ID::ENHANCEDMUNITIONS:                 return "ENHANCEDMUNITIONS";
         case UPGRADE_ID::INVALID:                           return "INVALID";
+        case UPGRADE_ID::CYCLONELOCKONDAMAGEUPGRADE:        return "CYCLONELOCKONDAMAGEUPGRADE";
         }
 
         return "UNKNOWN";
