@@ -58,7 +58,6 @@ struct Point2D {
     Point2D(Point3D a) :
         x(a.x),
         y(a.y) {
-
     }
 
     Point2D(float in_x, float in_y) :
@@ -99,6 +98,11 @@ struct Point2DI {
     Point2DI(int in_x = 0, int in_y = 0) :
         x(in_x),
         y(in_y) {
+    }
+
+    Point2DI(const Point2D& point) :
+        x(static_cast<int>(point.x)),
+        y(static_cast<int>(point.y)) {
     }
 
     bool operator==(const Point2DI& rhs) const;
