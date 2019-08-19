@@ -41,6 +41,25 @@ $ cmake ../ -G "Visual Studio 15 2017 Win64"
 $ start cpp-sc2.sln
 ```
 
+## Windows (nmake)
+```bat
+:: Clone the project.
+$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+
+:: Enter the working directory.
+$ cd cpp-sc2
+
+:: Create build directory.
+$ mkdir build
+$ cd build
+
+:: Create makefiles.
+$ cmake ../ -G "NMake Makefiles"
+
+:: Build the project with nmake.
+$ nmake
+```
+
 ## Mac (Xcode)
 ```bash
 # Clone the project.
