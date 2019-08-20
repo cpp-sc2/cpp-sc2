@@ -58,7 +58,6 @@ struct Point2D {
     Point2D(Point3D a) :
         x(a.x),
         y(a.y) {
-
     }
 
     Point2D(float in_x, float in_y) :
@@ -101,6 +100,11 @@ struct Point2DI {
         y(in_y) {
     }
 
+    Point2DI(const Point2D& point) :
+        x(static_cast<int>(point.x)),
+        y(static_cast<int>(point.y)) {
+    }
+
     bool operator==(const Point2DI& rhs) const;
     bool operator!=(const Point2DI& rhs) const;
 };
@@ -109,6 +113,20 @@ struct Point2DI {
 struct Rect2DI {
     Point2DI from;
     Point2DI to;
+
+    Rect2DI() {
+    }
+
+    Rect2DI(const Point2DI& in_from, const Point2DI& in_to) :
+        from(in_from),
+        to(in_to) {
+    }
+
+    int Width() const;
+
+    int Height() const;
+
+    bool Contain(const sc2::Point2DI& point) const;
 };
 
 //! RGB Color.

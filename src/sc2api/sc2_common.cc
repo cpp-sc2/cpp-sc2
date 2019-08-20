@@ -136,6 +136,19 @@ bool Point2DI::operator!=(const Point2DI& rhs) const {
     return !(*this == rhs);
 }
 
+int Rect2DI::Width() const {
+    return to.x - from.x;
+}
+
+int Rect2DI::Height() const {
+    return to.y - from.y;
+}
+
+bool Rect2DI::Contain(const sc2::Point2DI& point) const {
+    return point.x >= this->from.x && point.x < this->Width() &&
+        point.y >= this->from.y && point.y < this->Height();
+}
+
 struct RandomGenerator {
     RandomGenerator() : rd(), mt(rd()) {}
     std::random_device rd;
