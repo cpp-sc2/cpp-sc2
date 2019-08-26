@@ -46,7 +46,7 @@ bool SampleImage::GetBit(const Point2DI& point, unsigned char* dst) const {
 
     // Image data is stored with an upper left origin.
     assert(data_.size() == area_.Width() * area_.Height());
-    *dst = data_[point.x + (area_.Height() - 1 - point.y) * area_.Width()];
+    *dst = data_[point.x + point.y * area_.Width()];
     return true;
 }
 
@@ -131,7 +131,7 @@ float HeightMap::TerrainHeight(const Point2DI& point) const {
     if (!height_map_.GetBit(point, &value))
         return 0.0f;
 
-    return -100.0f + 200.0f * static_cast<float>(value) / 255.0f;
+    return (static_cast<float>(value) - 127) / 8.f;
 }
 
 void HeightMap::Dump(const std::string& file_path) const {
