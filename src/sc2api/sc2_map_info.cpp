@@ -137,10 +137,9 @@ float HeightMap::TerrainHeight(const Point2DI& point) const {
 void HeightMap::Dump(const std::string& file_path) const {
     std::ofstream dst(file_path);
 
-    for (int y = height_map_.Area().Height() - 1; y >= 0; --y) {
-        for (int x = 0; x < height_map_.Area().Width(); ++x) {
+    for (int x = 0; x < height_map_.Area().Width(); ++x) {
+        for (int y = 0; y < height_map_.Area().Height(); ++y)
             dst << TerrainHeight({x, y}) << "|";
-        }
 
         dst << std::endl;
     }
