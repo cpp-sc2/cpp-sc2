@@ -59,3 +59,5 @@ project/lib
 docs/html
 docs/latex
 doxygen.log
+
+node_modules
