@@ -63,6 +63,7 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 if (MSVC)
+    set(CMAKE_CXX_FLAGS "/EHsc" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_DEBUG "/MTd /ZI /Od" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_RELEASE "/MT" CACHE STRING "" FORCE)
 
