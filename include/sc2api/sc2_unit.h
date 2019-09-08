@@ -97,7 +97,7 @@ public:
     enum CloakState {
         //! Under the fog, so unknown whether it's cloaked or not.
         CloakedUnknown = 0,
-        //! Cloaked, invisible to enemies until detected.
+        //! Cloaked enemy units, invisible until detected.
         Cloaked = 1,
         //! Cloaked enemy, but detected.
         CloakedDetected = 2,
