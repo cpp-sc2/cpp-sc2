@@ -229,7 +229,7 @@ public:
     ControlInterface& control_;
     GameRequestPtr request_;
 
-    ObserverActionImp(ControlInterface& control);
+    explicit ObserverActionImp(ControlInterface& control);
 
     SC2APIProtocol::RequestObserverAction* GetRequest();
 
