@@ -653,7 +653,7 @@ public:
     QueryImp(ProtoInterface& proto, ControlInterface& control, ObservationInterface& observation);
 
     AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements) final;
-    std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& tags, bool ignore_resource_requirements) final;
+    std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements) final;
 
     float PathingDistance(const Point2D& start, const Point2D& end) final;
     float PathingDistance(const Unit* start_unit, const Point2D& end) final;
@@ -1347,7 +1347,7 @@ void DebugImp::SendDebug() {
 
 class ControlImp : public ControlInterface {
 public:
-    ControlImp(sc2::Client& client);
+    explicit ControlImp(sc2::Client& client);
     ~ControlImp();
 
     sc2::Client& client_;

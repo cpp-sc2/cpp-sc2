@@ -23,9 +23,9 @@ public:
     void UnitCommand(const Unit* unit, AbilityID ability, bool queued_command = false) override;
     void UnitCommand(const Unit* unit, AbilityID ability, const Point2D& point, bool queued_command = false) override;
     void UnitCommand(const Unit* unit, AbilityID ability, const Unit* target, bool queued_command = false) override;
-    void UnitCommand(const Units& unit_tags, AbilityID ability, bool queued_command = false) override;
-    void UnitCommand(const Units& unit_tags, AbilityID ability, const Point2D& point, bool queued_command = false) override;
-    void UnitCommand(const Units& unit_tags, AbilityID ability, const Unit* target, bool queued_command = false) override;
+    void UnitCommand(const Units& units, AbilityID ability, bool queued_command = false) override;
+    void UnitCommand(const Units& units, AbilityID ability, const Point2D& point, bool queued_command = false) override;
+    void UnitCommand(const Units& units, AbilityID ability, const Unit* target, bool queued_command = false) override;
 
     void ToggleAutocast(Tag unit_tag, AbilityID ability) override;
     void ToggleAutocast(const std::vector<Tag>& unit_tags, AbilityID ability) override;
