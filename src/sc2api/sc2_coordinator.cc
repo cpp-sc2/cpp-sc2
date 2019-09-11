@@ -917,6 +917,10 @@ void Coordinator::SetUseGeneralizedAbilityId(bool value) {
     imp_->use_generalized_ability_id = value;
 }
 
+void Coordinator::SetReplayPerspective(int player_id) {
+    imp_->replay_settings_.player_id = player_id;
+}
+
 bool Coordinator::SetReplayPath(const std::string& path) {
     imp_->replay_settings_.replay_file.clear();
 
