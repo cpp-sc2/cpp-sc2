@@ -307,8 +307,10 @@ bool ReplayObserver::IgnoreReplay(const ReplayInfo& replay_info, uint32_t& /*pla
     return replay_info.duration < 30.0f;
 }
 
-void ReplayObserver::SetControl(ControlInterface* control) {
-    replay_control_imp_->control_interface_ = control;
+void ReplayObserver::Reset() {
+    Client::Reset();
+    replay_control_imp_->control_interface_ = Control();
+    observer_action_imp_->control_ = Control();
 }
 
 }

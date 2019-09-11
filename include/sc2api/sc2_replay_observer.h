@@ -35,7 +35,7 @@ public:
     //!< \return If 'true', the replay will be rejected and not analyzed.
     virtual bool IgnoreReplay(const ReplayInfo& replay_info, uint32_t& player_id);
 
-    void SetControl(ControlInterface* control);
+    virtual void Reset();
 
 private:
     ReplayControlImp* replay_control_imp_;
