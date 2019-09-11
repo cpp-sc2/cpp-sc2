@@ -626,11 +626,9 @@ bool CoordinatorImp::Relaunch(ReplayObserver* replay_observer) {
     // Try to kill SC2 then relaunch it
     sc2::TerminateProcess(pi.process_id);
 
-    // Reset the control interface so internal state gets reset.
+    // NOTE (alkurbatov): Reset the control interface
+    // so internal state gets reinitialized.
     replay_observer->Reset();
-
-    // ReplayObserver needs the control interface from Client.
-    replay_observer->SetControl(replay_observer->Control());
 
     // Control interface has been reconstructed.
     control = replay_observer->Control();
