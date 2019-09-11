@@ -12,9 +12,14 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-9', 'gcc-9', 'doxygen', 'doxygen-doc', 'doxygen-latex', 'doxygen-gui', 'graphviz']
-      env: 
-         - GCCVER='9' CXX_COMPILER=g++-${GCCVER} C_COMPILER=gcc-${GCCVER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} BUILD_CONFIGURATION=Debug
-         - GCCVER='9' CXX_COMPILER=g++-${GCCVER} C_COMPILER=gcc-${GCCVER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} BUILD_CONFIGURATION=Release
+      env: GCCVER='9' CXX_COMPILER=g++-${GCCVER} CXX=${CXX_COMPILER} C_COMPILER=gcc-${GCCVER} CC=${C_COMPILER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} BUILD_CONFIGURATION=Release
+    - os: linux
+      compiler: gcc
+      addons: &gcc9
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-9', 'gcc-9', 'doxygen', 'doxygen-doc', 'doxygen-latex', 'doxygen-gui', 'graphviz']
+      env: GCCVER='9' CXX_COMPILER=g++-${GCCVER} CXX=${CXX_COMPILER} C_COMPILER=gcc-${GCCVER} CC=${C_COMPILER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} BUILD_CONFIGURATION=Debug
     - os: osx
       osx_image: xcode9.1
       env: BUILD_CONFIGURATION=Debug
@@ -26,7 +31,7 @@ script:
   - mkdir build
   - cd build
   - . ../.travis/build.sh
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then oxygen 2>&1 > doxygen.log || cat doxygen.log ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd .. ; doxygen 2>&1 > doxygen.log || cat doxygen.log ; fi
   
 
 deploy:
@@ -36,6 +41,7 @@ deploy:
   local_dir: docs/  
   on:
     branch: master
+    condition: $TRAVIS_OS_NAME = linux && $BUILD_CONFIGURATION = Debug
 
 # FIXME: (alkurbatov): Temporary disable documentation generator.
 # This should be changed as we don't want/can push to Blizzard repos.
