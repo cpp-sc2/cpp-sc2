@@ -1671,8 +1671,11 @@ bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& set
     }
 
     SC2APIProtocol::InterfaceOptions* options = request_join_game->mutable_options();
+
     options->set_raw(true);
     options->set_score(true);
+    options->set_show_cloaked(true);
+
     if (settings.use_feature_layers) {
         SC2APIProtocol::SpatialCameraSetup* setupProto = options->mutable_feature_layer();
         setupProto->set_width(settings.feature_layer_settings.camera_width);

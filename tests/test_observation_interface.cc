@@ -1,11 +1,12 @@
 #include "test_unit_command_common.h"
 #include "sc2api/sc2_api.h"
 #include "sc2lib/sc2_lib.h"
+#include "sc2utils/sc2_manage_process.h"
 #include "test_observation_interface.h"
 
 #include <iostream>
-#include <string>
 #include <random>
+#include <string>
 
 
 namespace sc2 {
@@ -193,8 +194,53 @@ namespace sc2 {
             KillAllUnits();
         }
     };
+
+struct TestGetCloakedEnemyUnit : TestSequence {
+       void OnTestStart() {
+        wait_game_loops_ = 10;
+
+        const GameInfo& game_info = agent_->Observation()->GetGameInfo();
+        Point2D origin_pt_ = FindCenterOfMap(game_info);
+
+        agent_->Debug()->DebugCreateUnit(
+            UNIT_TYPEID::PROTOSS_VOIDRAY,
+            origin_pt_,
+            agent_->Observation()->GetPlayerID(),
+            1
+        );
+
+        agent_->Debug()->DebugCreateUnit(
+            UNIT_TYPEID::PROTOSS_DARKTEMPLAR,
+            origin_pt_,
+            agent_->Observation()->GetPlayerID() + 1,
+            10
+        );
+
+        agent_->Debug()->SendDebug();
+    }
+
+    void OnTestFinish() {
+        const ObservationInterface* obs = agent_->Observation();
+
+        Units found_dark_templars = obs->GetUnits(
+            Unit::Alliance::Enemy, IsUnit(UNIT_TYPEID::PROTOSS_DARKTEMPLAR));
+
+        if (found_dark_templars.size() != 10) {
+            ReportErrorAndCleanup("Dark Templars Count is Incorrect");
+            return;
+        }
+
+        if (found_dark_templars.front()->cloak != Unit::CloakState::Cloaked) {
+            ReportErrorAndCleanup("Dark Templars Cloak Value is Incorrect");
+            return;
+        }
+
+        KillAllUnits();
+    }
+};
+
 //
-// UnitCommandTestBot
+// TestObservationBot
 //
 
 class TestObservationBot : public UnitTestBot {
@@ -214,6 +260,7 @@ TestObservationBot::TestObservationBot() :
     Add(TestGetFoodCount());
     Add(TestGetBuffData());
     Add(TestGetResources());
+    Add(TestGetCloakedEnemyUnit());
 }
 
 void TestObservationBot::OnTestsBegin() {

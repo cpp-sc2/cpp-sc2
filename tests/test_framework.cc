@@ -27,6 +27,11 @@ void TestSequence::ReportError(const char* error) {
     errors_.push_back(error);
 }
 
+void TestSequence::ReportErrorAndCleanup(const char* error) {
+    ReportError(error);
+    KillAllUnits();
+}
+
 void TestSequence::KillAllUnits() {
     Units units = agent_->Observation()->GetUnits();
     for (const auto unit : units) {
