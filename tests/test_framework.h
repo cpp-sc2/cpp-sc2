@@ -29,6 +29,9 @@ public:
     // Pushing errors will mark this test as failing.
     virtual void ReportError(const char* error = "Error");
 
+   // Mark test as failed and cleanup environment.
+    virtual void ReportErrorAndCleanup(const char* error);
+
     void KillAllUnits();
 };
 
