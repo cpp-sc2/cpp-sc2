@@ -7,47 +7,47 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* **chore:** Bring in new civetweb submodule ([95b8f6c](https://github.com/alkurbatov/cpp-sc2/commit/95b8f6c))
-* Add missing types to UnitTypeToName ([f406774](https://github.com/alkurbatov/cpp-sc2/commit/f406774))
-* Don't invert heights map coordinates... ([aa1c3de](https://github.com/alkurbatov/cpp-sc2/commit/aa1c3de))
-* Fix assertion in SampleImageData ([fc8aca0](https://github.com/alkurbatov/cpp-sc2/commit/fc8aca0))
-* Fix chronoboost ([1821e88](https://github.com/alkurbatov/cpp-sc2/commit/1821e88))
-* Fix IsPlacable and IsPathable, [#5](https://github.com/alkurbatov/cpp-sc2/issues/5) ([19ee24f](https://github.com/alkurbatov/cpp-sc2/commit/19ee24f))
-* Fix MOVE and PATROL abilities ([14a3fac](https://github.com/alkurbatov/cpp-sc2/commit/14a3fac))
-* Fix some compilation warnings ([1a15715](https://github.com/alkurbatov/cpp-sc2/commit/1a15715))
-* Fix type of minerals and vespene ([bc712ed](https://github.com/alkurbatov/cpp-sc2/commit/bc712ed))
-* Fixed height map and visibility map ([5e21d4e](https://github.com/alkurbatov/cpp-sc2/commit/5e21d4e))
-* Handle INVALID in all *ToName functions ([375543d](https://github.com/alkurbatov/cpp-sc2/commit/375543d))
+* Bring in new civetweb submodule ([1652187](https://github.com/alkurbatov/cpp-sc2/commit/1652187))
+* Add missing types to UnitTypeToName ([91311b3](https://github.com/alkurbatov/cpp-sc2/commit/91311b3))
+* Don't invert heights map coordinates... ([c2c38bf](https://github.com/alkurbatov/cpp-sc2/commit/c2c38bf))
+* Fix assertion in SampleImageData ([ba30bfa](https://github.com/alkurbatov/cpp-sc2/commit/ba30bfa))
+* Fix chronoboost ([573960b](https://github.com/alkurbatov/cpp-sc2/commit/573960b))
+* Fix IsPlacable and IsPathable, [#5](https://github.com/alkurbatov/cpp-sc2/issues/5) ([3b0100d](https://github.com/alkurbatov/cpp-sc2/commit/3b0100d))
+* Fix MOVE and PATROL abilities ([bb8109a](https://github.com/alkurbatov/cpp-sc2/commit/bb8109a))
+* Fix some compilation warnings ([a2c4501](https://github.com/alkurbatov/cpp-sc2/commit/a2c4501))
+* Fix type of minerals and vespene ([d2b29a9](https://github.com/alkurbatov/cpp-sc2/commit/d2b29a9))
+* Fixed height map and visibility map ([8207f1c](https://github.com/alkurbatov/cpp-sc2/commit/8207f1c))
+* Handle INVALID in all *ToName functions ([f0f0e9e](https://github.com/alkurbatov/cpp-sc2/commit/f0f0e9e))
 
 
 ### Build System
 
-* Don't enforce WX on Windows ([ce65a63](https://github.com/alkurbatov/cpp-sc2/commit/ce65a63))
-* Reimplement Travis CI ([c165d16](https://github.com/alkurbatov/cpp-sc2/commit/c165d16))
+* Don't enforce WX on Windows ([f7af6d4](https://github.com/alkurbatov/cpp-sc2/commit/f7af6d4))
+* Reimplement Travis CI ([4da5dab](https://github.com/alkurbatov/cpp-sc2/commit/4da5dab))
 
 
 ### Documentation
 
-* Add build instructions for nmake ([b3b2ef0](https://github.com/alkurbatov/cpp-sc2/commit/b3b2ef0))
-* Add more platform-specific dependencies ([3b28144](https://github.com/alkurbatov/cpp-sc2/commit/3b28144))
-* Added missing link to tutorial ([e7b028e](https://github.com/alkurbatov/cpp-sc2/commit/e7b028e))
-* Correct README ([d38f08f](https://github.com/alkurbatov/cpp-sc2/commit/d38f08f))
-* Fix a typo ([39cd82a](https://github.com/alkurbatov/cpp-sc2/commit/39cd82a))
-* Mention discord in README ([888ffb9](https://github.com/alkurbatov/cpp-sc2/commit/888ffb9))
-* Refine build instructions ([2da30d8](https://github.com/alkurbatov/cpp-sc2/commit/2da30d8))
+* Add build instructions for nmake ([c131953](https://github.com/alkurbatov/cpp-sc2/commit/c131953))
+* Add more platform-specific dependencies ([56c52af](https://github.com/alkurbatov/cpp-sc2/commit/56c52af))
+* Added missing link to tutorial ([a7c3372](https://github.com/alkurbatov/cpp-sc2/commit/a7c3372))
+* Correct README ([f7a2051](https://github.com/alkurbatov/cpp-sc2/commit/f7a2051))
+* Fix a typo ([2a33789](https://github.com/alkurbatov/cpp-sc2/commit/2a33789))
+* Mention discord in README ([9755002](https://github.com/alkurbatov/cpp-sc2/commit/9755002))
+* Refine build instructions ([68a3643](https://github.com/alkurbatov/cpp-sc2/commit/68a3643))
 
 
 ### Features
 
-* Add 'rich' types of vespene extractors ([5ee6071](https://github.com/alkurbatov/cpp-sc2/commit/5ee6071))
-* Add conversion of Point2D to Point2DI ([e410b5f](https://github.com/alkurbatov/cpp-sc2/commit/e410b5f))
-* Add cyclone lock on damage upgrade ([93a219a](https://github.com/alkurbatov/cpp-sc2/commit/93a219a))
-* Adjust CloakState parameters to the new proto ([8ddc843](https://github.com/alkurbatov/cpp-sc2/commit/8ddc843))
-* Extend DisplayType with Placeholder value ([9965824](https://github.com/alkurbatov/cpp-sc2/commit/9965824))
-* Extend Rect2DI functionality ([ffeaa43](https://github.com/alkurbatov/cpp-sc2/commit/ffeaa43))
-* Switch to the latest proto ([90d89cb](https://github.com/alkurbatov/cpp-sc2/commit/90d89cb))
+* Add 'rich' types of vespene extractors ([ab0f5bc](https://github.com/alkurbatov/cpp-sc2/commit/ab0f5bc))
+* Add conversion of Point2D to Point2DI ([7791b6a](https://github.com/alkurbatov/cpp-sc2/commit/7791b6a))
+* Add cyclone lock on damage upgrade ([d67204a](https://github.com/alkurbatov/cpp-sc2/commit/d67204a))
+* Adjust CloakState parameters to the new proto ([b74166f](https://github.com/alkurbatov/cpp-sc2/commit/b74166f))
+* Extend DisplayType with Placeholder value ([dd73ec0](https://github.com/alkurbatov/cpp-sc2/commit/dd73ec0))
+* Extend Rect2DI functionality ([054a835](https://github.com/alkurbatov/cpp-sc2/commit/054a835))
+* Switch to the latest proto ([f3bd271](https://github.com/alkurbatov/cpp-sc2/commit/f3bd271))
 
 
 ### Tests
 
-* Fix TestUnitCommand ([04c348c](https://github.com/alkurbatov/cpp-sc2/commit/04c348c))
+* Fix TestUnitCommand ([4debe09](https://github.com/alkurbatov/cpp-sc2/commit/4debe09))
