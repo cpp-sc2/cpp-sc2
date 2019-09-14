@@ -1675,6 +1675,7 @@ bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& set
     options->set_raw(true);
     options->set_score(true);
     options->set_show_cloaked(true);
+    options->set_show_burrowed_shadows(true);
 
     if (settings.use_feature_layers) {
         SC2APIProtocol::SpatialCameraSetup* setupProto = options->mutable_feature_layer();
