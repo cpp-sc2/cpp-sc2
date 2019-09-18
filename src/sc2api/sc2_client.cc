@@ -1676,6 +1676,11 @@ bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& set
     options->set_score(true);
     options->set_show_cloaked(true);
     options->set_show_burrowed_shadows(true);
+#if _DEBUG
+    options->set_raw_affects_selection(false);
+#else
+    options->set_raw_affects_selection(true);   // Will not generate a deselect command after sending a command to a unit
+#endif
 
     if (settings.use_feature_layers) {
         SC2APIProtocol::SpatialCameraSetup* setupProto = options->mutable_feature_layer();
