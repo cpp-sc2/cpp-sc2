@@ -1,49 +1,44 @@
 language: cpp
 
-matrix:
-  include:
-    - os: windows
-      env: BUILD_CONFIGURATION=Debug
-    - os: windows
-      env: BUILD_CONFIGURATION=Release
-    - os: linux
-      compiler: gcc
-      addons: &gcc9
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-9', 'gcc-9', 'doxygen', 'doxygen-doc', 'doxygen-latex', 'doxygen-gui', 'graphviz']
-      env: GCCVER='9' CXX_COMPILER=g++-${GCCVER} CXX=${CXX_COMPILER} C_COMPILER=gcc-${GCCVER} CC=${C_COMPILER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} BUILD_CONFIGURATION=Release
-    - os: linux
-      compiler: gcc
-      addons: &gcc9
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-9', 'gcc-9', 'doxygen', 'doxygen-doc', 'doxygen-latex', 'doxygen-gui', 'graphviz']
-      env: GCCVER='9' CXX_COMPILER=g++-${GCCVER} CXX=${CXX_COMPILER} C_COMPILER=gcc-${GCCVER} CC=${C_COMPILER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} BUILD_CONFIGURATION=Debug
-    - os: osx
-      osx_image: xcode9.1
-      env: BUILD_CONFIGURATION=Debug
-    - os: osx
-      osx_image: xcode9.1
-      env: BUILD_CONFIGURATION=Release
+# The build matrix setup
+# 2 configs * 3 OS = 6 builds.
+# build both Release and Debug
+env: 
+ - BUILD_CONFIGURATION=Debug
+ - BUILD_CONFIGURATION=Release
+
+# run on all three OS
+os: 
+ - windows
+ - linux
+ - osx
+
+# these elements are necessary to configure linux 
+dist: xenial
+compiler: gcc
+addons: &gcc9
+  apt:
+    sources: ['ubuntu-toolchain-r-test']
+    packages: ['g++-9', 'gcc-9','doxygen']
+
+# this is an OSX specific setting
+osx_image: xcode9.1
 
 script:
+   # On linux, configures to use recent C++ compiler + linker instead of default. 
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export GCCVER='9' ; export CXX_COMPILER=g++-${GCCVER} C_COMPILER=gcc-${GCCVER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} ; export CC=${C_COMPILER} CXX=${CXX_COMPILER} ; fi ;
   - mkdir build
   - cd build
   - . ../.travis/build.sh
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd .. ; doxygen 2>&1 > doxygen.log || cat doxygen.log ; fi
+  # Build documentation and copy it to website/ which is the folder we deploy to gh-pages 
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && $BUILD_CONFIGURATION = Debug ]]; then cd .. ; mkdir -p docs/html ; doxygen 2>&1 > doxygen.log || cat doxygen.log ; mkdir website ; cp -r docs/* website/ ; fi
   
 
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
-  local_dir: docs/  
+  local_dir: website/  
   on:
     branch: master
     condition: $TRAVIS_OS_NAME = linux && $BUILD_CONFIGURATION = Debug
-
-# FIXME: (alkurbatov): Temporary disable documentation generator.
-# This should be changed as we don't want/can push to Blizzard repos.
-#after_success:
-#  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && cd $TRAVIS_BUILD_DIR && ./generate_and_deploy_doxygen.sh'
