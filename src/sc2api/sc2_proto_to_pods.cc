@@ -159,7 +159,7 @@ bool Convert(const SC2APIProtocol::CloakState& cloak_proto, Unit::CloakState& cl
     return false;
 }
 
-bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint32_t game_loop) {
+bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint32_t game_loop, uint32_t prev_game_loop) {
     for (int i = 0; i < observation_raw->units_size(); ++i) {
         const SC2APIProtocol::Unit& observation_unit = observation_raw->units(i);
         Unit* unit = unit_pool.CreateUnit(observation_unit.tag());
@@ -185,7 +185,12 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->pos.z = pt.z();
         unit->facing = observation_unit.facing();
         unit->radius = observation_unit.radius();
-        unit->build_progress = observation_unit.build_progress();
+
+        const auto bp = observation_unit.build_progress();
+        if (bp >= 1.0f && unit->build_progress < 1.0f)
+            unit_pool.AddCompletedBuilding(unit);
+        unit->build_progress = bp;
+
         if (observation_unit.has_cloak()) {
             if (!Convert(observation_unit.cloak(), unit->cloak)) {
                 return false;
@@ -202,9 +207,15 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->is_on_screen = observation_unit.is_on_screen();
         unit->is_blip = observation_unit.is_blip();
 
-        unit->health = observation_unit.health();
+        const auto health = observation_unit.health();
+        if (health < unit->health)
+            unit_pool.AddUnitDamaged(unit);
+        unit->health = health;
         unit->health_max = observation_unit.health_max();
         unit->shield = observation_unit.shield();
+        const auto shield = observation_unit.shield();
+        if (shield < unit->shield)
+            unit_pool.AddUnitDamaged(unit);
         unit->shield_max = observation_unit.shield_max();
         unit->energy = observation_unit.energy();
         unit->energy_max = observation_unit.energy_max();
@@ -216,6 +227,7 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->weapon_cooldown = observation_unit.weapon_cooldown();
         unit->engaged_target_tag = observation_unit.engaged_target_tag();
 
+        bool hadOrders = !unit->orders.empty();
         unit->orders.clear();
         for (int order_index = 0; order_index < observation_unit.orders_size(); ++order_index) {
             const SC2APIProtocol::UnitOrder& order_proto = observation_unit.orders(order_index);
@@ -228,6 +240,8 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
             order.progress = order_proto.progress();
             unit->orders.push_back(order);
         }
+        if (hadOrders && unit->orders.empty())
+            unit_pool.AddUnitIdled(unit); 
 
         unit->add_on_tag = observation_unit.add_on_tag();
 
@@ -254,7 +268,7 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
             unit->passengers.push_back(passengerUnit);
         }
 
-        unit->cargo_space_taken= observation_unit.cargo_space_taken();
+        unit->cargo_space_taken = observation_unit.cargo_space_taken();
         unit->cargo_space_max = observation_unit.cargo_space_max();
         unit->assigned_harvesters = observation_unit.assigned_harvesters();
         unit->ideal_harvesters = observation_unit.ideal_harvesters();
@@ -266,6 +280,8 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
 
         unit->is_powered = observation_unit.is_powered();
         unit->is_alive = true;
+        if (unit->last_seen_game_loop < prev_game_loop)
+            unit_pool.AddUnitEnteredVision(unit);
         unit->last_seen_game_loop = game_loop;
     }
 
