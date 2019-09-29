@@ -64,9 +64,10 @@ bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, Ga
         { "-e", "--executable", "The path to StarCraft II.", true },
         { "-s", "--step_size", "How many steps to take per call.", false },
         { "-p", "--port", "The port to make StarCraft II listen on.", false },
-        { "-r", "--realtime", "Whether to run StarCraft II in  real time or not.", false },
+        { "-r", "--realtime", "Whether to run StarCraft II in real time or not.", false },
         { "-m", "--map", "Which map to run.", false },
-        { "-t", "--timeout", "Timeout for how long the library will block for a response.", false }
+        { "-t", "--timeout", "Timeout for how long the library will block for a response.", false },
+        { "-d", "--data_version", "Data hash of the game version to run (see versions.json)", false}
     });
 
     if (argc == 1 && !parsed) {
@@ -99,6 +100,11 @@ bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, Ga
     std::string timeout;
     if (arg_parser.Get("timeout", timeout)) {
         process_settings.timeout_ms = atoi(timeout.c_str());
+    }
+
+    std::string data_version;
+    if (arg_parser.Get("data_version", data_version)){
+        process_settings.data_version = data_version;
     }
 
     arg_parser.Get("map", game_settings.map_name);
