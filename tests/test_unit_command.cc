@@ -1095,7 +1095,7 @@ namespace sc2 {
             if (test_unit_ && Point2D(test_unit_->pos) != target_point_) {
                 ReportError("Unit did not move to the target point.");
             }
-            if (test_unit_ && test_unit_->facing < 3.09300422 || test_unit_->facing > 3.19114877) {
+            if (test_unit_ && (test_unit_->facing < 3.09300422 || test_unit_->facing > 3.19114877)) {
                 ReportError("Unit facing out of expected range after move.");
             }
 
