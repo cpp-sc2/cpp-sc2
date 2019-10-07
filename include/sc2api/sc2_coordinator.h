@@ -97,6 +97,10 @@ public:
     // \param option The string to be appended to the executable invoke.
     void AddCommandLine(const std::string& option);
 
+    //! When set to true, less actions will be generated because the game will not try to keep your unit selection.
+    //! Useful to reduce the number of actions, but may complicate the debugging process.
+    void SetRawAffectsSelection(bool value);
+
     //! Sets up the bots and whether they are controlled by in-built AI, human or a custom bot.
     // \param participants A vector of player setups for each participant in the game.
     // \sa PlayerSetup

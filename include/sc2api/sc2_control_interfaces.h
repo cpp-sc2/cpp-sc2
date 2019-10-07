@@ -22,7 +22,7 @@ public:
     virtual bool RemoteSaveMap(const void* data, int data_size, std::string remote_path) = 0;
     virtual bool CreateGame(const std::string& map_path, const std::vector<PlayerSetup>& players, bool realtime) = 0;
 
-    virtual bool RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports = Ports()) = 0;
+    virtual bool RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports = Ports(), bool raw_affects_selection = false) = 0;
     virtual bool WaitJoinGame() = 0;
 
     virtual bool RequestLeaveGame() = 0;

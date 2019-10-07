@@ -1379,7 +1379,7 @@ public:
     bool Connect(const std::string& address, int port, int timeout_ms) override;
     bool CreateGame(const std::string& map_name, const std::vector<PlayerSetup>& players, bool realtime) override;
 
-    bool RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports = Ports()) override;
+    bool RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports = Ports(), bool raw_affects_selection = false) override;
     bool WaitJoinGame() override;
 
     bool RequestLeaveGame() override;
@@ -1644,7 +1644,7 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
     return success;
 }
 
-bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports) {
+bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports, bool raw_affects_selection) {
     observation_imp_->ClearFlags();
 
     is_multiplayer_ = ports.IsValid();
@@ -1676,6 +1676,7 @@ bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& set
     options->set_score(true);
     options->set_show_cloaked(true);
     options->set_show_burrowed_shadows(true);
+    options->set_raw_affects_selection(raw_affects_selection);	// If true, will not generate a deselect command after sending a command to a unit
 
     if (settings.use_feature_layers) {
         SC2APIProtocol::SpatialCameraSetup* setupProto = options->mutable_feature_layer();

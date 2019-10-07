@@ -562,7 +562,8 @@ bool CoordinatorImp::JoinGame() {
     for (auto c : agents_) {
         bool game_join_request = c->Control()->RequestJoinGame(game_settings_.player_setup[i++],
             interface_settings_,
-            game_settings_.ports);
+            game_settings_.ports,
+            game_settings_.raw_affects_selection);
 
         if (!game_join_request) {
             std::cerr << "Unable to join game." << std::endl;
@@ -971,6 +972,11 @@ bool Coordinator::HasReplays() const {
 
 void Coordinator::AddCommandLine(const std::string& option) {
     imp_->process_settings_.extra_command_lines.push_back(option);
+}
+
+void Coordinator::SetRawAffectsSelection(bool value)
+{
+    imp_->game_settings_.raw_affects_selection = value;
 }
 
 std::string Coordinator::GetExePath() const {
