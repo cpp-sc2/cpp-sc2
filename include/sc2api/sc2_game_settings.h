@@ -96,6 +96,7 @@ struct GameSettings {
     std::string map_name;
     std::vector<PlayerSetup> player_setup;
     Ports ports;
+    bool raw_affects_selection = false;
 };
 
 //! Settings for starting a replay.
