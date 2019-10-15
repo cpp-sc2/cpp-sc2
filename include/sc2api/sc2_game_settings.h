@@ -29,7 +29,8 @@ struct ProcessSettings {
         const std::string& in_net_address,
         int in_timeout_ms,
         int in_port_start,
-        bool in_multi_threaded = false);
+        bool in_multi_threaded = false,
+        bool in_full_screen = false);
 
     bool realtime;
     int step_size;
@@ -40,6 +41,7 @@ struct ProcessSettings {
     int port_start;
     // Run all OnSteps in parallel.
     bool multi_threaded;
+    bool full_screen;
     std::vector<std::string> extra_command_lines;
     // PID and port of all running sc2 processes.
     std::vector<ProcessInfo> process_info;

@@ -45,8 +45,10 @@ int LaunchProcess(ProcessSettings& process_settings, Client* client, int window_
 		"-port", std::to_string(pi.port)
     };
 
-    // DirectX will fail if multiple games try to launch in fullscreen mode. Force them into windowed mode.
-    cl.push_back("-displayMode"); cl.push_back("0");
+    if (!process_settings.full_screen) {
+        cl.push_back("-displayMode");
+        cl.push_back("0");
+    }
 
     if (process_settings.data_version.size() > 0) {
         cl.push_back("-dataVersion"); cl.push_back(process_settings.data_version);
@@ -977,6 +979,10 @@ void Coordinator::AddCommandLine(const std::string& option) {
 void Coordinator::SetRawAffectsSelection(bool value)
 {
     imp_->game_settings_.raw_affects_selection = value;
+}
+
+void Coordinator::SetFullScreen(bool value) {
+     imp_->process_settings_.full_screen = value;
 }
 
 std::string Coordinator::GetExePath() const {

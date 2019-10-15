@@ -101,6 +101,13 @@ public:
     //! Useful to reduce the number of actions, but may complicate the debugging process.
     void SetRawAffectsSelection(bool value);
 
+    //! Specifies whether the game should run in fullscreen or not.
+    //! This usually indicates that a real player is using the first launched instance to play.
+    //! It should be used in combination with SetRealtime(true) otherwise the game has no sound.
+    //! Please, pay attention that on Windows only one player can have fullscreen enabled, otherwise
+    //! the game will fail to launch due to a bug in DirectX.
+    void SetFullScreen(bool value);
+
     //! Sets up the bots and whether they are controlled by in-built AI, human or a custom bot.
     // \param participants A vector of player setups for each participant in the game.
     // \sa PlayerSetup
