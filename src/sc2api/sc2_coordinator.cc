@@ -45,7 +45,7 @@ int LaunchProcess(ProcessSettings& process_settings, Client* client, int window_
 		"-port", std::to_string(pi.port)
     };
 
-    if (!process_settings.full_screen) {
+    if (!process_settings.full_screen || client_num > 0) {
         cl.push_back("-displayMode");
         cl.push_back("0");
     }
