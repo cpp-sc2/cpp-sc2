@@ -42,13 +42,14 @@ int LaunchProcess(ProcessSettings& process_settings, Client* client, int window_
     // Command line arguments that will be passed to sc2.
     std::vector<std::string> cl = {
         "-listen", process_settings.net_address,
-		"-port", std::to_string(pi.port)
+        "-port", std::to_string(pi.port)
     };
 
-    if (!process_settings.full_screen || client_num > 0) {
-        cl.push_back("-displayMode");
+    cl.push_back("-displayMode");
+    if (process_settings.full_screen && client_num == 0)
+        cl.push_back("1");
+    else
         cl.push_back("0");
-    }
 
     if (process_settings.data_version.size() > 0) {
         cl.push_back("-dataVersion"); cl.push_back(process_settings.data_version);
