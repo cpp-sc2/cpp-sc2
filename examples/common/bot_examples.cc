@@ -12,7 +12,7 @@
 #include "sc2lib/sc2_lib.h"
 
 namespace sc2 {
-    
+
 static int TargetSCVCount = 15;
 
 struct IsAttackable {
@@ -58,22 +58,6 @@ struct IsArmy {
     }
 
     const ObservationInterface* observation_;
-};
-
-struct IsTownHall {
-    bool operator()(const Unit& unit) {
-        switch (unit.unit_type.ToType()) {
-            case UNIT_TYPEID::ZERG_HATCHERY: return true;
-            case UNIT_TYPEID::ZERG_LAIR: return true;
-            case UNIT_TYPEID::ZERG_HIVE : return true;
-            case UNIT_TYPEID::TERRAN_COMMANDCENTER: return true;
-            case UNIT_TYPEID::TERRAN_ORBITALCOMMAND: return true;
-            case UNIT_TYPEID::TERRAN_ORBITALCOMMANDFLYING: return true;
-            case UNIT_TYPEID::TERRAN_PLANETARYFORTRESS: return true;
-            case UNIT_TYPEID::PROTOSS_NEXUS: return true;
-            default: return false;
-        }
-    }
 };
 
 struct IsVespeneGeyser {
@@ -406,7 +390,7 @@ bool MultiplayerBot::TryExpand(AbilityID build_ability, UnitTypeID worker_type) 
         }
     }
     //only update staging location up till 3 bases.
-    if (TryBuildStructure(build_ability, worker_type, closest_expansion, true) && observation->GetUnits(Unit::Self, IsTownHall()).size() < 4) {
+    if (TryBuildStructure(build_ability, worker_type, closest_expansion, true) && observation->GetUnits(Unit::Self, sc2::IsTownHall()).size() < 4) {
         staging_location_ = Point3D(((staging_location_.x + closest_expansion.x) / 2), ((staging_location_.y + closest_expansion.y) / 2),
             ((staging_location_.z + closest_expansion.z) / 2));
         return true;
@@ -468,7 +452,7 @@ bool MultiplayerBot::TryBuildUnit(AbilityID ability_type_for_unit, UnitTypeID un
 // If we don't do this, probes may mine from other patches if they stray too far from the base after building.
 void MultiplayerBot::MineIdleWorkers(const Unit* worker, AbilityID worker_gather_command, UnitTypeID vespene_building_type) {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
     Units geysers = observation->GetUnits(Unit::Alliance::Self, IsUnit(vespene_building_type));
 
     const Unit* valid_mineral_patch = nullptr;
@@ -509,7 +493,7 @@ void MultiplayerBot::MineIdleWorkers(const Unit* worker, AbilityID worker_gather
 //An estimate of how many workers we should have based on what buildings we have
 int MultiplayerBot::GetExpectedWorkers(UNIT_TYPEID vespene_building_type) {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
     Units geysers = observation->GetUnits(Unit::Alliance::Self, IsUnit(vespene_building_type));
     int expected_workers = 0;
     for (const auto& base : bases) {
@@ -534,7 +518,7 @@ int MultiplayerBot::GetExpectedWorkers(UNIT_TYPEID vespene_building_type) {
 // To ensure that we do not over or under saturate any base.
 void MultiplayerBot::ManageWorkers(UNIT_TYPEID worker_type, AbilityID worker_gather_command, UNIT_TYPEID vespene_building_type) {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
     Units geysers = observation->GetUnits(Unit::Alliance::Self, IsUnit(vespene_building_type));
 
     if (bases.empty()) {
@@ -1003,7 +987,7 @@ void ProtossMultiplayerBot::BuildOrder() {
 void ProtossMultiplayerBot::ManageUpgrades() {
     const ObservationInterface* observation = Observation();
     auto upgrades = observation->GetUpgrades();
-    size_t base_count = observation->GetUnits(Unit::Alliance::Self, IsTownHall()).size();
+    size_t base_count = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall()).size();
     if (upgrades.empty()) {
         TryBuildUnit(ABILITY_ID::RESEARCH_WARPGATE, UNIT_TYPEID::PROTOSS_CYBERNETICSCORE);
     }
@@ -1167,9 +1151,9 @@ bool ProtossMultiplayerBot::TryBuildPylon() {
 //Separated per race due to gas timings
 bool ProtossMultiplayerBot::TryBuildAssimilator() {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
 
-    if (CountUnitType(observation, UNIT_TYPEID::PROTOSS_ASSIMILATOR) >= observation->GetUnits(Unit::Alliance::Self, IsTownHall()).size() * 2) {
+    if (CountUnitType(observation, UNIT_TYPEID::PROTOSS_ASSIMILATOR) >= observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall()).size() * 2) {
         return false;
     }
 
@@ -1206,7 +1190,7 @@ bool ProtossMultiplayerBot::TryBuildExpansionNexus() {
 
 bool ProtossMultiplayerBot::TryBuildProbe() {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
     if (observation->GetFoodWorkers() >= max_worker_count_) {
         return false;
     }
@@ -1328,7 +1312,7 @@ void ProtossMultiplayerBot::OnUpgradeCompleted(UpgradeID upgrade) {
 bool ZergMultiplayerBot::TryBuildDrone() {
     const ObservationInterface* observation = Observation();
     size_t larva_count = CountUnitType(observation, UNIT_TYPEID::ZERG_LARVA);
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
     size_t worker_count = CountUnitType(observation, UNIT_TYPEID::ZERG_DRONE);
     Units eggs = observation->GetUnits(Unit::Self, IsUnit(UNIT_TYPEID::ZERG_EGG));
     for (const auto& egg : eggs) {
@@ -1377,7 +1361,7 @@ void ZergMultiplayerBot::BuildOrder() {
     const ObservationInterface* observation = Observation();
     bool hive_tech = CountUnitType(observation, UNIT_TYPEID::ZERG_HIVE) > 0;
     bool lair_tech = CountUnitType(observation, UNIT_TYPEID::ZERG_LAIR) > 0 || hive_tech;
-    size_t base_count = observation->GetUnits(Unit::Self, IsTownHall()).size();
+    size_t base_count = observation->GetUnits(Unit::Self, sc2::IsTownHall()).size();
     size_t evolution_chanber_target = 1;
     size_t morphing_lair = 0;
     size_t morphing_hive = 0;
@@ -1452,7 +1436,7 @@ void ZergMultiplayerBot::BuildOrder() {
                 TryBuildOnCreep(ABILITY_ID::BUILD_BANELINGNEST, UNIT_TYPEID::ZERG_DRONE);
             }
 
-            if (observation->GetUnits(Unit::Self, IsTownHall()).size() > 2) {
+            if (observation->GetUnits(Unit::Self, sc2::IsTownHall()).size() > 2) {
                 if (CountUnitType(observation, UNIT_TYPEID::ZERG_INFESTATIONPIT) < 1) {
                     TryBuildOnCreep(ABILITY_ID::BUILD_INFESTATIONPIT, UNIT_TYPEID::ZERG_DRONE);
                 }
@@ -1711,7 +1695,7 @@ void ZergMultiplayerBot::ManageArmy() {
 void ZergMultiplayerBot::BuildArmy() {
     const ObservationInterface* observation = Observation();
     size_t larva_count = CountUnitType(observation, UNIT_TYPEID::ZERG_LARVA);
-    size_t base_count = observation->GetUnits(Unit::Self, IsTownHall()).size();
+    size_t base_count = observation->GetUnits(Unit::Self, sc2::IsTownHall()).size();
 
     size_t queen_Count = CountUnitTypeTotal(observation, UNIT_TYPEID::ZERG_QUEEN, UNIT_TYPEID::ZERG_HATCHERY, ABILITY_ID::TRAIN_QUEEN);
     queen_Count += CountUnitTypeBuilding(observation, UNIT_TYPEID::ZERG_LAIR, ABILITY_ID::TRAIN_QUEEN);
@@ -1850,7 +1834,7 @@ void ZergMultiplayerBot::BuildArmy() {
 void ZergMultiplayerBot::ManageUpgrades() {
     const ObservationInterface* observation = Observation();
     auto upgrades = observation->GetUpgrades();
-    size_t base_count = observation->GetUnits(Unit::Alliance::Self, IsTownHall()).size();
+    size_t base_count = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall()).size();
     bool hive_tech = CountUnitType(observation, UNIT_TYPEID::ZERG_HIVE) > 0;
     bool lair_tech = CountUnitType(observation, UNIT_TYPEID::ZERG_LAIR) > 0 || hive_tech;
 
@@ -1959,7 +1943,7 @@ bool ZergMultiplayerBot::TryBuildOverlord() {
 void ZergMultiplayerBot::TryInjectLarva() {
     const ObservationInterface* observation = Observation();
     Units queens = observation->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::ZERG_QUEEN));
-    Units hatcheries = observation->GetUnits(Unit::Alliance::Self,IsTownHall());
+    Units hatcheries = observation->GetUnits(Unit::Alliance::Self,sc2::IsTownHall());
 
     //if we don't have queens or hatcheries don't do anything
     if (queens.empty() || hatcheries.empty())
@@ -2006,9 +1990,9 @@ bool ZergMultiplayerBot::TryBuildExpansionHatch() {
 
 bool ZergMultiplayerBot::BuildExtractor() {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
 
-    if (CountUnitType(observation, UNIT_TYPEID::ZERG_EXTRACTOR) >= observation->GetUnits(Unit::Alliance::Self, IsTownHall()).size() * 2) {
+    if (CountUnitType(observation, UNIT_TYPEID::ZERG_EXTRACTOR) >= observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall()).size() * 2) {
         return false;
     }
 
@@ -2027,7 +2011,7 @@ bool ZergMultiplayerBot::BuildExtractor() {
 void ZergMultiplayerBot::OnStep() {
 
     const ObservationInterface* observation = Observation();
-    Units base = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units base = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
 
     //Throttle some behavior that can wait to avoid duplicate orders.
     int frames_to_skip = 4;
@@ -2092,7 +2076,7 @@ void ZergMultiplayerBot::OnUnitIdle(const Unit* unit) {
 
 bool TerranMultiplayerBot::TryBuildSCV() {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
 
     for (const auto& base : bases) {
         if (base->unit_type == UNIT_TYPEID::TERRAN_ORBITALCOMMAND && base->energy > 50) {
@@ -2355,7 +2339,7 @@ void TerranMultiplayerBot::BuildArmy() {
 
 void TerranMultiplayerBot::BuildOrder() {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Self, sc2::IsTownHall());
     Units barracks = observation->GetUnits(Unit::Self, IsUnits(barrack_types));
     Units factorys = observation->GetUnits(Unit::Self, IsUnits(factory_types));
     Units starports = observation->GetUnits(Unit::Self, IsUnits(starport_types));
@@ -2561,7 +2545,7 @@ bool TerranMultiplayerBot::TryBuildStructureRandom(AbilityID ability_type_for_st
 void TerranMultiplayerBot::ManageUpgrades() {
     const ObservationInterface* observation = Observation();
     auto upgrades = observation->GetUpgrades();
-    size_t base_count = observation->GetUnits(Unit::Alliance::Self, IsTownHall()).size();
+    size_t base_count = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall()).size();
 
 
     if (upgrades.empty()) {
@@ -2886,7 +2870,7 @@ void TerranMultiplayerBot::ManageArmy() {
 
 bool TerranMultiplayerBot::TryBuildExpansionCom() {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
     //Don't have more active bases than we can provide workers for
     if (GetExpectedWorkers(UNIT_TYPEID::TERRAN_REFINERY) > max_worker_count_) {
         return false;
@@ -2904,9 +2888,9 @@ bool TerranMultiplayerBot::TryBuildExpansionCom() {
 
 bool TerranMultiplayerBot::BuildRefinery() {
     const ObservationInterface* observation = Observation();
-    Units bases = observation->GetUnits(Unit::Alliance::Self, IsTownHall());
+    Units bases = observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall());
 
-    if (CountUnitType(observation, UNIT_TYPEID::TERRAN_REFINERY) >= observation->GetUnits(Unit::Alliance::Self, IsTownHall()).size() * 2) {
+    if (CountUnitType(observation, UNIT_TYPEID::TERRAN_REFINERY) >= observation->GetUnits(Unit::Alliance::Self, sc2::IsTownHall()).size() * 2) {
         return false;
     }
 

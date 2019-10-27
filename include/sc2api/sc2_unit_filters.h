@@ -10,7 +10,7 @@ namespace sc2 {
 struct IsUnit {
     explicit IsUnit(UNIT_TYPEID type_);
 
-    bool operator()(const Unit& unit_);
+    bool operator()(const Unit& unit_) const;
 
  private:
     UNIT_TYPEID m_type;
@@ -20,10 +20,18 @@ struct IsUnit {
 struct IsUnits {
     explicit IsUnits(const std::vector<UNIT_TYPEID>& types_);
 
-    bool operator()(const Unit& unit_);
+    bool operator()(const Unit& unit_) const ;
 
  private:
     std::vector<UNIT_TYPEID> m_types;
 };
+
+//! Determines if the unit is town hall (command center, hatchery etc).
+struct IsTownHall {
+    bool operator()(const Unit& unit_) const;
+
+    bool operator()(UNIT_TYPEID type_) const;
+};
+
 
 }  // namespace sc2
