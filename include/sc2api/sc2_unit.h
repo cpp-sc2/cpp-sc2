@@ -226,24 +226,4 @@ private:
     std::unordered_map<Tag, Unit*> tag_to_existing_unit_;
 };
 
-//! Determines if the unit matches the unit type.
-struct IsUnit {
-    IsUnit(UNIT_TYPEID type) : type_(type) {};
-    UNIT_TYPEID type_;
-    bool operator()(const Unit& unit) { return unit.unit_type == type_; };
-};
-
-//! Determines if units matches the unit type.
-struct IsUnits {
-    IsUnits(std::vector<UNIT_TYPEID> types) : types_(types) {};
-    std::vector<UNIT_TYPEID> types_;
-    bool operator()(const Unit& unit) {
-        bool included = false;
-        for (const auto& type : types_) {
-            included = included || (unit.unit_type == type);
-        }
-        return included;
-    };
-};
-
 }
