@@ -150,34 +150,34 @@ public:
     //! The total supply cap given the players max possible supply.
     //!< \return Food cap.
     //!< \sa GetFoodUsed() GetFoodArmy() GetFoodWorkers()
-    virtual int32_t GetFoodCap() const = 0;
+    virtual uint32_t GetFoodCap() const = 0;
 
     //! The total supply used by the player as defined: GetFoodArmy() + GetFoodWorkers().
     //!< \return Food used.
     //!< \sa GetFoodArmy() GetFoodWorkers()
-    virtual int32_t GetFoodUsed() const = 0;
+    virtual uint32_t GetFoodUsed() const = 0;
 
     //! The total supply consumed by army units alone.
     //!< \sa GetFoodUsed() GetFoodWorkers()
     //!< \return Food used by army units.
-    virtual int32_t GetFoodArmy() const = 0;
+    virtual uint32_t GetFoodArmy() const = 0;
 
     //! The total supply consumed by workers units alone.
     //!< \sa GetFoodArmy() GetFoodUsed()
     //!< \return Food used by worker units.
-    virtual int32_t GetFoodWorkers() const = 0;
+    virtual uint32_t GetFoodWorkers() const = 0;
 
     //! The number of workers that currently have no orders.
     //!< \return Count of idle workers.
-    virtual int32_t GetIdleWorkerCount() const = 0;
+    virtual uint32_t GetIdleWorkerCount() const = 0;
 
     //! The number of army units.
     //!< \return Count of army units.
-    virtual int32_t GetArmyCount() const = 0;
+    virtual uint32_t GetArmyCount() const = 0;
 
     //! Number of warp gates owned by the player. This value should only be nonzero for Protoss.
     //!< \return Count of warp gates.
-    virtual int32_t GetWarpGateCount() const = 0;
+    virtual uint32_t GetWarpGateCount() const = 0;
 
     //! Position of the center of the camera.
     //!< \return Camera position.

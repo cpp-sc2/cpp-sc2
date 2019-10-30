@@ -106,14 +106,14 @@ public:
     // Player data.
     uint32_t minerals_;
     uint32_t vespene_;
-    int32_t food_cap_;
-    int32_t food_used_;
-    int32_t food_army_;
-    int32_t food_workers_;
-    int32_t idle_worker_count_;
-    int32_t army_count_;
-    int32_t warp_gate_count_;
-    int32_t larva_count_;
+    uint32_t food_cap_;
+    uint32_t food_used_;
+    uint32_t food_army_;
+    uint32_t food_workers_;
+    uint32_t idle_worker_count_;
+    uint32_t army_count_;
+    uint32_t warp_gate_count_;
+    uint32_t larva_count_;
     Point2D camera_pos_;
     Point3D start_location_;
 
@@ -167,13 +167,13 @@ public:
 
     uint32_t GetMinerals() const final { return minerals_; }
     uint32_t GetVespene() const final { return vespene_;  }
-    int32_t GetFoodCap() const final { return food_cap_; }
-    int32_t GetFoodUsed() const final { return food_used_; }
-    int32_t GetFoodArmy() const final { return food_army_; }
-    int32_t GetFoodWorkers() const final { return food_workers_; }
-    int32_t GetIdleWorkerCount() const final { return idle_worker_count_; }
-    int32_t GetArmyCount() const final { return army_count_; }
-    int32_t GetWarpGateCount() const final { return warp_gate_count_; }
+    uint32_t GetFoodCap() const final { return food_cap_; }
+    uint32_t GetFoodUsed() const final { return food_used_; }
+    uint32_t GetFoodArmy() const final { return food_army_; }
+    uint32_t GetFoodWorkers() const final { return static_cast<float>(food_workers_); }
+    uint32_t GetIdleWorkerCount() const final { return idle_worker_count_; }
+    uint32_t GetArmyCount() const final { return army_count_; }
+    uint32_t GetWarpGateCount() const final { return warp_gate_count_; }
     Point2D GetCameraPos() const final { return camera_pos_; }
     Point3D GetStartLocation() const final { return start_location_; }
     const std::vector<PlayerResult>& GetResults() const final { return player_results_; }
