@@ -408,20 +408,16 @@ uint64_t StartProcess(const std::string& process_path, const std::vector<std::st
             exit(-1);
         }
 
-        SleepFor(1000);
+        exit(0);
     }
 
-    static bool hook_sig = true;
-    if (hook_sig) {
-        struct sigaction action;
-        memset(&action, 0, sizeof(struct sigaction));
-        // Kill process started by this process of SIGTERM and SIGSEGV.
-        action.sa_handler = KillRunningProcesses;
-        sigaction(SIGTERM, &action, NULL);
-        sigaction(SIGSEGV, &action, NULL);
-        sigaction(SIGINT, &action, NULL);
-        hook_sig = false;
-    }
+    struct sigaction action;
+    memset(&action, 0, sizeof(struct sigaction));
+    // Kill process started by this process of SIGTERM and SIGSEGV.
+    action.sa_handler = KillRunningProcesses;
+    sigaction(SIGTERM, &action, NULL);
+    sigaction(SIGSEGV, &action, NULL);
+    sigaction(SIGINT, &action, NULL);
 
     AddPid(p);
 
