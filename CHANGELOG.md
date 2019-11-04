@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/alkurbatov/cpp-sc2/compare/v1.1.0...v1.2.0) (2019-11-04)
+
+
+### Features
+
+* Implement IsTownHall filter, [#17](https://github.com/alkurbatov/cpp-sc2/issues/17) ([6f786a4](https://github.com/alkurbatov/cpp-sc2/commit/6f786a4c9064dc01e15c8c44928791a9af52d7b7))
+* New coordinator setting allowing users to choose to reduce the number of generated actions ([37d1776](https://github.com/alkurbatov/cpp-sc2/commit/37d177682d5c3c980ed6a356f0a1830ffb4e7f89))
+* Support -d, --data_version parameter [#20](https://github.com/alkurbatov/cpp-sc2/issues/20) ([d7d0168](https://github.com/alkurbatov/cpp-sc2/commit/d7d016865e70f1169ae3fa2e470ea87378a01e53))
+* Support launch in full screen, [#21](https://github.com/alkurbatov/cpp-sc2/issues/21) ([d610d2d](https://github.com/alkurbatov/cpp-sc2/commit/d610d2d27c0641517b8a69df06af26e6dcd37c7e))
+* Use full screen for first player only, [#21](https://github.com/alkurbatov/cpp-sc2/issues/21) ([9177574](https://github.com/alkurbatov/cpp-sc2/commit/9177574da7fd4ef8e62b3b9bfffc3107ab80f52f))
+
+
+### Bug Fixes
+
+* Always specify -displayMode value ([cf39856](https://github.com/alkurbatov/cpp-sc2/commit/cf398561020b1d329fc288c5d8fa8220230a73db))
+* Correct player data fields return types, [#16](https://github.com/alkurbatov/cpp-sc2/issues/16) ([cfed8b8](https://github.com/alkurbatov/cpp-sc2/commit/cfed8b8921c73c9a2fec980e0dea82f9281c00d4))
+* EXCLUDE of */build/* on travis excludes everything ([e17b553](https://github.com/alkurbatov/cpp-sc2/commit/e17b5539a0bf99c86a588f9c40761ac33002ca0b))
+* Exit in child process instead of sleep, [#22](https://github.com/alkurbatov/cpp-sc2/issues/22) ([9b10fc0](https://github.com/alkurbatov/cpp-sc2/commit/9b10fc0f21f3398848a152a2ed54b89538281438))
+* Fix compilation under VS2019 ([abd6bd7](https://github.com/alkurbatov/cpp-sc2/commit/abd6bd77b1497d6e26e88805fc0ca0728d5e2cf9))
+
+
+### Refactoring
+
+* discard these scripts replaced by code in the .travis file ([01e5d75](https://github.com/alkurbatov/cpp-sc2/commit/01e5d757c151a0e2986b477a054add0b7b214375))
+* Fix compilation warning in tests ([07f0dae](https://github.com/alkurbatov/cpp-sc2/commit/07f0dae0f6ab0a06fdc0c5f1a511aa81728743ed))
+* Group unit filters in separate file, [#19](https://github.com/alkurbatov/cpp-sc2/issues/19) ([6c87664](https://github.com/alkurbatov/cpp-sc2/commit/6c87664e6c7096c992a73c94c5caa1fc17a059e9))
+
+
+### Build System
+
+* Updated travis build script + Doxygen generation and deployment ([41f9659](https://github.com/alkurbatov/cpp-sc2/commit/41f965983e288d9f9501dc42d65120d6d265eb77))
+
 ## [1.1.0](https://github.com/alkurbatov/cpp-sc2/compare/v1.0.0...v1.1.0) (2019-09-14)
 
 
