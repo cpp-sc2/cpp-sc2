@@ -31,7 +31,7 @@ script:
   - cd build
   - . ../.travis/build.sh
   # Build documentation and copy it to website/ which is the folder we deploy to gh-pages 
-  - if [[ "$TRAVIS_OS_NAME" == "linux" && $BUILD_CONFIGURATION = Debug ]]; then cd .. ; mkdir -p docs/html ; doxygen 2>&1 > doxygen.log || cat doxygen.log ; mkdir website ; cp -r docs/* website/ ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && $BUILD_CONFIGURATION = Debug ]]; then cd .. ; mkdir -p docs/html ; doxygen 2>&1 > doxygen.log || cat doxygen.log ; mkdir website ; cp -r docs/html/* website/ ; fi
   
 
 deploy:
