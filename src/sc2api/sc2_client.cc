@@ -86,7 +86,6 @@ public:
 
     // Game state info.
     UnitPool unit_pool_;
-    std::unordered_map<Tag, Unit> units_previous_map_;
     uint32_t current_game_loop_;
     uint32_t previous_game_loop;
     RawActions raw_actions_;
@@ -578,15 +577,9 @@ bool ObservationImp::UpdateObservation() {
     if (observation_raw.HasErrors()) {
         return false;
     }
-
-    units_previous_map_.clear();
-    unit_pool_.ForEachExistingUnit([&](Unit& unit) {
-        units_previous_map_[unit.tag] = unit;
-    });
-
+    
     unit_pool_.ClearExisting();
-
-    Convert(observation_raw, unit_pool_, current_game_loop_);
+    Convert(observation_raw, unit_pool_, current_game_loop_, previous_game_loop);
 
     // Remap ability ids in orders.
     unit_pool_.ForEachExistingUnit([&](Unit& unit) {
@@ -1408,16 +1401,18 @@ public:
     bool PollResponse() override;
     bool ConsumeResponse() override;
 
-    bool IssueEvents(const std::vector<Tag>& commands = {}) override;
     void OnGameStart() override;
 
     void Error(ClientError error, const std::vector<std::string>& errors = {}) override;
     void ErrorIf(bool condition, ClientError error, const std::vector<std::string>& errors = {}) override;
 
+    bool IssueEvents(const std::vector<Tag>& commands = {}) override;
     void IssueUnitDestroyedEvents();
     void IssueUnitAddedEvents();
-    void IssueIdleEvent(const Unit* unit, const std::vector<Tag>& commands);
-    void IssueBuildingCompletedEvent(const Unit* unit);
+    void IssueIdleEvents(const std::vector<Tag>& commands);
+    void IssueBuildingCompletedEvents();
+    void IssueUnitDamagedEvents();
+
     void IssueAlertEvents();
     void IssueUpgradeEvents();
 
@@ -2036,74 +2031,62 @@ void ControlImp::IssueUnitDestroyedEvents() {
 }
 
 void ControlImp::IssueUnitAddedEvents() {
-    observation_imp_->unit_pool_.ForEachExistingUnit([&](sc2::Unit& unit) {
-        auto found = observation_imp_->units_previous_map_.find(unit.tag);
-        if (found != observation_imp_->units_previous_map_.end()) {
-            return;
-        }
 
-        if (unit.alliance == Unit::Alliance::Enemy && unit.display_type == Unit::DisplayType::Visible) {
-            client_.OnUnitEnterVision(&unit);
+    for (auto unit : observation_imp_->unit_pool_.GetNewUnits()) {
+        if (unit->alliance == Unit::Alliance::Self) {
+            client_.OnUnitCreated(unit);
         }
-        else if (unit.alliance == Unit::Alliance::Self) {
-            client_.OnUnitCreated(&unit);
+        else if (unit->alliance == Unit::Alliance::Neutral && unit->display_type == Unit::DisplayType::Visible) {
+            client_.OnNeutralUnitCreated(unit);
         }
-    });
+    }
+
+    for (auto unit : observation_imp_->unit_pool_.GetUnitsEnteringVision())
+        if (unit->alliance == Unit::Alliance::Enemy && unit->display_type == Unit::DisplayType::Visible) {
+            client_.OnUnitEnterVision(unit);
+        }
 }
 
-void ControlImp::IssueIdleEvent(const Unit* unit, const std::vector<Tag>& commands) {
-    if (!unit || !unit->orders.empty() || unit->build_progress < 1.0f) {
-        return;
+void ControlImp::IssueUnitDamagedEvents() {
+    for (auto const *u : observation_imp_->unit_pool_.GetDamagedUnits()) {
+        client_.OnUnitDamaged(u);
     }
-    // Lookup unit from previous map.
-    auto found = observation_imp_->units_previous_map_.find(unit->tag);
+}
 
-    // If it's not in the previous map it's a new unit with new orders so trigger the OnIdle event.
-    if (found == observation_imp_->units_previous_map_.end()) {
-        client_.OnUnitIdle(unit);
-        return;
-    }
+void ControlImp::IssueIdleEvents(const std::vector<Tag>& commands) {
 
-    // Otherwise get that unit from the previous list and verify it's state changed to idle.
-    const Unit& unit_previous = found->second;
-
-    if (!unit_previous.orders.empty()) {
-        client_.OnUnitIdle(unit);
-        return;
-    }
-
-    // If the unit had less than 1.0 build progress in the last stop this is the first time it's active.
-    if (unit_previous.build_progress < 1.0f) {
-        client_.OnUnitIdle(unit);
-        return;
-    }
-
-    // Iterate the issued commands, if a unit exists in that list but does not currently have orders
-    // the order must have failed. Reissue the OnUnitIdle event in that case.
+    auto& unit_pool = observation_imp_->unit_pool_;
+    // identify idled units where commands were issued last step, but units have no orders now (maybe failed, maybe executed instantly)
     for (auto t : commands) {
-        if (t == unit->tag) {
-            client_.OnUnitIdle(unit);
-            break;
-        }
+        const auto* unit = unit_pool.GetExistingUnit(t);
+        if (unit && unit->orders.empty())
+            unit_pool.AddUnitIdled(unit);
     }
+
+    // add newly created units (if they are completed)
+    for (auto const* u : unit_pool.GetNewUnits()) 
+      if (u->build_progress >= 1.0f && u->orders.empty()) {
+        unit_pool.AddUnitIdled(u);
+      }
+
+    // add completed buildings
+    for (auto const* u : unit_pool.GetCompletedBuildings()) 
+      if (u->build_progress >= 1.0f) {
+        unit_pool.AddUnitIdled(u);
+      }
+
+    // send only one idle event for any unit in any frame
+    for (auto const* u : unit_pool.GetIdledUnits()) {
+      client_.OnUnitIdle(u);
+    }
+
 }
 
-void ControlImp::IssueBuildingCompletedEvent(const Unit* unit) {
-    // If the units build progress is complete but it previously wasn't call construction complete
-    if (!unit || unit->build_progress < 1.0f) {
-        return;
-    }
-
-   auto found = observation_imp_->units_previous_map_.find(unit->tag);
-
-    if (found == observation_imp_->units_previous_map_.end()) {
-        return;
-    }
-
-    const Unit& unit_previous = found->second;
-    if (unit_previous.build_progress < 1.0f) {
-        client_.OnBuildingConstructionComplete(unit);
-    }
+void ControlImp::IssueBuildingCompletedEvents() {
+    for (auto unit : observation_imp_->unit_pool_.GetCompletedBuildings())
+        if (unit->alliance == Unit::Alliance::Self) {
+            client_.OnBuildingConstructionComplete(unit);
+        }
 }
 
 void ControlImp::IssueAlertEvents() {
@@ -2145,15 +2128,11 @@ bool ControlImp::IssueEvents(const std::vector<Tag>& commands) {
 
     IssueUnitDestroyedEvents();
     IssueUnitAddedEvents();
-
-    Units units = observation_imp_->GetUnits(Unit::Alliance::Self);
-    for (const auto& unit : units) {
-        IssueIdleEvent(unit, commands);
-        IssueBuildingCompletedEvent(unit);
-    }
-
+    IssueBuildingCompletedEvents();
+    IssueIdleEvents(commands);
     IssueUpgradeEvents();
     IssueAlertEvents();
+    IssueUnitDamagedEvents();
 
     // Run the users OnStep function after events have been issued.
     client_.OnStep();

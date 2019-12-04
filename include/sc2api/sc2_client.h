@@ -62,6 +62,10 @@ public:
     //!< \param unit The destroyed unit.
     virtual void OnUnitDestroyed(const Unit*) {}
 
+    //!  Called when a neutral unit is created. For example, mineral fields observed for the first time
+    //!< \param unit The observed unit.
+    virtual void OnNeutralUnitCreated(const Unit*) {}
+
     //! Called when a Unit has been created by the player.
     //!< \param unit The created unit.
     virtual void OnUnitCreated(const Unit*) {}
@@ -77,9 +81,14 @@ public:
     //!< \param upgrade The completed upgrade.
     virtual void OnUpgradeCompleted(UpgradeID) {}
 
-    //! Called when the unit in the previous step had a build progress less than 1.0 but is greater than or equal to 1.0 in the current step.
+    //! Called when the unit in the previous step had a build progress less than 1.0 but is greater than or equal to 1.0 in
+    // !the current step.
     //!< \param unit The constructed unit.
     virtual void OnBuildingConstructionComplete(const Unit*) {}
+
+    //! Called when the unit in the current observation has lower health or shields than in the previous observation.
+    //!< \param unit The damaged unit.
+    virtual void OnUnitDamaged(const Unit*) {}
 
     //! Called when a nydus is placed.
     virtual void OnNydusDetected() {}

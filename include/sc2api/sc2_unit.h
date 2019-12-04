@@ -9,6 +9,7 @@
 #include "sc2_typeenums.h"
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 #include <stdint.h>
 
@@ -214,6 +215,17 @@ public:
     void ClearExisting();
     bool UnitExists(Tag tag);
 
+    const Units& GetNewUnits() const noexcept { return units_newly_created_; };
+    const Units& GetUnitsEnteringVision() const noexcept { return units_entering_vision_; };
+    const Units& GetCompletedBuildings() const noexcept { return units_constructed_; };
+    const Units& GetDamagedUnits() const noexcept { return units_damaged_; };
+    const std::unordered_set<const Unit*>& GetIdledUnits() const noexcept { return units_idled_; };
+
+    void AddUnitEnteredVision(const Unit *u) { units_entering_vision_.push_back(u); }
+    void AddCompletedBuilding(const Unit *u) { units_constructed_.push_back(u); }
+    void AddUnitIdled(const Unit *u) { if (u->alliance == Unit::Alliance::Self) units_idled_.insert(u); }
+    void AddUnitDamaged(const Unit *u) { units_damaged_.push_back(u); }
+
 private:
     void IncrementIndex();
 
@@ -222,8 +234,13 @@ private:
     // std::array<Unit, ENTRY_SIZE>
     std::vector<std::vector<Unit> > unit_pool_;
     PoolIndex available_index_;
-    std::unordered_map<Tag, Unit*> tag_to_unit_;
-    std::unordered_map<Tag, Unit*> tag_to_existing_unit_;
+    std::unordered_map<Tag, Unit *> tag_to_unit_;
+    std::unordered_map<Tag, Unit *> tag_to_existing_unit_;
+    Units units_newly_created_;
+    Units units_entering_vision_;
+    Units units_constructed_;
+    Units units_damaged_;
+    std::unordered_set<const Unit*> units_idled_;
 };
 
-}
+        }

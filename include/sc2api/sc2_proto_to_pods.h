@@ -17,7 +17,7 @@ typedef MessageResponsePtr<SC2APIProtocol::ResponseGameInfo> ResponseGameInfoPtr
 typedef MessageResponsePtr<SC2APIProtocol::ResponseQuery> ResponseQueryPtr;
 
 bool Convert(const ObservationPtr& observation_ptr, Score& score);
-bool Convert(const ObservationRawPtr& observation_ptr, UnitPool& unit_pool, uint32_t game_loop);
+bool Convert(const ObservationRawPtr& observation_ptr, UnitPool& unit_pool, uint32_t game_loop, uint32_t prev_game_loop);
 bool Convert(const ObservationPtr& observation_ptr, RenderedFrame& render);
 bool Convert(const ResponseGameInfoPtr& response_game_info_ptr, GameInfo& game_info);
 
