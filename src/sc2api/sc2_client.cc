@@ -169,7 +169,7 @@ public:
     uint32_t GetFoodCap() const final { return food_cap_; }
     uint32_t GetFoodUsed() const final { return food_used_; }
     uint32_t GetFoodArmy() const final { return food_army_; }
-    uint32_t GetFoodWorkers() const final { return static_cast<float>(food_workers_); }
+    uint32_t GetFoodWorkers() const final { return food_workers_; }
     uint32_t GetIdleWorkerCount() const final { return idle_worker_count_; }
     uint32_t GetArmyCount() const final { return army_count_; }
     uint32_t GetWarpGateCount() const final { return warp_gate_count_; }
@@ -2048,8 +2048,8 @@ void ControlImp::IssueUnitAddedEvents() {
 }
 
 void ControlImp::IssueUnitDamagedEvents() {
-    for (auto const *u : observation_imp_->unit_pool_.GetDamagedUnits()) {
-        client_.OnUnitDamaged(u);
+    for (auto u : observation_imp_->unit_pool_.GetDamagedUnits()) {
+        client_.OnUnitDamaged(u.first, u.second);
     }
 }
 

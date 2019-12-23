@@ -207,15 +207,17 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->is_on_screen = observation_unit.is_on_screen();
         unit->is_blip = observation_unit.is_blip();
 
-        const auto health = observation_unit.health();
-        if (health < unit->health)
-            unit_pool.AddUnitDamaged(unit);
+        auto health = observation_unit.health();
+        float damage = unit->health - health;
+        auto shield = observation_unit.shield();
+        damage += (unit->shield - shield);
+        if (damage > 0)
+            unit_pool.AddUnitDamaged(unit, damage);
+
+        unit->shield = shield;
         unit->health = health;
+
         unit->health_max = observation_unit.health_max();
-        unit->shield = observation_unit.shield();
-        const auto shield = observation_unit.shield();
-        if (shield < unit->shield)
-            unit_pool.AddUnitDamaged(unit);
         unit->shield_max = observation_unit.shield_max();
         unit->energy = observation_unit.energy();
         unit->energy_max = observation_unit.energy_max();
