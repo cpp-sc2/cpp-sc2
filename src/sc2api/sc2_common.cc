@@ -40,11 +40,11 @@ Point3D& Point3D::operator/=(float rhs) {
     return *this;
 }
 
-bool Point3D::operator==(const Point3D& rhs) {
+bool Point3D::operator==(const Point3D& rhs) const {
     return x == rhs.x && y == rhs.y && z == rhs.z;
 }
 
-bool Point3D::operator!=(const Point3D& rhs) {
+bool Point3D::operator!=(const Point3D& rhs) const {
     return !(*this == rhs);
 }
 
@@ -96,11 +96,11 @@ Point2D& Point2D::operator/=(float rhs) {
     return *this;
 }
 
-bool Point2D::operator==(const Point2D& rhs) {
+bool Point2D::operator==(const Point2D& rhs) const {
     return x == rhs.x && y == rhs.y;
 }
 
-bool Point2D::operator!=(const Point2D& rhs) {
+bool Point2D::operator!=(const Point2D& rhs) const {
     return !(*this == rhs);
 }
 
