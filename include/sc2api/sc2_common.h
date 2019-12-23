@@ -33,8 +33,8 @@ struct Point3D {
     Point3D& operator*=(float rhs);
     Point3D& operator/=(float rhs);
 
-    bool operator==(const Point3D& rhs);
-    bool operator!=(const Point3D& rhs);
+    bool operator==(const Point3D& rhs) const;
+    bool operator!=(const Point3D& rhs) const;
 };
 
 Point3D operator+(const Point3D& lhs, const Point3D& rhs);
@@ -70,8 +70,8 @@ struct Point2D {
     Point2D& operator*=(float rhs);
     Point2D& operator/=(float rhs);
 
-    bool operator==(const Point2D& rhs);
-    bool operator!=(const Point2D& rhs);
+    bool operator==(const Point2D& rhs) const;
+    bool operator!=(const Point2D& rhs) const;
 };
 
 Point2D operator+(const Point2D& lhs, const Point2D& rhs);
