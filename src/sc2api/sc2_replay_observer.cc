@@ -151,8 +151,13 @@ bool ReplayControlImp::LoadReplay(const std::string& replay_path, const Interfac
     start_replay_request->set_realtime(realtime);
 
     SC2APIProtocol::InterfaceOptions* options = start_replay_request->mutable_options();
+
     options->set_raw(true);
     options->set_score(true);
+    options->set_show_cloaked(true);
+    options->set_show_burrowed_shadows(true);
+    options->set_raw_affects_selection(false);
+
     if (settings.use_feature_layers) {
         SC2APIProtocol::SpatialCameraSetup* setupProto = options->mutable_feature_layer();
         setupProto->set_width(settings.feature_layer_settings.camera_width);
@@ -298,9 +303,8 @@ void ObserverActionImp::SendActions() {
 //-------------------------------------------------------------------------------------------------
 
 ReplayObserver::ReplayObserver() :
-    replay_control_imp_(nullptr) {
-    replay_control_imp_ = new ReplayControlImp(Control(), this);
-    observer_action_imp_ = new ObserverActionImp(Control());
+    replay_control_imp_(new ReplayControlImp(Control(), this)),
+    observer_action_imp_(new ObserverActionImp(Control())) {
 }
 
 ReplayObserver::~ReplayObserver() {
@@ -316,7 +320,7 @@ ObserverActionInterface* ReplayObserver::ObserverAction() {
     return observer_action_imp_;
 }
 
-bool ReplayObserver::IgnoreReplay(const ReplayInfo& replay_info, uint32_t& /*player_id*/) {
+bool ReplayObserver::IgnoreReplay(const ReplayInfo& replay_info, uint32_t /*player_id*/) {
     // Ignore games less than 30 seconds.
     return replay_info.duration < 30.0f;
 }
