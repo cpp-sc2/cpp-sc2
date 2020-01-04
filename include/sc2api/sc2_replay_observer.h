@@ -33,7 +33,7 @@ public:
     //! Determines if the replay should be filtered out.
     //! \param replay_info Replay information used to decide if the replay should be filtered.
     //!< \return If 'true', the replay will be rejected and not analyzed.
-    virtual bool IgnoreReplay(const ReplayInfo& replay_info, uint32_t& player_id);
+    virtual bool IgnoreReplay(const ReplayInfo& replay_info, uint32_t player_id);
 
     virtual void Reset();
 
