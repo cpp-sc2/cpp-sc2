@@ -59,7 +59,21 @@ bool ReplayControlImp::GatherReplayInfo(const std::string& path, bool download_d
         std::cerr << "Replay info expected and not returned: " << response->DebugString() << std::endl;
         return false;
     }
+
     const SC2APIProtocol::ResponseReplayInfo& proto_replay_info = response->replay_info();
+
+    if (proto_replay_info.has_error()) {
+        SC2APIProtocol::ResponseReplayInfo_Error err = proto_replay_info.error();
+        std::cerr << "ResponseReplayInfo: replay info contains an error: " <<
+            std::to_string(static_cast<int>(err)) << std::endl;
+
+        if (proto_replay_info.has_error_details()) {
+            std::cerr << "ResponseReplayInfo: error details: " <<
+                proto_replay_info.error_details() << std::endl;
+        }
+
+        return false;
+    }
 
     std::string map_name = proto_replay_info.map_name();
     std::string map_path = proto_replay_info.local_map_path();
