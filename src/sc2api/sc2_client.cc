@@ -1571,6 +1571,7 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
         playerSetup->set_race(SC2APIProtocol::Race(int(setup.race) + 1));
         playerSetup->set_player_name(setup.player_name);
         playerSetup->set_difficulty(SC2APIProtocol::Difficulty(setup.difficulty));
+        playerSetup->set_ai_build(SC2APIProtocol::AIBuild(setup.ai_build));
     }
 
     request_create_game->set_realtime(realtime);

@@ -534,6 +534,7 @@ bool Convert(const ResponseGameInfoPtr& response_game_info_ptr, GameInfo& game_i
             ConvertRaceFromProto(player_info.race_requested()),
             ConvertRaceFromProto(player_info.race_actual()),
             ConvertDifficultyFromProto(player_info.difficulty()),
+            ConvertAIBuildFromProto(player_info.ai_build()),
             player_info.player_name()
         ));
     }
@@ -634,6 +635,25 @@ Difficulty ConvertDifficultyFromProto(SC2APIProtocol::Difficulty difficulty) {
         }
     }
     return VeryEasy;
+}
+
+AIBuild ConvertAIBuildFromProto(SC2APIProtocol::AIBuild ai_build) {
+    switch(ai_build) {
+        case SC2APIProtocol::RandomBuild:
+            return RandomBuild;
+        case SC2APIProtocol::Rush:
+            return Rush;
+        case SC2APIProtocol::Timing:
+            return Timing;
+        case SC2APIProtocol::Power:
+            return Power;
+        case SC2APIProtocol::Macro:
+            return Macro;
+        case SC2APIProtocol::Air:
+            return Air;
+    }
+
+    return RandomBuild;
 }
 
 }

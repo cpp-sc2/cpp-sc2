@@ -29,5 +29,6 @@ Race ConvertRaceFromProto(SC2APIProtocol::Race race);
 GameResult ConvertGameResultFromProto(SC2APIProtocol::Result result);
 PlayerType ConvertPlayerTypeFromProto(SC2APIProtocol::PlayerType type);
 Difficulty ConvertDifficultyFromProto(SC2APIProtocol::Difficulty difficulty);
+AIBuild ConvertAIBuildFromProto(SC2APIProtocol::AIBuild ai_build);
 
 }
