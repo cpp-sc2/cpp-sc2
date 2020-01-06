@@ -533,7 +533,8 @@ bool Convert(const ResponseGameInfoPtr& response_game_info_ptr, GameInfo& game_i
             ConvertPlayerTypeFromProto(player_info.type()),
             ConvertRaceFromProto(player_info.race_requested()),
             ConvertRaceFromProto(player_info.race_actual()),
-            ConvertDifficultyFromProto(player_info.difficulty())
+            ConvertDifficultyFromProto(player_info.difficulty()),
+            player_info.player_name()
         ));
     }
 
