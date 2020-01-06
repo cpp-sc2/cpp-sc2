@@ -1569,6 +1569,7 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
         SC2APIProtocol::PlayerSetup* playerSetup = request_create_game->add_player_setup();
         playerSetup->set_type(SC2APIProtocol::PlayerType(setup.type));
         playerSetup->set_race(SC2APIProtocol::Race(int(setup.race) + 1));
+        playerSetup->set_player_name(setup.player_name);
         playerSetup->set_difficulty(SC2APIProtocol::Difficulty(setup.difficulty));
     }
 
@@ -1648,6 +1649,8 @@ bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& set
     SC2APIProtocol::RequestJoinGame* request_join_game = request->mutable_join_game();
 
     request_join_game->set_race(SC2APIProtocol::Race(int(setup.race) + 1));
+    request_join_game->set_player_name(setup.player_name);
+
     if (is_multiplayer_) {
         // Set shared port.
         request_join_game->set_shared_port(ports.shared_port);

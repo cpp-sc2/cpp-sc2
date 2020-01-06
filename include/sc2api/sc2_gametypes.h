@@ -59,6 +59,8 @@ struct PlayerSetup {
     PlayerType type;
     //! Agent, if one is available.
     Agent* agent;
+    //! Name of this player.
+    std::string player_name;
 
     // Only used for Computer
 
@@ -67,28 +69,31 @@ struct PlayerSetup {
     //! Difficulty: Only for playing against the built-in AI.
     Difficulty difficulty;
 
-    PlayerSetup() :
+    PlayerSetup():
         type(Participant),
         agent(nullptr),
         race(Terran),
         difficulty(Easy) {
     };
 
-    PlayerSetup(PlayerType in_type, Race in_race, Agent* in_agent = nullptr, Difficulty in_difficulty = Easy) :
+    PlayerSetup(PlayerType in_type, Race in_race, Agent* in_agent = nullptr,
+        const std::string& in_player_name = "", Difficulty in_difficulty = Easy):
         type(in_type),
         agent(in_agent),
+        player_name(in_player_name),
         race(in_race),
         difficulty(in_difficulty) {
-
     }
 };
 
-static inline PlayerSetup CreateParticipant(Race race, Agent* agent) {
-    return PlayerSetup(PlayerType::Participant, race, agent);
+static inline PlayerSetup CreateParticipant(
+    Race race, Agent* agent, const std::string& player_name = "") {
+    return PlayerSetup(PlayerType::Participant, race, agent, player_name);
 }
 
-static inline PlayerSetup CreateComputer(Race race, Difficulty difficulty = Easy) {
-    return PlayerSetup(PlayerType::Computer, race, nullptr, difficulty);
+static inline PlayerSetup CreateComputer(
+    Race race, Difficulty difficulty = Easy, const std::string& player_name = "") {
+    return PlayerSetup(PlayerType::Computer, race, nullptr, player_name, difficulty);
 }
 
 //! Port setup for a client.
