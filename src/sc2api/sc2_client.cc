@@ -173,6 +173,7 @@ public:
     uint32_t GetIdleWorkerCount() const final { return idle_worker_count_; }
     uint32_t GetArmyCount() const final { return army_count_; }
     uint32_t GetWarpGateCount() const final { return warp_gate_count_; }
+    uint32_t GetLarvaCount() const final { return larva_count_; }
     Point2D GetCameraPos() const final { return camera_pos_; }
     Point3D GetStartLocation() const final { return start_location_; }
     const std::vector<PlayerResult>& GetResults() const final { return player_results_; }
