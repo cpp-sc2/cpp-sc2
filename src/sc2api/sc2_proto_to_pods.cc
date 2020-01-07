@@ -187,7 +187,7 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->radius = observation_unit.radius();
 
         const auto bp = observation_unit.build_progress();
-        if (bp >= 1.0f && unit->build_progress < 1.0f)
+        if (bp >= 1.0f && unit->build_progress > 0.0f && unit->build_progress < 1.0f)
             unit_pool.AddCompletedBuilding(unit);
         unit->build_progress = bp;
 

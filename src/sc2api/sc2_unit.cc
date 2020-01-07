@@ -26,7 +26,7 @@ Unit* UnitPool::CreateUnit(Tag tag) {
     unit->last_seen_game_loop = 0; // initialization required for OnUnitEnterVision
     tag_to_unit_[tag] = unit;
     tag_to_existing_unit_[tag] = unit;
-    units_newly_created_.push_back(unit);
+    AddNewUnit(unit);
     IncrementIndex();
     return unit;
 }
@@ -70,7 +70,7 @@ void UnitPool::ClearExisting() {
     tag_to_existing_unit_.clear();
     units_newly_created_.clear();
     units_entering_vision_.clear();
-    units_constructed_.clear();
+    buildings_constructed_.clear();
     units_idled_.clear();
     units_damaged_.clear();
 }
