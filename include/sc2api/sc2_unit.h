@@ -244,4 +244,4 @@ private:
     std::unordered_set<const Unit*> units_idled_;
 };
 
-        }
+}

@@ -2059,7 +2059,6 @@ void ControlImp::IssueUnitDamagedEvents() {
 }
 
 void ControlImp::IssueIdleEvents(const std::vector<Tag>& commands) {
-
     auto& unit_pool = observation_imp_->unit_pool_;
     // identify idled units where commands were issued last step, but units have no orders now (maybe failed, maybe executed instantly)
     for (auto t : commands) {
@@ -2069,22 +2068,14 @@ void ControlImp::IssueIdleEvents(const std::vector<Tag>& commands) {
     }
 
     // add newly created units (if they are completed)
-    for (auto const* u : unit_pool.GetNewUnits()) 
-      if (u->build_progress >= 1.0f && u->orders.empty()) {
+    for (auto const* u : unit_pool.GetNewUnits()) {
+      if (u->build_progress >= 1.0f && u->orders.empty())
         unit_pool.AddUnitIdled(u);
-      }
-
-    // add completed buildings
-    for (auto const* u : unit_pool.GetCompletedBuildings()) 
-      if (u->build_progress >= 1.0f) {
-        unit_pool.AddUnitIdled(u);
-      }
-
-    // send only one idle event for any unit in any frame
-    for (auto const* u : unit_pool.GetIdledUnits()) {
-      client_.OnUnitIdle(u);
     }
 
+    // send only one idle event for any unit in any frame
+    for (auto const* u : unit_pool.GetIdledUnits())
+        client_.OnUnitIdle(u);
 }
 
 void ControlImp::IssueBuildingCompletedEvents() {
