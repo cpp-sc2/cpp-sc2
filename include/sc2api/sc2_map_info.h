@@ -59,13 +59,20 @@ struct PlayerInfo {
     Race race_requested;
     Race race_actual;
     Difficulty difficulty;
+    AIBuild ai_build;
+    std::string player_name;
 
-    PlayerInfo(uint32_t player_id, PlayerType player_type, Race race_requested, Race race_actual, Difficulty difficulty) :
+    PlayerInfo(uint32_t player_id, PlayerType player_type,
+        Race race_requested, Race race_actual,
+        Difficulty difficulty, AIBuild ai_build,
+        const std::string& player_name):
         player_id(player_id),
         player_type(player_type),
         race_requested(race_requested),
         race_actual(race_actual),
-        difficulty(difficulty) {};
+        difficulty(difficulty),
+        ai_build(ai_build),
+        player_name(player_name) {};
 };
 
 //! Initial data for a game and map.

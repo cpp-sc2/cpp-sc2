@@ -179,6 +179,10 @@ public:
     //!< \return Count of warp gates.
     virtual uint32_t GetWarpGateCount() const = 0;
 
+    //! Number of larva owned by the player. This value should only be nonzero for Zerg.
+    //!< \return Count of larva.
+    virtual uint32_t GetLarvaCount() const = 0;
+
     //! Position of the center of the camera.
     //!< \return Camera position.
     virtual Point2D GetCameraPos() const = 0;

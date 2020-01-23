@@ -46,6 +46,15 @@ enum PlayerType {
     Observer = 3
 };
 
+enum AIBuild {
+  RandomBuild = 1,
+  Rush = 2,
+  Timing = 3,
+  Power = 4,
+  Macro = 5,
+  Air = 6
+};
+
 enum class ChatChannel {
     All = 0,
     Team = 1
@@ -59,6 +68,8 @@ struct PlayerSetup {
     PlayerType type;
     //! Agent, if one is available.
     Agent* agent;
+    //! Name of this player.
+    std::string player_name;
 
     // Only used for Computer
 
@@ -66,29 +77,38 @@ struct PlayerSetup {
     Race race;
     //! Difficulty: Only for playing against the built-in AI.
     Difficulty difficulty;
+    //! Build type, used by computer opponent.
+    AIBuild ai_build;
 
-    PlayerSetup() :
+    PlayerSetup():
         type(Participant),
         agent(nullptr),
         race(Terran),
-        difficulty(Easy) {
+        difficulty(Easy),
+        ai_build(RandomBuild) {
     };
 
-    PlayerSetup(PlayerType in_type, Race in_race, Agent* in_agent = nullptr, Difficulty in_difficulty = Easy) :
+    PlayerSetup(PlayerType in_type, Race in_race, Agent* in_agent = nullptr,
+        const std::string& in_player_name = "",
+        Difficulty in_difficulty = Easy, AIBuild in_ai_build = RandomBuild):
         type(in_type),
         agent(in_agent),
+        player_name(in_player_name),
         race(in_race),
-        difficulty(in_difficulty) {
-
+        difficulty(in_difficulty),
+        ai_build(in_ai_build) {
     }
 };
 
-static inline PlayerSetup CreateParticipant(Race race, Agent* agent) {
-    return PlayerSetup(PlayerType::Participant, race, agent);
+static inline PlayerSetup CreateParticipant(
+    Race race, Agent* agent, const std::string& player_name = "") {
+    return PlayerSetup(PlayerType::Participant, race, agent, player_name);
 }
 
-static inline PlayerSetup CreateComputer(Race race, Difficulty difficulty = Easy) {
-    return PlayerSetup(PlayerType::Computer, race, nullptr, difficulty);
+static inline PlayerSetup CreateComputer(
+    Race race, Difficulty difficulty = Easy, AIBuild ai_build = RandomBuild,
+    const std::string& player_name = "") {
+    return PlayerSetup(PlayerType::Computer, race, nullptr, player_name, difficulty, ai_build);
 }
 
 //! Port setup for a client.

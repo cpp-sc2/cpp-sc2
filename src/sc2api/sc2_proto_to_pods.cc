@@ -187,8 +187,10 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->radius = observation_unit.radius();
 
         const auto bp = observation_unit.build_progress();
-        if (bp >= 1.0f && unit->build_progress < 1.0f)
+        if (bp >= 1.0f && unit->build_progress > 0.0f && unit->build_progress < 1.0f) {
             unit_pool.AddCompletedBuilding(unit);
+            unit_pool.AddUnitIdled(unit);
+        }
         unit->build_progress = bp;
 
         if (observation_unit.has_cloak()) {
@@ -207,17 +209,15 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->is_on_screen = observation_unit.is_on_screen();
         unit->is_blip = observation_unit.is_blip();
 
-        auto health = observation_unit.health();
-        float damage = unit->health - health;
-        auto shield = observation_unit.shield();
-        damage += (unit->shield - shield);
-        if (damage > 0)
-            unit_pool.AddUnitDamaged(unit, damage);
-
-        unit->shield = shield;
+        const auto health = observation_unit.health();
+        if (health < unit->health)
+            unit_pool.AddUnitDamaged(unit);
         unit->health = health;
-
         unit->health_max = observation_unit.health_max();
+        unit->shield = observation_unit.shield();
+        const auto shield = observation_unit.shield();
+        if (shield < unit->shield)
+            unit_pool.AddUnitDamaged(unit);
         unit->shield_max = observation_unit.shield_max();
         unit->energy = observation_unit.energy();
         unit->energy_max = observation_unit.energy_max();
@@ -535,7 +535,9 @@ bool Convert(const ResponseGameInfoPtr& response_game_info_ptr, GameInfo& game_i
             ConvertPlayerTypeFromProto(player_info.type()),
             ConvertRaceFromProto(player_info.race_requested()),
             ConvertRaceFromProto(player_info.race_actual()),
-            ConvertDifficultyFromProto(player_info.difficulty())
+            ConvertDifficultyFromProto(player_info.difficulty()),
+            ConvertAIBuildFromProto(player_info.ai_build()),
+            player_info.player_name()
         ));
     }
 
@@ -635,6 +637,25 @@ Difficulty ConvertDifficultyFromProto(SC2APIProtocol::Difficulty difficulty) {
         }
     }
     return VeryEasy;
+}
+
+AIBuild ConvertAIBuildFromProto(SC2APIProtocol::AIBuild ai_build) {
+    switch(ai_build) {
+        case SC2APIProtocol::RandomBuild:
+            return RandomBuild;
+        case SC2APIProtocol::Rush:
+            return Rush;
+        case SC2APIProtocol::Timing:
+            return Timing;
+        case SC2APIProtocol::Power:
+            return Power;
+        case SC2APIProtocol::Macro:
+            return Macro;
+        case SC2APIProtocol::Air:
+            return Air;
+    }
+
+    return RandomBuild;
 }
 
 }

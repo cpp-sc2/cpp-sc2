@@ -173,6 +173,7 @@ public:
     uint32_t GetIdleWorkerCount() const final { return idle_worker_count_; }
     uint32_t GetArmyCount() const final { return army_count_; }
     uint32_t GetWarpGateCount() const final { return warp_gate_count_; }
+    uint32_t GetLarvaCount() const final { return larva_count_; }
     Point2D GetCameraPos() const final { return camera_pos_; }
     Point3D GetStartLocation() const final { return start_location_; }
     const std::vector<PlayerResult>& GetResults() const final { return player_results_; }
@@ -1569,7 +1570,9 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
         SC2APIProtocol::PlayerSetup* playerSetup = request_create_game->add_player_setup();
         playerSetup->set_type(SC2APIProtocol::PlayerType(setup.type));
         playerSetup->set_race(SC2APIProtocol::Race(int(setup.race) + 1));
+        playerSetup->set_player_name(setup.player_name);
         playerSetup->set_difficulty(SC2APIProtocol::Difficulty(setup.difficulty));
+        playerSetup->set_ai_build(SC2APIProtocol::AIBuild(setup.ai_build));
     }
 
     request_create_game->set_realtime(realtime);
@@ -1648,6 +1651,8 @@ bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& set
     SC2APIProtocol::RequestJoinGame* request_join_game = request->mutable_join_game();
 
     request_join_game->set_race(SC2APIProtocol::Race(int(setup.race) + 1));
+    request_join_game->set_player_name(setup.player_name);
+
     if (is_multiplayer_) {
         // Set shared port.
         request_join_game->set_shared_port(ports.shared_port);
@@ -2048,13 +2053,12 @@ void ControlImp::IssueUnitAddedEvents() {
 }
 
 void ControlImp::IssueUnitDamagedEvents() {
-    for (auto u : observation_imp_->unit_pool_.GetDamagedUnits()) {
-        client_.OnUnitDamaged(u.first, u.second);
+    for (auto const *u : observation_imp_->unit_pool_.GetDamagedUnits()) {
+        client_.OnUnitDamaged(u);
     }
 }
 
 void ControlImp::IssueIdleEvents(const std::vector<Tag>& commands) {
-
     auto& unit_pool = observation_imp_->unit_pool_;
     // identify idled units where commands were issued last step, but units have no orders now (maybe failed, maybe executed instantly)
     for (auto t : commands) {
@@ -2064,22 +2068,14 @@ void ControlImp::IssueIdleEvents(const std::vector<Tag>& commands) {
     }
 
     // add newly created units (if they are completed)
-    for (auto const* u : unit_pool.GetNewUnits()) 
-      if (u->build_progress >= 1.0f && u->orders.empty()) {
+    for (auto const* u : unit_pool.GetNewUnits()) {
+      if (u->build_progress >= 1.0f && u->orders.empty())
         unit_pool.AddUnitIdled(u);
-      }
-
-    // add completed buildings
-    for (auto const* u : unit_pool.GetCompletedBuildings()) 
-      if (u->build_progress >= 1.0f) {
-        unit_pool.AddUnitIdled(u);
-      }
-
-    // send only one idle event for any unit in any frame
-    for (auto const* u : unit_pool.GetIdledUnits()) {
-      client_.OnUnitIdle(u);
     }
 
+    // send only one idle event for any unit in any frame
+    for (auto const* u : unit_pool.GetIdledUnits())
+        client_.OnUnitIdle(u);
 }
 
 void ControlImp::IssueBuildingCompletedEvents() {

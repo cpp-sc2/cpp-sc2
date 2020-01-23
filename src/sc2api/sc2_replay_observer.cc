@@ -59,7 +59,21 @@ bool ReplayControlImp::GatherReplayInfo(const std::string& path, bool download_d
         std::cerr << "Replay info expected and not returned: " << response->DebugString() << std::endl;
         return false;
     }
+
     const SC2APIProtocol::ResponseReplayInfo& proto_replay_info = response->replay_info();
+
+    if (proto_replay_info.has_error()) {
+        SC2APIProtocol::ResponseReplayInfo_Error err = proto_replay_info.error();
+        std::cerr << "ResponseReplayInfo: replay info contains an error: " <<
+            std::to_string(static_cast<int>(err)) << std::endl;
+
+        if (proto_replay_info.has_error_details()) {
+            std::cerr << "ResponseReplayInfo: error details: " <<
+                proto_replay_info.error_details() << std::endl;
+        }
+
+        return false;
+    }
 
     std::string map_name = proto_replay_info.map_name();
     std::string map_path = proto_replay_info.local_map_path();
@@ -137,8 +151,13 @@ bool ReplayControlImp::LoadReplay(const std::string& replay_path, const Interfac
     start_replay_request->set_realtime(realtime);
 
     SC2APIProtocol::InterfaceOptions* options = start_replay_request->mutable_options();
+
     options->set_raw(true);
     options->set_score(true);
+    options->set_show_cloaked(true);
+    options->set_show_burrowed_shadows(true);
+    options->set_raw_affects_selection(false);
+
     if (settings.use_feature_layers) {
         SC2APIProtocol::SpatialCameraSetup* setupProto = options->mutable_feature_layer();
         setupProto->set_width(settings.feature_layer_settings.camera_width);
@@ -284,9 +303,8 @@ void ObserverActionImp::SendActions() {
 //-------------------------------------------------------------------------------------------------
 
 ReplayObserver::ReplayObserver() :
-    replay_control_imp_(nullptr) {
-    replay_control_imp_ = new ReplayControlImp(Control(), this);
-    observer_action_imp_ = new ObserverActionImp(Control());
+    replay_control_imp_(new ReplayControlImp(Control(), this)),
+    observer_action_imp_(new ObserverActionImp(Control())) {
 }
 
 ReplayObserver::~ReplayObserver() {
@@ -302,7 +320,7 @@ ObserverActionInterface* ReplayObserver::ObserverAction() {
     return observer_action_imp_;
 }
 
-bool ReplayObserver::IgnoreReplay(const ReplayInfo& replay_info, uint32_t& /*player_id*/) {
+bool ReplayObserver::IgnoreReplay(const ReplayInfo& replay_info, uint32_t /*player_id*/) {
     // Ignore games less than 30 seconds.
     return replay_info.duration < 30.0f;
 }
