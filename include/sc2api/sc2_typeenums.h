@@ -482,6 +482,7 @@ namespace sc2 {
         HARVEST_RETURN_PROBE = 299,   // Target: None.
         HARVEST_RETURN_SCV = 296,   // Target: None.
         HOLDPOSITION = 18,    // Target: None.
+        HOLDPOSITION_GENERAL = 3793,    // Target: None.
         LAND = 3678,  // Target: Point.
         LAND_BARRACKS = 554,   // Target: Point.
         LAND_COMMANDCENTER = 419,   // Target: Point.
@@ -574,6 +575,7 @@ namespace sc2 {
         RESEARCH_NEURALPARASITE = 1455,  // Target: None.
         RESEARCH_PATHOGENGLANDS = 1454,  // Target: None.
         RESEARCH_PERSONALCLOAKING = 820,   // Target: None.
+        RESEARCH_ENHANCEDSHOCKWAVES = 822, // Target: None.
         RESEARCH_PHOENIXANIONPULSECRYSTALS = 46,    // Target: None.
         RESEARCH_PNEUMATIZEDCARAPACE = 1223,  // Target: None.
         RESEARCH_PROTOSSAIRARMOR = 3692,  // Target: None.
@@ -600,6 +602,8 @@ namespace sc2 {
         RESEARCH_RAPIDFIRELAUNCHERS = 768,  // Target: None.
         RESEARCH_RAVENCORVIDREACTOR = 793,   // Target: None.
         RESEARCH_RAVENRECALIBRATEDEXPLOSIVES = 803,   // Target: None.
+        RESEARCH_LIBERATORAGRANGEUPGRADE = 1533,   // Target: None.
+        RESEARCH_MEDIVACINCREASESPEEDBOOST = 1534, // Target: None.
         RESEARCH_SHADOWSTRIKE = 2720,  // Target: None.
         RESEARCH_SMARTSERVOS = 766, // Target: None.
         RESEARCH_STIMPACK = 730,   // Target: None.
@@ -818,6 +822,7 @@ namespace sc2 {
         SMARTSERVOS = 289,
         RAPIDFIRELAUNCHERS = 291,
         ENHANCEDMUNITIONS = 292,
+        ENHANCEDSHOCKWAVES = 296,
     };
 
     enum class BUFF_ID {
