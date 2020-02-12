@@ -396,6 +396,7 @@ namespace sc2 {
         CANCEL_ADEPTSHADEPHASESHIFT = 2596,  // Target: None.
         CANCEL_BARRACKSADDON = 451,   // Target: None.
         CANCEL_BUILDINPROGRESS = 314,   // Target: None.
+        CANCEL_CREEPTUMOR = 1763,  // Target: None.
         CANCEL_FACTORYADDON = 484,   // Target: None.
         CANCEL_GRAVITONBEAM = 174,   // Target: None.
         CANCEL_LAST = 3671,  // Target: None.
@@ -441,6 +442,7 @@ namespace sc2 {
         EFFECT_HEAL = 386,   // Target: Unit.
         EFFECT_HUNTERSEEKERMISSILE = 169,   // Target: Unit.
         EFFECT_IMMORTALBARRIER = 2328,  // Target: None.
+        EFFECT_INFESTEDTERRANS = 247,   // Target: Point.
         EFFECT_INJECTLARVA = 251,   // Target: Unit.
         EFFECT_KD8CHARGE = 2588,  // Target: Unit, Point.
         EFFECT_LOCKON = 2350,  // Target: Unit.

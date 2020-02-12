@@ -299,6 +299,7 @@ namespace sc2 {
         case ABILITY_ID::RALLY_HATCHERY_UNITS:              return "RALLY_HATCHERY_UNITS"; // 485
         case ABILITY_ID::RESEARCH_GLIALREGENERATION:        return "RESEARCH_GLIALREGENERATION"; // 340
         case ABILITY_ID::RESEARCH_TUNNELINGCLAWS:           return "RESEARCH_TUNNELINGCLAWS"; // 46
+        case ABILITY_ID::EFFECT_INFESTEDTERRANS:            return "EFFECT_INFESTEDTERRANS"; // 494
         case ABILITY_ID::EFFECT_NEURALPARASITE:             return "EFFECT_NEURALPARASITE"; // 11
         case ABILITY_ID::EFFECT_INJECTLARVA:                return "EFFECT_INJECTLARVA"; // 28721
         case ABILITY_ID::EFFECT_STIM_MARAUDER:              return "EFFECT_STIM_MARAUDER"; // 280
@@ -598,6 +599,7 @@ namespace sc2 {
         case ABILITY_ID::CANCEL_SPINECRAWLERROOT:           return "CANCEL_SPINECRAWLERROOT"; // 7
         case ABILITY_ID::MORPH_SPORECRAWLERROOT:            return "MORPH_SPORECRAWLERROOT"; // 234
         case ABILITY_ID::BUILD_CREEPTUMOR_TUMOR:            return "BUILD_CREEPTUMOR_TUMOR"; // 10042
+        case ABILITY_ID::CANCEL_CREEPTUMOR:                 return "CANCEL_CREEPTUMOR"; // 28
         case ABILITY_ID::EFFECT_AUTOTURRET:                 return "EFFECT_AUTOTURRET"; // 1652
         case ABILITY_ID::MORPH_ARCHON:                      return "MORPH_ARCHON"; // 1963
         case ABILITY_ID::BUILD_NYDUSWORM:                   return "BUILD_NYDUSWORM"; // 66
