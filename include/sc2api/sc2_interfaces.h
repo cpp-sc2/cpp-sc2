@@ -243,12 +243,14 @@ public:
     //! Returns a list of abilities represented as a uint32_t see the ABILITY_ID enum for their corresponding, named, representations.
     //!< \param tag Tag of unit.
     //!< \param ignore_resource_requirements Ignores food, mineral and gas costs, as well as cooldowns.
+    //!< \param use_generalized_ability. e.g. if true BUILD_TECHLAB_BARRACKS, BUILD_TECHLAB_FACTORY and BUILD_TECHLAB_STARPORT ability ids are generalized to BUILD_TECHLAB
     //!< \return Abilities for the unit.
     virtual AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements = false, bool use_generalized_ability = true) = 0;
     //! Issues multiple available abilities queries.
     //! Batch version.
     //!< \param tag Tags of units.
     //!< \param ignore_resource_requirements Ignores food, mineral and gas costs, as well as cooldowns.
+    //!< \param use_generalized_ability. e.g. if true BUILD_TECHLAB_BARRACKS, BUILD_TECHLAB_FACTORY and BUILD_TECHLAB_STARPORT ability ids are generalized to BUILD_TECHLAB
     //!< \return Abilities for the units.
     virtual std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements = false, bool use_generalized_ability = true) = 0;
 
@@ -283,8 +285,9 @@ public:
 
     struct PlacementQuery {
         PlacementQuery() = default;
-        PlacementQuery(AbilityID ability_id, Point2D target) : ability(ability_id),
-                                                               target_pos(target){};
+        PlacementQuery(AbilityID ability_id, Point2D target) :
+            ability(ability_id),
+            target_pos(target) {};
 
         AbilityID ability;
         Point2D target_pos;
