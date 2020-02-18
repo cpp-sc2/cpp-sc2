@@ -646,8 +646,8 @@ public:
 
     QueryImp(ProtoInterface& proto, ControlInterface& control, ObservationInterface& observation);
 
-    AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements) final;
-    std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements) final;
+    AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements, bool use_generalized_ability_id = true) final;
+    std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements, bool use_generalized_ability_id = true) final;
 
     float PathingDistance(const Point2D& start, const Point2D& end) final;
     float PathingDistance(const Unit* start_unit, const Point2D& end) final;
@@ -663,8 +663,8 @@ QueryImp::QueryImp(ProtoInterface& proto, ControlInterface& control, Observation
     observation_(observation) {
 }
 
-AvailableAbilities QueryImp::GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements) {
-    std::vector<AvailableAbilities> available_abilities = GetAbilitiesForUnits({ unit }, ignore_resource_requirements);
+AvailableAbilities QueryImp::GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements, bool use_generalized_ability_id) {
+    std::vector<AvailableAbilities> available_abilities = GetAbilitiesForUnits({ unit }, ignore_resource_requirements, use_generalized_ability_id);
     control_.ErrorIf(available_abilities.empty(), ClientError::NoAbilitiesForTag);
     if (available_abilities.size() < 1) {
         return AvailableAbilities();
@@ -672,7 +672,7 @@ AvailableAbilities QueryImp::GetAbilitiesForUnit(const Unit* unit, bool ignore_r
     return available_abilities[0];
 }
 
-std::vector<AvailableAbilities> QueryImp::GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements) {
+std::vector<AvailableAbilities> QueryImp::GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements, bool use_generalized_ability_id) {
     std::vector<AvailableAbilities> available_abilities_out;
 
     // Make the request.
@@ -717,7 +717,13 @@ std::vector<AvailableAbilities> QueryImp::GetAbilitiesForUnits(const Units& unit
         for (int j = 0; j < response_query_available_abilities.abilities_size(); ++j) {
             const SC2APIProtocol::AvailableAbility& ability = response_query_available_abilities.abilities(j);
             AvailableAbility available_ability;
-            available_ability.ability_id = GetGeneralizedAbilityID(ability.ability_id(), observation_);
+            if (use_generalized_ability_id) {
+                available_ability.ability_id = GetGeneralizedAbilityID(ability.ability_id(), observation_);
+            }
+            else {
+                available_ability.ability_id = ability.ability_id();
+            }
+
             available_ability.requires_point = ability.requires_point();
             available_abilities_unit.abilities.push_back(available_ability);
         }

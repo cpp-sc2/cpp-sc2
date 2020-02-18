@@ -232,7 +232,6 @@ public:
 
 };
 
-
 //! The QueryInterface provides additional data not contained in the observation.
 //!
 //! Performance note:
@@ -244,14 +243,16 @@ public:
     //! Returns a list of abilities represented as a uint32_t see the ABILITY_ID enum for their corresponding, named, representations.
     //!< \param tag Tag of unit.
     //!< \param ignore_resource_requirements Ignores food, mineral and gas costs, as well as cooldowns.
+    //!< \param use_generalized_ability. e.g. if true BUILD_TECHLAB_BARRACKS, BUILD_TECHLAB_FACTORY and BUILD_TECHLAB_STARPORT ability ids are generalized to BUILD_TECHLAB
     //!< \return Abilities for the unit.
-    virtual AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements = false) = 0;
+    virtual AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements = false, bool use_generalized_ability = true) = 0;
     //! Issues multiple available abilities queries.
     //! Batch version.
     //!< \param tag Tags of units.
     //!< \param ignore_resource_requirements Ignores food, mineral and gas costs, as well as cooldowns.
+    //!< \param use_generalized_ability. e.g. if true BUILD_TECHLAB_BARRACKS, BUILD_TECHLAB_FACTORY and BUILD_TECHLAB_STARPORT ability ids are generalized to BUILD_TECHLAB
     //!< \return Abilities for the units.
-    virtual std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements = false) = 0;
+    virtual std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements = false, bool use_generalized_ability = true) = 0;
 
     //! Returns pathing distance between two locations. Takes into account unit movement properties (e.g. Flying).
     //!< \param start Starting point.
@@ -298,7 +299,6 @@ public:
     //!< \return Array of bools indicating if placement is possible.
     virtual std::vector<bool> Placement(const std::vector<PlacementQuery>& queries) = 0;
 };
-
 
 //! The ActionInterface issues actions to units in a game. Not available in replays.
 //! Guaranteed to be valid when the OnStep event is called.
@@ -534,4 +534,4 @@ public:
     virtual void SendDebug() = 0;
 };
 
-}
+}  // namespace sc2
