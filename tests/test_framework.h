@@ -9,10 +9,7 @@
 
 namespace sc2 {
 
-static const uint32_t ResetTarget = 100;
-
-class TestSequence : public ClientEvents {
-public:
+struct TestSequence: ClientEvents {
     Agent* agent_;
     uint32_t wait_game_loops_;
     std::vector<std::string> errors_;
@@ -37,9 +34,8 @@ public:
     void KillAllUnits();
 };
 
-class UnitTestBot : public Agent {
-public:
-    UnitTestBot() :
+struct UnitTestBot: Agent {
+    UnitTestBot():
         success_(true),
         current_sequence_(-1),
         game_loop_done_(2) {
@@ -51,7 +47,7 @@ public:
 
     bool Success() { return success_; }
 
-protected:
+ protected:
     template<class T> void Add(const T& test) {
         std::unique_ptr<TestSequence> t = std::make_unique<T>(test);
         t->agent_ = this;
@@ -64,7 +60,7 @@ protected:
 
     void OnError(const std::vector<ClientError>& /*client_errors*/, const std::vector<std::string>& /*protocol_errors*/ = {}) override { success_ = false; }
 
-private:
+ private:
     void OnGameStart() final;
     void OnStep() final;
     void OnGameEnd() final;
@@ -89,11 +85,10 @@ private:
 //
 // Some common sequences.
 //
-template <int Loops> class WaitT : public TestSequence {
-public:
+template <int Loops> struct WaitT: TestSequence {
     void OnTestStart() override {
         wait_game_loops_ = Loops;
     }
 };
 
-}
+}  // namespace sc2

@@ -65,12 +65,12 @@ bool IsGeyser::operator()(const Unit& unit_) const {
 }
 
 bool IsGeyser::operator()(UNIT_TYPEID type_) const {
-    return  type_ == UNIT_TYPEID::NEUTRAL_VESPENEGEYSER ||
-            type_ == UNIT_TYPEID::NEUTRAL_PROTOSSVESPENEGEYSER ||
-            type_ == UNIT_TYPEID::NEUTRAL_SPACEPLATFORMGEYSER ||
-            type_ == UNIT_TYPEID::NEUTRAL_PURIFIERVESPENEGEYSER ||
-            type_ == UNIT_TYPEID::NEUTRAL_SHAKURASVESPENEGEYSER ||
-            type_ == UNIT_TYPEID::NEUTRAL_RICHVESPENEGEYSER;
+    return type_ == UNIT_TYPEID::NEUTRAL_VESPENEGEYSER ||
+           type_ == UNIT_TYPEID::NEUTRAL_PROTOSSVESPENEGEYSER ||
+           type_ == UNIT_TYPEID::NEUTRAL_SPACEPLATFORMGEYSER ||
+           type_ == UNIT_TYPEID::NEUTRAL_PURIFIERVESPENEGEYSER ||
+           type_ == UNIT_TYPEID::NEUTRAL_SHAKURASVESPENEGEYSER ||
+           type_ == UNIT_TYPEID::NEUTRAL_RICHVESPENEGEYSER;
 }
 
 bool IsVisibleGeyser::operator()(const Unit& unit_) const {

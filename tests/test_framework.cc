@@ -12,7 +12,7 @@ namespace sc2 {
 // TestSequence
 //
 
-TestSequence::TestSequence() :
+TestSequence::TestSequence():
     agent_(nullptr),
     wait_game_loops_(5) {
 }
@@ -93,15 +93,13 @@ void UnitTestBot::OnStep() {
 }
 
 void UnitTestBot::OnGameStart() {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnGameStart();
-    }
 }
 
 void UnitTestBot::OnGameEnd() {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnGameEnd();
-    }
 
     if (!IsFinished()) {
         success_ = false;
@@ -112,58 +110,48 @@ void UnitTestBot::OnGameEnd() {
 }
 
 void UnitTestBot::OnGameFullStart() {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnGameFullStart();
-    }
 }
 
 void UnitTestBot::OnUnitDestroyed(const Unit* unit) {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnUnitDestroyed(unit);
-    }
 }
 
 void UnitTestBot::OnUnitCreated(const Unit* unit) {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnUnitCreated(unit);
-    }
 }
 
 void UnitTestBot::OnUnitIdle(const Unit* unit) {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnUnitIdle(unit);
-    }
 }
 
 void UnitTestBot::OnUnitEnterVision(const Unit* unit) {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnUnitEnterVision(unit);
-    }
 }
 
 void UnitTestBot::OnUpgradeCompleted(UpgradeID upgrade) {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnUpgradeCompleted(upgrade);
-    }
 }
 
 void UnitTestBot::OnBuildingConstructionComplete(const Unit* unit) {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnBuildingConstructionComplete(unit);
-    }
 }
 
 void UnitTestBot::OnNydusDetected() {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnNydusDetected();
-    }
 }
 
 void UnitTestBot::OnNuclearLaunchDetected() {
-    if (current_sequence_ < sequences_.size()) {
+    if (current_sequence_ < sequences_.size())
         sequences_[current_sequence_]->OnNuclearLaunchDetected();
-    }
 }
 
-}
-
+}  // namespace sc2
