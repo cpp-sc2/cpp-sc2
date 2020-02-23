@@ -156,6 +156,7 @@ bool ReplayControlImp::LoadReplay(const std::string& replay_path, const Interfac
     options->set_score(true);
     options->set_show_cloaked(true);
     options->set_show_burrowed_shadows(true);
+    options->set_show_placeholders(true);
     options->set_raw_affects_selection(false);
 
     if (settings.use_feature_layers) {
