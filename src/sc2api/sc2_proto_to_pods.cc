@@ -288,6 +288,10 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         if (unit->last_seen_game_loop < prev_game_loop)
             unit_pool.AddUnitEnteredVision(unit);
         unit->last_seen_game_loop = game_loop;
+
+        unit->attack_upgrade_level = observation_unit.attack_upgrade_level();
+        unit->armor_upgrade_level = observation_unit.armor_upgrade_level();
+        unit->shield_upgrade_level = observation_unit.shield_upgrade_level();
     }
 
     return true;

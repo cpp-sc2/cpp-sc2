@@ -196,8 +196,8 @@ namespace sc2 {
         }
     };
 
-struct TestGetCloakedEnemyUnit : TestSequence {
-       void OnTestStart() {
+struct TestGetCloakedEnemyUnit: TestSequence {
+    void OnTestStart() {
         wait_game_loops_ = 10;
 
         const GameInfo& game_info = agent_->Observation()->GetGameInfo();
@@ -240,6 +240,54 @@ struct TestGetCloakedEnemyUnit : TestSequence {
     }
 };
 
+struct TestUnitUpgradesLevel: TestSequence {
+    void OnTestStart() {
+        wait_game_loops_ = 10;
+
+        const GameInfo& game_info = agent_->Observation()->GetGameInfo();
+        Point2D origin_pt_ = FindCenterOfMap(game_info);
+
+        agent_->Debug()->DebugCreateUnit(
+            UNIT_TYPEID::PROTOSS_ZEALOT,
+            origin_pt_,
+            agent_->Observation()->GetPlayerID(),
+            1
+        );
+        agent_->Debug()->DebugGiveAllUpgrades();
+
+        agent_->Debug()->SendDebug();
+    }
+
+    void OnTestFinish() {
+        const ObservationInterface* obs = agent_->Observation();
+
+        Units found_zealots = obs->GetUnits(
+            Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT));
+
+        if (found_zealots.size() != 1) {
+            ReportErrorAndCleanup("Zealots Count is Incorrect");
+            return;
+        }
+
+        if (found_zealots.front()->attack_upgrade_level != 2) {
+            ReportErrorAndCleanup("Zealots Attack Upgrades Level is Incorrect");
+            return;
+        }
+
+        if (found_zealots.front()->armor_upgrade_level != 2) {
+            ReportErrorAndCleanup("Zealots Armor Upgrades Level is Incorrect");
+            return;
+        }
+
+        if (found_zealots.front()->shield_upgrade_level != 2) {
+            ReportErrorAndCleanup("Zealots Shield Upgrades Level is Incorrect");
+            return;
+        }
+
+        KillAllUnits();
+    }
+};
+
 //
 // TestObservationBot
 //
@@ -262,6 +310,7 @@ TestObservationBot::TestObservationBot() :
     Add(TestGetBuffData());
     Add(TestGetResources());
     Add(TestGetCloakedEnemyUnit());
+    Add(TestUnitUpgradesLevel());
 }
 
 void TestObservationBot::OnTestsBegin() {

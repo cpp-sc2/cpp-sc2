@@ -197,6 +197,15 @@ public:
     //! The last time the unit was seen.
     uint32_t last_seen_game_loop;
 
+    //! Level of weapon upgrades.
+    int32_t attack_upgrade_level;
+
+    //! Level of armor upgrades.
+    int32_t armor_upgrade_level;
+
+    //! Level of shield upgrades.
+    int32_t shield_upgrade_level;
+
     Unit();
 };
 
