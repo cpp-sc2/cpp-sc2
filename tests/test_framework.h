@@ -32,6 +32,8 @@ public:
    // Mark test as failed and cleanup environment.
     virtual void ReportErrorAndCleanup(const char* error);
 
+    Point2D GetMapCenter() const;
+
     void KillAllUnits();
 };
 

@@ -69,8 +69,7 @@ namespace sc2 {
     class TestGetFoodCount : public TestSequence{
     void OnTestStart() {
         wait_game_loops_ = 10;
-        const GameInfo& game_info = agent_->Observation()->GetGameInfo();
-        Point2D origin_pt_ = FindCenterOfMap(game_info);
+        Point2D origin_pt_ = GetMapCenter();
         Point2D offset_ = Point2D(10.0f, 10.0f);
         agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_ZEALOT, origin_pt_, agent_->Observation()->GetPlayerID(), 10);
         agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_PROBE, origin_pt_, agent_->Observation()->GetPlayerID(), 10);
@@ -148,8 +147,7 @@ namespace sc2 {
             const UnitTypes unit_data = obs->GetUnitTypeData();
             UnitTypeData stalker_data = unit_data.at(static_cast<uint32_t>(UNIT_TYPEID::PROTOSS_STALKER));
             UnitTypeData Overlord_data = unit_data.at(static_cast<uint32_t>(UNIT_TYPEID::ZERG_OVERLORDTRANSPORT));
-            const GameInfo& game_info = agent_->Observation()->GetGameInfo();
-            Point2D origin_pt_ = FindCenterOfMap(game_info);
+            Point2D origin_pt_ = GetMapCenter();
             agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_STALKER, origin_pt_, agent_->Observation()->GetPlayerID(), 1);
             agent_->Debug()->SendDebug();
 
@@ -199,9 +197,7 @@ namespace sc2 {
 struct TestGetCloakedEnemyUnit: TestSequence {
     void OnTestStart() {
         wait_game_loops_ = 10;
-
-        const GameInfo& game_info = agent_->Observation()->GetGameInfo();
-        Point2D origin_pt_ = FindCenterOfMap(game_info);
+        Point2D origin_pt_ = GetMapCenter();
 
         agent_->Debug()->DebugCreateUnit(
             UNIT_TYPEID::PROTOSS_VOIDRAY,
@@ -243,9 +239,7 @@ struct TestGetCloakedEnemyUnit: TestSequence {
 struct TestUnitUpgradesLevel: TestSequence {
     void OnTestStart() {
         wait_game_loops_ = 10;
-
-        const GameInfo& game_info = agent_->Observation()->GetGameInfo();
-        Point2D origin_pt_ = FindCenterOfMap(game_info);
+        Point2D origin_pt_ = GetMapCenter();
 
         agent_->Debug()->DebugCreateUnit(
             UNIT_TYPEID::PROTOSS_ZEALOT,
