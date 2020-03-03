@@ -218,7 +218,7 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->shield = cur_shield;
 
         if (damage > 0 || shield_damage > 0)
-            unit_pool.AddUnitDamaged(unit);
+            unit_pool.AddUnitDamaged(unit, damage, shield_damage);
 
         unit->health_max = observation_unit.health_max();
         unit->shield_max = observation_unit.shield_max();
