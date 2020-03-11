@@ -2063,8 +2063,8 @@ void ControlImp::IssueUnitAddedEvents() {
 }
 
 void ControlImp::IssueUnitDamagedEvents() {
-    for (auto const *u : observation_imp_->unit_pool_.GetDamagedUnits()) {
-        client_.OnUnitDamaged(u);
+    for (auto const &u : observation_imp_->unit_pool_.GetDamagedUnits()) {
+        client_.OnUnitDamaged(u.unit, u.health, u.shields);
     }
 }
 

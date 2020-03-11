@@ -88,7 +88,9 @@ public:
 
     //! Called when the unit in the current observation has lower health or shields than in the previous observation.
     //!< \param unit The damaged unit.
-    virtual void OnUnitDamaged(const Unit*) {}
+    //!< \param health The change in health (damage is positive)
+    //!< \param shields The change in shields (damage is positive)
+    virtual void OnUnitDamaged(const Unit*, float /*health*/, float /*shields*/) {}
 
     //! Called when a nydus is placed.
     virtual void OnNydusDetected() {}

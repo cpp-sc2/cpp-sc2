@@ -212,6 +212,14 @@ public:
 typedef std::vector<const Unit*> Units;
 typedef std::unordered_map<Tag, size_t> UnitIdxMap;
 
+struct UnitDamage {
+    const Unit* unit;
+    float health;
+    float shields;
+};
+
+typedef std::vector<UnitDamage> UnitsDamaged;
+
 class UnitPool {
 public:
     Unit* CreateUnit(Tag tag);
@@ -227,14 +235,16 @@ public:
     const Units& GetNewUnits() const noexcept { return units_newly_created_; };
     const Units& GetUnitsEnteringVision() const noexcept { return units_entering_vision_; };
     const Units& GetCompletedBuildings() const noexcept { return buildings_constructed_; };
-    const Units& GetDamagedUnits() const noexcept { return units_damaged_; };
+    const UnitsDamaged& GetDamagedUnits() const noexcept { return units_damaged_; };
     const std::unordered_set<const Unit*>& GetIdledUnits() const noexcept { return units_idled_; };
 
-    void AddNewUnit(const Unit *u) { units_newly_created_.push_back(u); };
-    void AddUnitEnteredVision(const Unit *u) { units_entering_vision_.push_back(u); }
-    void AddCompletedBuilding(const Unit *u) { buildings_constructed_.push_back(u); }
-    void AddUnitIdled(const Unit *u) { if (u->alliance == Unit::Alliance::Self) units_idled_.insert(u); }
-    void AddUnitDamaged(const Unit *u) { units_damaged_.push_back(u); }
+    void AddNewUnit(const Unit* u) { units_newly_created_.push_back(u); };
+    void AddUnitEnteredVision(const Unit* u) { units_entering_vision_.push_back(u); }
+    void AddCompletedBuilding(const Unit* u) { buildings_constructed_.push_back(u); }
+    void AddUnitIdled(const Unit* u) {
+        if (u->alliance == Unit::Alliance::Self) units_idled_.insert(u);
+    }
+    void AddUnitDamaged(const Unit* u, float health, float shield) { units_damaged_.push_back({u, health, shield}); }
 
 private:
     void IncrementIndex();
@@ -249,7 +259,7 @@ private:
     Units units_newly_created_;
     Units units_entering_vision_;
     Units buildings_constructed_;
-    Units units_damaged_;
+    UnitsDamaged units_damaged_;
     std::unordered_set<const Unit*> units_idled_;
 };
 
