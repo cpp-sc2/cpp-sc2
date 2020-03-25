@@ -12,7 +12,7 @@ the required submodules with the following git command:
 $ git submodule update --init --recursive
 ```
 
-4. Windows: Download and install [Visual Studio 2017](https://www.visualstudio.com/downloads/)
+4. Windows: Download and install [Visual Studio 2019](https://www.visualstudio.com/downloads/)
 
 5. Linux: Install 'gcc-c++'.
 
@@ -35,7 +35,7 @@ $ mkdir build
 $ cd build
 
 :: Create Visual Studio project files.
-$ cmake ../ -G "Visual Studio 15 2017 Win64"
+$ cmake ../ -G "Visual Studio 16 2019"
 
 :: Build the project using Visual Studio.
 $ start cpp-sc2.sln
