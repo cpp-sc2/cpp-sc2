@@ -12,7 +12,7 @@ the required submodules with the following git command:
 $ git submodule update --init --recursive
 ```
 
-4. Windows: Download and install [Visual Studio 2019](https://www.visualstudio.com/downloads/)
+4. Windows: Download and install Visual Studio ([2019](https://www.visualstudio.com/downloads/) or older).
 
 5. Linux: Install 'gcc-c++'.
 
@@ -22,7 +22,7 @@ $ git submodule update --init --recursive
 
 8. OS X: Install XCode command-line tools.
 
-## Windows (Visual Studio 2017)
+## Windows (Visual Studio)
 ```bat
 :: Clone the project.
 $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
@@ -35,7 +35,10 @@ $ mkdir build
 $ cd build
 
 :: Create Visual Studio project files.
+:: For Visual Studio 2019.
 $ cmake ../ -G "Visual Studio 16 2019"
+:: For Visual Studio 2017.
+$ cmake ../ -G "Visual Studio 15 2017 Win64"
 
 :: Build the project using Visual Studio.
 $ start cpp-sc2.sln
