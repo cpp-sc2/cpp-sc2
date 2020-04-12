@@ -24,6 +24,9 @@ addons: &gcc9
 # this is an OSX specific setting
 osx_image: xcode9.1
 
+install:
+  - . .travis/install.sh
+
 script:
    # On linux, configures to use recent C++ compiler + linker instead of default. 
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export GCCVER='9' ; export CXX_COMPILER=g++-${GCCVER} C_COMPILER=gcc-${GCCVER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} ; export CC=${C_COMPILER} CXX=${CXX_COMPILER} ; fi ;
