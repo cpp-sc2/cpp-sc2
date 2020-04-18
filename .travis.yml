@@ -28,14 +28,9 @@ install:
   - . .travis/install.sh
 
 script:
-   # On linux, configures to use recent C++ compiler + linker instead of default. 
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export GCCVER='9' ; export CXX_COMPILER=g++-${GCCVER} C_COMPILER=gcc-${GCCVER} AR=gcc-ar-${GCCVER} RANLIB=gcc-ranlib-${GCCVER} NM=gcc-nm-${GCCVER} ; export CC=${C_COMPILER} CXX=${CXX_COMPILER} ; fi ;
-  - mkdir build
-  - cd build
-  - . ../.travis/build.sh
-  # Build documentation and copy it to website/ which is the folder we deploy to gh-pages 
-  - if [[ "$TRAVIS_OS_NAME" == "linux" && $BUILD_CONFIGURATION = Debug ]]; then cd .. ; mkdir -p docs/html ; doxygen 2>&1 > doxygen.log || cat doxygen.log ; mkdir website ; cp -r docs/html/* website/ ; fi
-  
+  - . .travis/configure.sh
+  - . .travis/build.sh
+  - . .travis/publish.sh
 
 deploy:
   provider: pages
