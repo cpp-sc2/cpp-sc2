@@ -6,7 +6,7 @@
 
 # Build documentation and copy it to website/ which is the folder
 # we deploy to gh-pages
-if [[ "$TRAVIS_OS_NAME" == "linux" && $BUILD_CONFIGURATION = Debug ]]; then
+if [[ "$PUBLISH_DOCS" == "yes" && "$TRAVIS_OS_NAME" == "linux" && $BUILD_CONFIGURATION = "Debug" ]]; then
   mkdir -p docs/html
   doxygen 2>&1 > doxygen.log || cat doxygen.log
   mkdir website
