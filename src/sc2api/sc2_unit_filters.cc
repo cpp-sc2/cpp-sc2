@@ -22,7 +22,7 @@ bool IsUnits::operator()(const Unit& unit_) const {
 }
 
 bool IsTownHall::operator()(const Unit& unit_) const {
-    return (unit_.unit_type);
+    return (*this)(unit_.unit_type);
 }
 
 bool IsTownHall::operator()(UNIT_TYPEID type_) const {
@@ -38,7 +38,7 @@ bool IsTownHall::operator()(UNIT_TYPEID type_) const {
 }
 
 bool IsMineralPatch::operator()(const Unit& unit_) const {
-    return (unit_.unit_type);
+    return (*this)(unit_.unit_type);
 }
 
 bool IsMineralPatch::operator()(UNIT_TYPEID type_) const {
@@ -61,7 +61,7 @@ bool IsVisibleMineralPatch::operator()(const Unit& unit_) const {
 }
 
 bool IsGeyser::operator()(const Unit& unit_) const {
-    return (unit_.unit_type);
+    return (*this)(unit_.unit_type);
 }
 
 bool IsGeyser::operator()(UNIT_TYPEID type_) const {
