@@ -22,7 +22,7 @@ bool IsUnits::operator()(const Unit& unit_) const {
 }
 
 bool IsTownHall::operator()(const Unit& unit_) const {
-    return (unit_.unit_type);
+    return (*this)(unit_.unit_type);
 }
 
 bool IsTownHall::operator()(UNIT_TYPEID type_) const {
