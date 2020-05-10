@@ -28,7 +28,7 @@ public:
                 unit->pos.y
             );
 
-            act->UnitCommand(unit, ABILITY_ID::PATROL, target);
+            act->UnitCommand(unit, ABILITY_ID::GENERAL_PATROL, target);
         }
     }
 };

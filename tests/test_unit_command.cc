@@ -1077,7 +1077,7 @@ namespace sc2 {
     public:
         TestEffectMoveMove() {
             test_unit_type_ = UNIT_TYPEID::ZERG_HYDRALISK;
-            test_ability_ = ABILITY_ID::MOVE;
+            test_ability_ = ABILITY_ID::GENERAL_MOVE;
         }
 
         void SetTestTime() override {
@@ -1113,7 +1113,7 @@ namespace sc2 {
     public:
         TestEffectMovePatrol() {
             test_unit_type_ = UNIT_TYPEID::ZERG_HYDRALISK;
-            test_ability_ = ABILITY_ID::PATROL;
+            test_ability_ = ABILITY_ID::GENERAL_PATROL;
         }
 
         void SetTestTime() override {
@@ -1379,7 +1379,7 @@ namespace sc2 {
 
             if (!move_command_sent_) {
                 starting_point_ = Point2D(test_unit->pos);
-                act->UnitCommand(test_unit_, ABILITY_ID::MOVE, target_point_);
+                act->UnitCommand(test_unit_, ABILITY_ID::GENERAL_MOVE, target_point_);
                 move_command_sent_ = true;
             }
 
@@ -1459,7 +1459,7 @@ namespace sc2 {
     public:
         TestTrainBainling() {
             test_unit_type_ = UNIT_TYPEID::ZERG_ZERGLING;
-            test_ability_ = ABILITY_ID::TRAIN_BANELING;
+            test_ability_ = ABILITY_ID::MORPH_BANELING;
         }
 
         void SetTestTime() override {
@@ -1594,7 +1594,7 @@ namespace sc2 {
             }
 
             if (!orders_verified_ && ability_command_sent_) {
-                VerifyUnitOrders(target_unit_, ABILITY_ID::MOVE);
+                VerifyUnitOrders(target_unit_, ABILITY_ID::GENERAL_MOVE);
             }
         }
 
