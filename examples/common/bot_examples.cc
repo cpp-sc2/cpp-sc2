@@ -589,11 +589,11 @@ void MultiplayerBot::RetreatWithUnit(const Unit* unit, Point2D retreat_position)
     }
 
     if (unit->orders.empty() && dist > 14) {
-        Actions()->UnitCommand(unit, ABILITY_ID::MOVE, retreat_position);
+        Actions()->UnitCommand(unit, ABILITY_ID::GENERAL_MOVE, retreat_position);
     }
     else if (!unit->orders.empty() && dist > 14) {
-        if (unit->orders.front().ability_id != ABILITY_ID::MOVE) {
-            Actions()->UnitCommand(unit, ABILITY_ID::MOVE, retreat_position);
+        if (unit->orders.front().ability_id != ABILITY_ID::GENERAL_MOVE) {
+            Actions()->UnitCommand(unit, ABILITY_ID::GENERAL_MOVE, retreat_position);
         }
     }
 }
@@ -736,7 +736,7 @@ void ProtossMultiplayerBot::ManageArmy() {
                                     closest_unit = u->pos;
                                 }
                             }
-                            Actions()->UnitCommand(unit, ABILITY_ID::MOVE, closest_unit);
+                            Actions()->UnitCommand(unit, ABILITY_ID::GENERAL_MOVE, closest_unit);
                     break;
                 }
                 default:
@@ -1815,7 +1815,7 @@ void ZergMultiplayerBot::BuildArmy() {
         baneling_target = baneling_target * 2;
     }
     if (baneling_count < baneling_target) {
-        TryBuildUnit(ABILITY_ID::TRAIN_BANELING, UNIT_TYPEID::ZERG_ZERGLING);
+        TryBuildUnit(ABILITY_ID::MORPH_BANELING, UNIT_TYPEID::ZERG_ZERGLING);
     }
 
 }

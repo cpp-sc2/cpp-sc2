@@ -267,7 +267,7 @@ public:
             }
         }
         if (obs->GetGameLoop() == starting_gameloop_ + 26) {
-            action->UnitCommand(ABILITY_ID::MOVE, camera_pos_);
+            action->UnitCommand(ABILITY_ID::GENERAL_MOVE, camera_pos_);
             if (obs->GetFeatureLayerActions().select_points.empty()) {
                 ReportError("Select Point is not being reported.");
             }
@@ -288,7 +288,7 @@ public:
             }
             else {
                 Point2DI target = obs->GetFeatureLayerActions().unit_commands.front().target;
-                if (obs->GetFeatureLayerActions().unit_commands.front().ability_id != ABILITY_ID::MOVE) {
+                if (obs->GetFeatureLayerActions().unit_commands.front().ability_id != ABILITY_ID::GENERAL_MOVE) {
                     ReportError("Unit Command is reporting an incorrect Ability ID");
                 }
                 if (target != camera_pos_) {
