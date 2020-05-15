@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/alkurbatov/cpp-sc2/compare/v1.2.0...v1.3.0) (2020-05-15)
+
+
+### Features
+
+* Add mineral and geyser filters, [#24](https://github.com/alkurbatov/cpp-sc2/issues/24) ([7500a6e](https://github.com/alkurbatov/cpp-sc2/commit/7500a6e90a639dd9bce59973f66d4fdb178aa559))
+* Add some missing types to ABILITY_ID, RESEARCH_ID and UPGRADE_ID enums ([2b7d04e](https://github.com/alkurbatov/cpp-sc2/commit/2b7d04e2fd7646e2a7f340b1b5fae06a65c65a8a))
+* Add unit upgrades level, [#54](https://github.com/alkurbatov/cpp-sc2/issues/54) ([93dedc6](https://github.com/alkurbatov/cpp-sc2/commit/93dedc61f114fd88d8ebbbca0afb35679280443e))
+* add use_generalized_ability option when retrieving abilities using GetAbilitiesForUnit/s ([cc3b534](https://github.com/alkurbatov/cpp-sc2/commit/cc3b53489e5fcd38809b0b83cc6377da40ae4a38))
+* Added legacy typeenums for compatibility ([f27c954](https://github.com/alkurbatov/cpp-sc2/commit/f27c954b87f331d117f19246568036c114d26576))
+* Allow retrieving specific ability ids with GetAbilitiesFromUnit(s) ([c024e34](https://github.com/alkurbatov/cpp-sc2/commit/c024e3454efd62467b756e5736ded87f169fb870))
+* Allow to retrieve player names, [#13](https://github.com/alkurbatov/cpp-sc2/issues/13) ([6487f61](https://github.com/alkurbatov/cpp-sc2/commit/6487f61f7e7a05addd94ed73ef72a706f6079add))
+* Allow to set and retrieve AI build, [#45](https://github.com/alkurbatov/cpp-sc2/issues/45) ([87d10ce](https://github.com/alkurbatov/cpp-sc2/commit/87d10ce8bcee08ef02cc5b5032afc79e8cb931b5))
+* Allow to set player name, [#13](https://github.com/alkurbatov/cpp-sc2/issues/13) ([7ab6688](https://github.com/alkurbatov/cpp-sc2/commit/7ab668873746931a372aaae6ea45badde454502a))
+* Enable display of 'ghost' buildings, [#23](https://github.com/alkurbatov/cpp-sc2/issues/23) ([74f24e1](https://github.com/alkurbatov/cpp-sc2/commit/74f24e125b972b1ca834dfb75622876928849c36))
+* Include the amount of health and shield damage in OnUnitDamaged events ([3bd0469](https://github.com/alkurbatov/cpp-sc2/commit/3bd046938ac3e510655fb26ca8816e6872f36d85))
+* On Neutral Unit Created, [#33](https://github.com/alkurbatov/cpp-sc2/issues/33) ([2988bf3](https://github.com/alkurbatov/cpp-sc2/commit/2988bf3f8030431b46d2813003cefac6ae685e04))
+* Show invisible units when observing replays ([985f1ae](https://github.com/alkurbatov/cpp-sc2/commit/985f1ae8df5afdc2501615d6be5ab2403e741eeb))
+* Sync IDs with the latest sc2 ([4c20614](https://github.com/alkurbatov/cpp-sc2/commit/4c206148a3ff22f46d215c9b9d1859f8e479e39c))
+* Upgraded type enums for 4.11.3 ([2ae5519](https://github.com/alkurbatov/cpp-sc2/commit/2ae5519f6fa3c0954cf0d3c0d9d6e92effb81a8f))
+* **zerg:** Allow to get count of larva, [#44](https://github.com/alkurbatov/cpp-sc2/issues/44) ([e205164](https://github.com/alkurbatov/cpp-sc2/commit/e2051646cb0a9ed38cbac76ff5bf586a912f1a0b))
+
+
+### Bug Fixes
+
+* == and != operators in Point2D and Point3D should be const functions to implement equal_to interface ([13ebbdf](https://github.com/alkurbatov/cpp-sc2/commit/13ebbdf479df6158b12c4a338914d494e00d6767))
+* Broken deployment of the API docs ([b682b3e](https://github.com/alkurbatov/cpp-sc2/commit/b682b3e702b11ad28b96210c4798c7cda1309a59))
+* GetFoodWorkers() should return uint32_t ([11b8860](https://github.com/alkurbatov/cpp-sc2/commit/11b886055b8fe7eb0cb409efc578a850c64e5ef0))
+* GetGameLoop() returns wrong number on restart ([e94baa2](https://github.com/alkurbatov/cpp-sc2/commit/e94baa24897b7035f906a6b39e9fea02b2be31b4))
+* issue where OnUnitDamage event was issued multiple times ([5e3f3fd](https://github.com/alkurbatov/cpp-sc2/commit/5e3f3fdd9fa3ca77ebbe71b48f19c2062139c105))
+* Report error if API can't load replay info ([215a310](https://github.com/alkurbatov/cpp-sc2/commit/215a310e4ca9dd3c825bdf8b7b65528a9689f0d4))
+* Simultaneous 'Created' and 'Completed' events ([5530467](https://github.com/alkurbatov/cpp-sc2/commit/553046759347651be5fc22a55f0993caa5daae13))
+* Skip replay in case of any loading errors ([cc937a7](https://github.com/alkurbatov/cpp-sc2/commit/cc937a78ec044eea1246728c572fbe54c2a7cf14))
+* Unit filters always returned 'true' ([8731e75](https://github.com/alkurbatov/cpp-sc2/commit/8731e75f5c88190dcf6290b53520f3f2bb5dd3a9))
+
+
+### Performance Improvements
+
+* Mark newly constructed buildings as idle ([d73f633](https://github.com/alkurbatov/cpp-sc2/commit/d73f633662f7afd0fd4926c8d82b473412f98ca7))
+
+
+### Build System
+
+* Don't try to publish docs in dev branch ([b88aef2](https://github.com/alkurbatov/cpp-sc2/commit/b88aef2a2b2e0ef1be14be71081e2db3ebd2e03c))
+* Improve compilation under VS 2019 ([bed887a](https://github.com/alkurbatov/cpp-sc2/commit/bed887a262d76b44f7351043b5a6f4f80754f1dd))
+* Validate windows builds against VS2019 ([7e21c71](https://github.com/alkurbatov/cpp-sc2/commit/7e21c71d770ec25d195afbf4744343f1c39350bc))
+
+
+### Refactoring
+
+* Move logic from .travis.yaml to scripts ([34da289](https://github.com/alkurbatov/cpp-sc2/commit/34da289a52764bb3d7f5bc2421a1ea4b63eea201))
+
+
+### Documentation
+
+* Provide better Windows build instructions ([2e0a4d4](https://github.com/alkurbatov/cpp-sc2/commit/2e0a4d445df6dc013d3035c18495e2910c2d62c6))
+* Set Windows build recommendations to VS 2019 ([6971da0](https://github.com/alkurbatov/cpp-sc2/commit/6971da07c837954c84b94ac47a91fbf968dbe087))
+
 ## [1.2.0](https://github.com/alkurbatov/cpp-sc2/compare/v1.1.0...v1.2.0) (2019-11-04)
 
 
