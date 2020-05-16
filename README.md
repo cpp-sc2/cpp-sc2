@@ -47,6 +47,10 @@ int main(int argc, char* argv[]) {
 
 You can find a detailed tutorial on what this code does in [docs/tutorial1.md](docs/tutorial1.md).
 
+Precompiled Libs
+----------------
+You can download precompiled libs for Windows and OS X [here](docs/precompiled_libs.md).
+
 Support
 -------
 
