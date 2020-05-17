@@ -13,6 +13,9 @@ echo "Configuring for ${BUILD_CONFIGURATION}"
 
 if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   export VS160COMNTOOLS="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools"
+elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+  export CC=clang
+  export CXX=clang++
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
   export GCCVER='9'
   export CXX_COMPILER=g++-${GCCVER} C_COMPILER=gcc-${GCCVER}
