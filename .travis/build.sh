@@ -4,6 +4,8 @@
 #
 # Copyright (c) 2017-2019 Alexander Kurbatov
 
+set -ev
+
 mkdir build && cd build
 
 if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
