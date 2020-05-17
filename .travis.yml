@@ -22,7 +22,7 @@ addons: &gcc9
     packages: ['g++-9', 'gcc-9','doxygen']
 
 # this is an OSX specific setting
-osx_image: xcode9.1
+osx_image: xcode11.4
 
 install:
   - . .travis/install.sh
