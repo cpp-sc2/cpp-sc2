@@ -11,7 +11,7 @@ if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then
   cmake --build . --config ${BUILD_CONFIGURATION}
 else
   cmake -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION ../
-  VERBOSE=1 cmake --build .
+  VERBOSE=1 cmake --build . --parallel 2
 fi
 
 cd ../
