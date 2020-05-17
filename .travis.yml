@@ -25,12 +25,12 @@ addons: &gcc9
 osx_image: xcode11.4
 
 install:
-  - . .travis/install.sh
+  - .travis/install.sh
 
 script:
-  - . .travis/configure.sh
-  - . .travis/build.sh
-  - . .travis/publish.sh
+  - .travis/configure.sh
+  - .travis/build.sh
+  - .travis/publish.sh
 
 deploy:
   provider: pages
