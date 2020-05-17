@@ -44,7 +44,7 @@ $ cmake ../ -G "Visual Studio 15 2017 Win64"
 $ start cpp-sc2.sln
 ```
 
-## Windows (nmake)
+## Windows (cmdline)
 ```bat
 :: Clone the project.
 $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
@@ -56,11 +56,8 @@ $ cd cpp-sc2
 $ mkdir build
 $ cd build
 
-:: Create makefiles.
-$ cmake ../ -G "NMake Makefiles"
-
-:: Build the project with nmake.
-$ nmake
+:: Build the project.
+$ cmake --build . --parallel
 ```
 
 ## Mac (Xcode)
@@ -82,7 +79,7 @@ $ cmake ../ -G Xcode
 $ open cpp-sc2.xcodeproj/
 ```
 
-## Mac (make)
+## Mac (cmdline)
 ```bash
 # Clone the project.
 $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
@@ -97,11 +94,11 @@ $ cd build
 # Create makefiles.
 $ cmake ../
 
-# Build the project with make.
-$ make
+# Build the project.
+$ VERBOSE=1 cmake --build . --parallel
 ```
 
-## Linux (make)
+## Linux (cmdline)
 ```bash
 # Clone the project.
 $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
@@ -116,25 +113,6 @@ $ cd build
 # Create makefiles.
 $ cmake ../
 
-# Build the project with make.
-$ make
-```
-
-## Linux (gmake)
-```bash
-# Clone the project.
-$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
-
-# Enter the working directory.
-$ cd cpp-sc2
-
-# Create build directory.
-$ mkdir build
-$ cd build
-
-# Create makefiles.
-$ cmake ../ -G "Unix Makefiles"
-
-# Build the project with gmake.
-$ gmake
+# Build the project.
+$ VERBOSE=1 cmake --build . --parallel
 ```
