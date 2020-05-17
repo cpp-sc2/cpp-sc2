@@ -1,7 +1,7 @@
 cpp-sc2
 =======
 
-[![Build Status](https://travis-ci.org/alkurbatov/cpp-sc2.svg?branch=master)](https://travis-ci.org/alkurbatov/cpp-sc2)
+[![Build Status](https://travis-ci.org/cpp-sc2/cpp-sc2.svg?branch=master)](https://travis-ci.org/cpp-sc2/cpp-sc2)
 
 The StarCraft II API provides access to in-game state observation and unit control. The API is a wrapper around protobuf defined protocol over a websocket connection.
 
@@ -59,7 +59,7 @@ Feel free to post questions on the unofficial Starcraft II AI Discord server. [I
 Documentation
 -------------
 
-You can find API in documentation on our [github pages site](https://alkurbatov.github.io/cpp-sc2). The documentation is generated from code automatically, using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
+You can find API in documentation on our [github pages site](https://cpp-sc2.github.io/cpp-sc2). The documentation is generated from code automatically, using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
 
 To edit and generate the documentation yourself:
 
