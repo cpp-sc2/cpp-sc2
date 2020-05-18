@@ -1,41 +1,30 @@
 language: cpp
 
-# The build matrix setup
-# 2 configs * 3 OS = 6 builds.
-# build both Release and Debug
 env: 
  - BUILD_CONFIGURATION=Debug
  - BUILD_CONFIGURATION=Release
 
-# run on all three OS
 os: 
  - windows
  - linux
  - osx
 
-# these elements are necessary to configure linux 
-dist: xenial
-compiler: gcc
-addons: &gcc9
-  apt:
-    sources: ['ubuntu-toolchain-r-test']
-    packages: ['g++-9', 'gcc-9','doxygen']
+dist: bionic
 
-# this is an OSX specific setting
 osx_image: xcode11.4
 
 install:
-  - .travis/install.sh
+  - ./.travis/install.sh
 
 script:
-  - .travis/configure.sh
-  - .travis/build.sh
-  - .travis/publish.sh
+  - ./.travis/build.sh
+  - ./.travis/publish.sh
 
 deploy:
   provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  cleanup: false
+  strategy: git
+  token: $GITHUB_TOKEN
   local_dir: website/  
   on:
     branch: master
