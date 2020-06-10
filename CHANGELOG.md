@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/alkurbatov/cpp-sc2/compare/v1.3.0...v1.3.1) (2020-06-10)
+
+
+### Bug Fixes
+
+* Fix CI build could be not marked as failed ([ef2f0b9](https://github.com/alkurbatov/cpp-sc2/commit/ef2f0b94c27f8ce82ad106d6eab9ecb75c420e29))
+* Fix links in README ([2ed52f2](https://github.com/alkurbatov/cpp-sc2/commit/2ed52f2beb388bc807914a283370b284e83b031d))
+
+
+### Documentation
+
+* Add GitHub issue template, [#67](https://github.com/alkurbatov/cpp-sc2/issues/67) ([7d691de](https://github.com/alkurbatov/cpp-sc2/commit/7d691de71516d08d9357b627d42d3d09c3174145))
+* Add Patreon link, [#66](https://github.com/alkurbatov/cpp-sc2/issues/66) ([186fa76](https://github.com/alkurbatov/cpp-sc2/commit/186fa760385c9ea272082c67eba0052fe5aa2b9c))
+* Improve build instructions, [#65](https://github.com/alkurbatov/cpp-sc2/issues/65) ([8963c9c](https://github.com/alkurbatov/cpp-sc2/commit/8963c9c0bbb83ce07284a4733a18ca8d223421f8))
+* Introduce CONTRIBUTING guide, [#42](https://github.com/alkurbatov/cpp-sc2/issues/42) ([f1f3055](https://github.com/alkurbatov/cpp-sc2/commit/f1f305502af8b9390a29c843d0161b328b47fe2d))
+
+
+### Build System
+
+* Compile with clang on OS X ([3ee8a41](https://github.com/alkurbatov/cpp-sc2/commit/3ee8a4168593dbd3a5de378b2a81a8cba39caf33))
+* Don't source scripts in CI ([84b79d9](https://github.com/alkurbatov/cpp-sc2/commit/84b79d984df20c42d9ecc11d61f0e05c60d1ba6b))
+* Refine CI routine ([823d9fd](https://github.com/alkurbatov/cpp-sc2/commit/823d9fde3a4c91bad1f904e993a6cfd9819a2016))
+* Use all available CPUs in CI build, [#65](https://github.com/alkurbatov/cpp-sc2/issues/65) ([84e23d3](https://github.com/alkurbatov/cpp-sc2/commit/84e23d3f67771cb723a5f16bdb80dba83933f4e6))
+* Use xcode11.4 in CI ([dde3c34](https://github.com/alkurbatov/cpp-sc2/commit/dde3c343e6d8169473175e8e9fea22b67d05d507))
+
 ## [1.3.0](https://github.com/alkurbatov/cpp-sc2/compare/v1.2.0...v1.3.0) (2020-05-15)
 
 
