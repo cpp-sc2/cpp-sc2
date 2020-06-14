@@ -22,10 +22,10 @@ script:
 
 deploy:
   provider: pages
-  cleanup: false
   strategy: git
   token: $GITHUB_TOKEN
-  local_dir: website/  
+  local_dir: website/
+  edge: true
   on:
     branch: master
     condition: $TRAVIS_OS_NAME = linux && $BUILD_CONFIGURATION = Debug
