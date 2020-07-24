@@ -43,6 +43,11 @@ That function is counting the number of a certain unit type the player owns. Get
 allows you to remove units that don't meet a certain condition. In this case that condition is that the units are of 
 the desired unit_type.
 
+To define the Filter, `IsUnit`, of this function, we must add
+```C++
+#include <sc2api/sc2_unit_filters.h>
+```
+near the top, with the other `#include` statements.
 
 We now have the necessary helper functions to implement TryBuildBarracks.
 
@@ -140,6 +145,7 @@ Full Source Code
 
 ```C++
 #include <sc2api/sc2_api.h>
+#include <sc2api/sc2_unit_filters.h>
 
 #include <iostream>
 
