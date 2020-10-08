@@ -79,7 +79,8 @@ bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, Ga
         std::cout << argv[0] << " --help" << std::endl << std::endl;
     }
 
-    arg_parser.Parse(argc, argv);
+    if (!arg_parser.Parse(argc, argv))
+        return false;
 
     arg_parser.Get("executable", process_settings.process_path);
     if (process_settings.process_path.length() < 2) {
