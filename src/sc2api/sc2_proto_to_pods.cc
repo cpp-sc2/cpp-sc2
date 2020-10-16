@@ -229,6 +229,7 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->vespene_contents = observation_unit.vespene_contents();
         unit->is_flying = observation_unit.is_flying();
         unit->is_burrowed = observation_unit.is_burrowed();
+        unit->is_hallucination = observation_unit.is_hallucination();
         unit->weapon_cooldown = observation_unit.weapon_cooldown();
         unit->engaged_target_tag = observation_unit.engaged_target_tag();
 

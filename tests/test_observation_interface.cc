@@ -282,6 +282,78 @@ struct TestUnitUpgradesLevel: TestSequence {
     }
 };
 
+struct TestUnitHallucinationAttribute: TestSequence {
+    TestUnitHallucinationAttribute(): TestSequence(), test_unit_(nullptr) {
+    }
+
+    void OnTestStart() override {
+        wait_game_loops_ = 10;
+        Point2D origin_pt_ = GetMapCenter();
+
+        agent_->Debug()->DebugCreateUnit(
+            UNIT_TYPEID::PROTOSS_SENTRY,
+            origin_pt_,
+            agent_->Observation()->GetPlayerID(),
+            1
+        );
+
+        agent_->Debug()->SendDebug();
+    }
+
+    void OnStep() override {
+        const ObservationInterface* obs = agent_->Observation();
+
+        if (!test_unit_) {
+            sc2::Units found_sentries = obs->GetUnits(
+                Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_SENTRY));
+
+            if (found_sentries.empty())
+                return;
+
+            test_unit_ = found_sentries.front();
+
+            agent_->Debug()->DebugSetEnergy(75.0f, test_unit_);
+            agent_->Debug()->SendDebug();
+            return;
+        }
+
+        if (test_unit_ && test_unit_->energy >= 75.0f)
+            agent_->Actions()->UnitCommand(test_unit_, ABILITY_ID::HALLUCINATION_PHOENIX);
+    }
+
+    void OnTestFinish() override{
+        const ObservationInterface* obs = agent_->Observation();
+
+        if (!test_unit_) {
+            ReportErrorAndCleanup("Sentry not found");
+            return;
+        }
+
+        if (test_unit_->is_hallucination) {
+            ReportErrorAndCleanup("A unit is erroneously marked as hallucination");
+            return;
+        }
+
+        sc2::Units found_phoenixes = obs->GetUnits(
+            Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOENIX));
+
+        if (found_phoenixes.size() != 1) {
+            ReportErrorAndCleanup("Illusion of phoenix not found");
+            return;
+        }
+
+        if (!found_phoenixes.front()->is_hallucination) {
+            ReportErrorAndCleanup("An illusion is not marked as hallucination");
+            return;
+        }
+
+        KillAllUnits();
+    }
+
+ private:
+    const sc2::Unit* test_unit_;
+};
+
 //
 // TestObservationBot
 //
@@ -305,6 +377,7 @@ TestObservationBot::TestObservationBot() :
     Add(TestGetResources());
     Add(TestGetCloakedEnemyUnit());
     Add(TestUnitUpgradesLevel());
+    Add(TestUnitHallucinationAttribute());
 }
 
 void TestObservationBot::OnTestsBegin() {
@@ -345,4 +418,3 @@ bool TestObservationInterface(int argc, char** argv) {
 }
 
 }
-

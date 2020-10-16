@@ -166,6 +166,8 @@ public:
     bool is_flying;
     //! If the unit is burrowed. Not set for snapshots.
     bool is_burrowed;
+    //! If the unit is hallucination. Not set for snapshots.
+    bool is_hallucination;
     //! Time remaining for a weapon on cooldown. Not set for snapshots.
     float weapon_cooldown;
 
