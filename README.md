@@ -8,9 +8,9 @@ While it's possible to write directly to the protocol, this library provides a C
 
 
 ## Documentation
-A detailed tutorial is located in [docs/tutorial1.md](docs/tutorial1.md).  
-The API documentation can be found on our [github pages site](https://cpp-sc2.github.io/cpp-sc2).  
-The documentation is generated from code automatically, using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
+* A detailed tutorial is located in [docs/tutorial1.md](docs/tutorial1.md).  
+* The API documentation can be found on our [github pages site](https://cpp-sc2.github.io/cpp-sc2). The documentation is generated from code automatically, using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
+* For example of usage of this API please refer to [CommandCenter](https://github.com/cpp-sc2/commandcenter), [Suvorov bot](https://github.com/alkurbatov/suvorov-bot) and the [examples](https://github.com/cpp-sc2/cpp-sc2/tree/master/examples) folder in this project.
 
 
 ## Precompiled Libraries
@@ -57,6 +57,3 @@ of two space tabs.
 ### Maps and Replays
 This repository only comes with a few maps for testing.
 Additional maps and replays can be found [here](https://github.com/Blizzard/s2client-proto#downloads).
-
-### Example bots
-For example of usage of this API please refer to [Suvorov bot](https://github.com/alkurbatov/suvorov-bot) and the [examples](https://github.com/cpp-sc2/cpp-sc2/tree/master/examples) folder.
