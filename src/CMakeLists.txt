@@ -4,13 +4,26 @@ file(GLOB sources_sc2_lib "sc2lib/*.cpp" "sc2lib/*.cc" "../include/sc2lib/*.h")
 file(GLOB sources_utils "sc2utils/*.cpp" "sc2utils/*.cc" "../include/sc2utils/*.h")
 file(GLOB sources_renderer "sc2renderer/*.cc" "sc2renderer/*.h" "../include/sc2renderer/*.h")
 
+# Inject sources specific for particular version of the game client
+file(WRITE "../include/sc2api/sc2_typeenums.h"
+"#pragma once
+
+#include \"typeids/sc2_${SC2_VERSION}_typeenums.h\"
+"
+)
+list(APPEND sources_sc2
+    ../include/sc2api/sc2_typeenums.h
+    ../include/sc2api/typeids/sc2_${SC2_VERSION}_typeenums.h
+    sc2api/typeids/sc2_${SC2_VERSION}_typeenums.cpp
+)
+
 # Gather the protos.
 file(GLOB proto_files
     "../protocol/s2clientprotocol/*.proto"
 )
 
 if ("${proto_files}" STREQUAL "")
-	message(FATAL_ERROR "Missing root protocol submodule.\nRemove your protocol directory and run:\ngit submodule update --recursive --init")
+    message(FATAL_ERROR "Missing root protocol submodule.\nRemove your protocol directory and run:\ngit submodule update --recursive --init")
 endif ()
 
 # Create the output directory for generated protos.

@@ -60,6 +60,10 @@ docs/html
 docs/latex
 doxygen.log
 
+# Code generation routine
+include/sc2api/sc2_typeenums.h
+
+# Changelog generation routine
 node_modules
 package.json
 package-lock.json

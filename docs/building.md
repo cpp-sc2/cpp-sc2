@@ -69,8 +69,7 @@ $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 $ cd cpp-sc2
 
 # Create build directory.
-$ mkdir build
-$ cd build
+$ mkdir build && cd build
 
 # Create Xcode project files.
 $ cmake ../ -G Xcode
@@ -88,8 +87,7 @@ $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 $ cd cpp-sc2
 
 # Create build directory.
-$ mkdir build
-$ cd build
+$ mkdir build && cd build
 
 # Create makefiles.
 $ cmake ../
@@ -107,12 +105,27 @@ $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 $ cd cpp-sc2
 
 # Create build directory.
-$ mkdir build
-$ cd build
+$ mkdir build && cd build
 
 # Create makefiles.
 $ cmake ../
 
 # Build the project.
 $ VERBOSE=1 cmake --build . --parallel
+```
+
+## Compilation options
+
+### Game client version
+By default, the API assumes the latest version of the game client. The assumed version can be found in cmake's output, e.g.:
+```bash
+$ cmake ../ | grep 'SC2 version'
+Target SC2 version: 5.0.5
+...
+```
+
+However, sometimes one may need to compile with an older version of the game, e.g. to play with a Linux build which is
+always behind the Windows version. It is possible by specifying the game version manually, e.g.:
+```bash
+$ cmake -DSC2_VERSION=4.10.2 ../
 ```

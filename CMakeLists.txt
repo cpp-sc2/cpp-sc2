@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.1)
 
+project(cpp-sc2)
+
 option(BUILD_API_EXAMPLES "Build Examples" ON)
 option(BUILD_API_TESTS "Build Tests" ON)
-project(cpp-sc2)
+
+set(SC2_VERSION "5.0.5" CACHE STRING "Version of the target StarCraft II client")
+message("Target SC2 version: ${SC2_VERSION}")
 
 # Use bin as the directory for all executables.
 # This will make protoc easy to find.
