@@ -9,7 +9,7 @@ os:
  - linux
  - osx
 
-dist: bionic
+dist: focal
 
 osx_image: xcode11.4
 
