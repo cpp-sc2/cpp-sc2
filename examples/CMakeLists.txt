@@ -10,7 +10,7 @@ include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/contrib/SDL-mirror/include")
 
 # Function to generate an example project with extra libraries
 function (example_project_extra project_name source_code extra_libs)
-    message("Adding new example project ${project_name}, sources: ${source_code}, extra_libs: ${extra_libs}")
+    message(VERBOSE "Adding new example project ${project_name}, sources: ${source_code}, extra_libs: ${extra_libs}")
     file (GLOB example_project_sources ${source_code} "common/*.h" "common/*.cc")
     add_executable(${project_name} ${example_project_sources})
 
