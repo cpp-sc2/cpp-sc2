@@ -142,7 +142,7 @@ void Connection::Send(const SC2APIProtocol::Request* request) {
     if (!connection_) {
         return;
     }
-    size_t size = request->ByteSize();
+    size_t size = request->ByteSizeLong();
     void* buffer = malloc(size);
     request->SerializeToArray(buffer, (int)size);
     mg_websocket_write(
