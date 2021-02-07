@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2017-2019 Alexander Kurbatov
+# Copyright (c) 2017-2021 Alexander Kurbatov
 
 # Build documentation and copy it to website/ which is the folder
 # we deploy to gh-pages
