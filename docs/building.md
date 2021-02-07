@@ -127,5 +127,5 @@ Target SC2 version: 5.0.5
 However, sometimes one may need to compile with an older version of the game, e.g. to play with a Linux build which is
 always behind the Windows version. It is possible by specifying the game version manually, e.g.:
 ```bash
-$ cmake -DSC2_VERSION=4.10.2 ../
+$ cmake -DSC2_VERSION=4.10.0 ../
 ```
