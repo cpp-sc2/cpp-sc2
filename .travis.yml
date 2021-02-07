@@ -1,9 +1,5 @@
 language: cpp
 
-env: 
- - BUILD_CONFIGURATION=Debug
- - BUILD_CONFIGURATION=Release
-
 os: 
  - windows
  - linux
@@ -28,4 +24,4 @@ deploy:
   edge: true
   on:
     branch: master
-    condition: $TRAVIS_OS_NAME = linux && $BUILD_CONFIGURATION = Debug
+    condition: $TRAVIS_OS_NAME = linux

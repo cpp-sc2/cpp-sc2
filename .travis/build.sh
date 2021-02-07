@@ -12,15 +12,15 @@ if [[ "${TRAVIS_OS_NAME}" == "windows" ]]; then
   export VS160COMNTOOLS="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/Common7/Tools"
 
   cmake ../ -G "Visual Studio 16 2019"
-  cmake --build . --config "${BUILD_CONFIGURATION}"
+  cmake --build .
 elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
   export CC=clang
   export CXX=clang++
 
-  cmake -DCMAKE_BUILD_TYPE="${BUILD_CONFIGURATION}" ../
+  cmake ../
   VERBOSE=1 cmake --build . --parallel 2
 else
-  cmake -DCMAKE_BUILD_TYPE="${BUILD_CONFIGURATION}" ../
+  cmake -DSC2_VERSION=4.10.0 ../
   VERBOSE=1 cmake --build . --parallel 2
 fi
 
