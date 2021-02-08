@@ -19,7 +19,7 @@ You can download precompiled libraries for Windows and OS X [here](docs/precompi
 
 ## Support
 Feel free to post questions on the unofficial Starcraft II AI Discord server ([Invite Link](https://discordapp.com/invite/Emm5Ztz)).  
-Also, please consider to support this project on [Patreon](https://www.patreon.com/cppsc2). Support of the project allows to make releases more often and implement nice new features for developers.
+Also, please consider to support this project on [Patreon](https://www.patreon.com/cppsc2) or just [buy a coffee](https://www.buymeacoffee.com/alkurbatov). Support of the project allows to make releases more often and implement nice new features for developers.
 
 
 ## Building the project
@@ -44,8 +44,11 @@ To edit and generate the documentation yourself:
 7. Push your changes to your fork and send us a pull request
 
 
-## Coding Standard
+## Contributing
+A detailed contributing guide can be found [here](https://github.com/cpp-sc2/cpp-sc2/issues/9).
 
+
+## Coding Standard
 [Coding Standard](https://google.github.io/styleguide/cppguide.html)
 
 We do our best to conform to the Google C++ Style Guide with the exception that we use four space tabs instead
