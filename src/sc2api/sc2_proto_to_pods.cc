@@ -1,4 +1,5 @@
 #include "sc2api/sc2_proto_to_pods.h"
+#include "sc2api/sc2_unit_filters.h"
 
 #include <iostream>
 #include <cassert>
@@ -293,6 +294,8 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         unit->attack_upgrade_level = observation_unit.attack_upgrade_level();
         unit->armor_upgrade_level = observation_unit.armor_upgrade_level();
         unit->shield_upgrade_level = observation_unit.shield_upgrade_level();
+
+        unit->is_building = IsBuilding()(unit->unit_type);
     }
 
     return true;

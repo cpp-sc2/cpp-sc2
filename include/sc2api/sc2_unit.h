@@ -208,6 +208,9 @@ public:
     //! Level of shield upgrades.
     int32_t shield_upgrade_level;
 
+    //! Whether the unit is building or not.
+    bool is_building;
+
     Unit();
 };
 
