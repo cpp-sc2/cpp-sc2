@@ -67,4 +67,11 @@ struct IsVisibleGeyser {
     bool operator()(const Unit& unit_) const;
 };
 
+//! Determines if the unit is a building.
+struct IsBuilding {
+    bool operator()(const Unit& unit_) const;
+
+    bool operator()(UNIT_TYPEID type_) const;
+};
+
 }  // namespace sc2
