@@ -44,7 +44,7 @@ example_project(proxy "proxy.cc")
 example_project(save_load "save_load.cc")
 # example_project(bot_mp_ipv6 "bot_mp_ipv6.cc")
 
-if (NOT APPLE)
+if (BUILD_SC2_RENDERER)
     example_project_extra(feature_layers "feature_layers.cc" sc2renderer)
     example_project_extra(rendered "rendered.cc" sc2renderer)
 endif ()

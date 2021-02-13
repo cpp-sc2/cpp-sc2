@@ -57,8 +57,7 @@ if (APPLE)
     target_link_libraries(sc2utils "-framework Carbon")
 endif ()
 
-# Exclude SDL and related projects to work around linker issue.
-if (NOT APPLE)
+if (BUILD_SC2_RENDERER)
     add_library(sc2renderer ${sources_renderer})
     set_target_properties(sc2renderer PROPERTIES DEBUG_POSTFIX "d")
     target_link_libraries(sc2renderer SDL2-static)

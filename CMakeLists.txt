@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 
 project(cpp-sc2)
 
+option(BUILD_SC2_RENDERER "Build SC2 Renderer library" ON)
 option(BUILD_API_EXAMPLES "Build Examples" ON)
 option(BUILD_API_TESTS "Build Tests" ON)
 
@@ -123,19 +124,16 @@ if (MSVC)
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 endif (MSVC)
 
-# Exclude SDL and related projects to work around linker issue.
-if (NOT APPLE)
-	# Run SDLs cmake.
-	add_subdirectory("contrib/SDL-mirror")
-
-	set_target_properties(SDL2main PROPERTIES FOLDER contrib)
-	set_target_properties(SDL2-static PROPERTIES FOLDER contrib)
-endif ()
-
 add_subdirectory("src")
 
-# Exclude SDL and related projects to work around linker issue.
-if (NOT APPLE)
+if (BUILD_SC2_RENDERER)
+    ADD_DEFINITIONS(-DBUILD_SC2_RENDERER)
+
+    add_subdirectory("contrib/SDL-mirror")
+
+    set_target_properties(SDL2main PROPERTIES FOLDER contrib)
+    set_target_properties(SDL2-static PROPERTIES FOLDER contrib)
+
     set_target_properties(sc2renderer PROPERTIES FOLDER utilities)
     set_target_properties(uninstall PROPERTIES FOLDER CMakePredefinedTargets)
 endif ()
