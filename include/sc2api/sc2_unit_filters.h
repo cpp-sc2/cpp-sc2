@@ -74,4 +74,11 @@ struct IsBuilding {
     bool operator()(UNIT_TYPEID type_) const;
 };
 
+//! Determines if the unit is a worker.
+struct IsWorker {
+    bool operator()(const Unit& unit_) const;
+
+    bool operator()(UNIT_TYPEID type_) const;
+};
+
 }  // namespace sc2

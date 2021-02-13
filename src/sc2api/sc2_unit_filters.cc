@@ -163,4 +163,14 @@ bool IsBuilding::operator()(UNIT_TYPEID type_) const {
     }
 }
 
+bool IsWorker::operator()(const Unit& unit_) const {
+    return (*this)(unit_.unit_type);
+}
+
+bool IsWorker::operator()(UNIT_TYPEID type_) const {
+    return type_ == sc2::UNIT_TYPEID::TERRAN_SCV ||
+        type_ == sc2::UNIT_TYPEID::ZERG_DRONE ||
+        type_ == sc2::UNIT_TYPEID::PROTOSS_PROBE;
+}
+
 }  // namespace sc2
