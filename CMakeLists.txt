@@ -127,7 +127,7 @@ endif (MSVC)
 add_subdirectory("src")
 
 if (BUILD_SC2_RENDERER)
-    ADD_DEFINITIONS(-DBUILD_SC2_RENDERER)
+    add_definitions(-DBUILD_SC2_RENDERER)
 
     add_subdirectory("contrib/SDL-mirror")
 
@@ -136,6 +136,8 @@ if (BUILD_SC2_RENDERER)
 
     set_target_properties(sc2renderer PROPERTIES FOLDER utilities)
     set_target_properties(uninstall PROPERTIES FOLDER CMakePredefinedTargets)
+
+    target_compile_definitions(SDL2-static PRIVATE -DHAVE_LIBC)
 endif ()
 
 if (BUILD_API_EXAMPLES)
