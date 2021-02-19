@@ -2,7 +2,6 @@
 file(GLOB sources_sc2 "sc2api/*.cpp" "sc2api/*.cc" "../include/sc2api/*.h")
 file(GLOB sources_sc2_lib "sc2lib/*.cpp" "sc2lib/*.cc" "../include/sc2lib/*.h")
 file(GLOB sources_utils "sc2utils/*.cpp" "sc2utils/*.cc" "../include/sc2utils/*.h")
-file(GLOB sources_renderer "sc2renderer/*.cc" "sc2renderer/*.h" "../include/sc2renderer/*.h")
 
 # Inject sources specific for particular version of the game client
 file(WRITE "../include/sc2api/sc2_typeenums.h"
@@ -58,10 +57,17 @@ if (APPLE)
 endif ()
 
 if (BUILD_SC2_RENDERER)
+    file(GLOB sources_renderer "sc2renderer/*.cc" "sc2renderer/*.h" "../include/sc2renderer/*.h")
     add_library(sc2renderer ${sources_renderer})
+
+    if (MSVC)
+        set_target_properties(sc2renderer PROPERTIES COMPILE_FLAGS "/W4 /WX-")
+    endif()
+
     set_target_properties(sc2renderer PROPERTIES DEBUG_POSTFIX "d")
-    target_link_libraries(sc2renderer SDL2-static)
+
     include_directories("../contrib/SDL-mirror/include")
+    target_link_libraries(sc2renderer SDL2-static)
 endif ()
 
 # It requires includes to civetweb and our own headers.
@@ -82,7 +88,7 @@ if (MSVC)
     set_target_properties(civetweb-c-library PROPERTIES CMAKE_CXX_FLAGS_DEBUG "/MTd")
     set_target_properties(civetweb-c-library PROPERTIES CMAKE_CXX_FLAGS_RELEASE "/MT")
 else()
-    set(CMAKE_CXX_FLAGS "-fpermissive")  
+    set(CMAKE_CXX_FLAGS "-fpermissive")
 endif()
 
 add_dependencies(sc2protocol protoc)
@@ -105,7 +111,6 @@ endforeach()
 if (MSVC)
     set_target_properties(sc2api PROPERTIES COMPILE_FLAGS "/W4 /WX-")
     set_target_properties(sc2lib PROPERTIES COMPILE_FLAGS "/W4 /WX-")
-    set_target_properties(sc2renderer PROPERTIES COMPILE_FLAGS "/W4 /WX-")
     set_target_properties(sc2utils PROPERTIES COMPILE_FLAGS "/W3 /WX-")
     set_target_properties(sc2protocol PROPERTIES COMPILE_FLAGS "/W0")
 endif (MSVC)
