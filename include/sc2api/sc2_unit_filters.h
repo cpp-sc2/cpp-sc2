@@ -75,6 +75,9 @@ struct IsBuilding {
 };
 
 //! Determines if the unit is a worker.
+//! Good to use in generic bots supporting all races.
+//! For bots supporting only one race IsUnit is recommended as it is
+//! a bit faster, e.g. sc2::IsUnit(sc2::UNIT_TYPEID::TERRAN_SCV).
 struct IsWorker {
     bool operator()(const Unit& unit_) const;
 
