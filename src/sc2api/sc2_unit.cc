@@ -10,6 +10,10 @@ namespace sc2 {
 Unit::Unit() {
 }
 
+bool Unit::IsBuildFinished() const {
+    return build_progress >= 1.0f;
+}
+
 Unit* UnitPool::CreateUnit(Tag tag) {
     Unit* existing = GetUnit(tag);
     if (existing) {

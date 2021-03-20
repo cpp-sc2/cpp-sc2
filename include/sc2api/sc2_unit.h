@@ -212,6 +212,9 @@ public:
     bool is_building;
 
     Unit();
+
+    //! Whether the unit construction/training completed.
+    bool IsBuildFinished() const;
 };
 
 typedef std::vector<const Unit*> Units;
