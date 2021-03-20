@@ -173,4 +173,8 @@ bool IsWorker::operator()(UNIT_TYPEID type_) const {
         type_ == sc2::UNIT_TYPEID::PROTOSS_PROBE;
 }
 
+bool IsVisible::operator()(const Unit& unit_) const {
+    return unit_.display_type == Unit::Visible;
+};
+
 }  // namespace sc2

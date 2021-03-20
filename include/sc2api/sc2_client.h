@@ -146,9 +146,4 @@ bool IsCarryingMinerals(const Unit& unit);
 //!< \param observation Not needed for this function, only exists for Filter parameters, leave nullptr (its default).
 //!< \return Returns true if the unit is carrying vespene, false otherwise.
 bool IsCarryingVespene(const Unit& unit);
-
-struct IsVisible {
-    bool operator()(const Unit& unit);
-};
-
 }

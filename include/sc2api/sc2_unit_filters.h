@@ -84,4 +84,10 @@ struct IsWorker {
     bool operator()(UNIT_TYPEID type_) const;
 };
 
+//! Determines if the unit is visible.
+//! See sc2::Unit::DisplayType.
+struct IsVisible {
+    bool operator()(const Unit& unit_) const;
+};
+
 }  // namespace sc2
