@@ -2258,20 +2258,4 @@ void Client::Reset() {
     control_imp_ = new ControlImp(*this);
 }
 
-bool IsCarryingMinerals(const Unit& unit) {
-    auto is_mineral = [](const BuffID& buff){
-        return buff == BUFF_ID::CARRYMINERALFIELDMINERALS
-            || buff == BUFF_ID::CARRYHIGHYIELDMINERALFIELDMINERALS;
-    };
-    return std::find_if(unit.buffs.begin(), unit.buffs.end(), is_mineral) != unit.buffs.end();
-}
-
-bool IsCarryingVespene(const Unit& unit) {
-    auto is_vespene = [](const BuffID& buff){
-        return buff == BUFF_ID::CARRYHARVESTABLEVESPENEGEYSERGAS
-            || buff == BUFF_ID::CARRYHARVESTABLEVESPENEGEYSERGASPROTOSS
-            || buff == BUFF_ID::CARRYHARVESTABLEVESPENEGEYSERGASZERG;
-    };
-    return std::find_if(unit.buffs.begin(), unit.buffs.end(), is_vespene) != unit.buffs.end();
-}
 }
