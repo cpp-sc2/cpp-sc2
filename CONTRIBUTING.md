@@ -51,4 +51,5 @@ The list of supported commit message prefixes:
 
 * Keep the PR small as possible and one single topic for each.
 * Write good commit message: describe what was the problem and why the changes required.
+* Run Google style linter, see [.travis/lint.sh](.travis/lint.sh) for details.
 * Consider implementing a test.
