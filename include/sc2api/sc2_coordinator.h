@@ -203,6 +203,8 @@ public:
     //!< \return The game executable path.
     std::string GetExePath() const;
 
+    void waitPID();
+    void terminate();
 private:
     CoordinatorImp* imp_;
 };

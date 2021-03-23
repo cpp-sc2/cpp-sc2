@@ -4,6 +4,8 @@
 #include "sc2api/sc2_proto_to_pods.h"
 #include "sc2api/sc2_game_settings.h"
 
+#include "sc2api/sc2_errors.h"
+
 #include <iostream>
 
 namespace sc2 {
@@ -193,6 +195,8 @@ bool ReplayControlImp::WaitForReplay() {
     GameResponsePtr response = control_interface_->WaitForResponse();
     if (!response.get()) {
         std::cerr << "WaitForReplay: timed out, did not receive any response." << std::endl;
+        ClientResponseError error("WaitForReplay: timed out, did not receive any response.");
+	throw error;
         assert(0);
         return false;
     }

@@ -16,6 +16,9 @@
 #include <cassert>
 #include <thread>
 
+#include <sys/types.h>
+#include <sys/wait.h>
+
 namespace sc2 {
 
 void RunParallel(const std::function<void(Agent* a)>& step, std::vector<Agent*>& agents) {
@@ -840,6 +843,18 @@ bool Coordinator::AllGamesEnded() const {
     }
 
     return true;
+}
+void Coordinator::waitPID() {
+   if (imp_->process_settings_.process_info.size()>0) {
+   	int status;
+	waitpid(imp_->process_settings_.process_info.back().process_id, &status, 0);
+   }
+}
+
+void Coordinator::terminate() {
+   if (imp_->process_settings_.process_info.size()>0) {
+   	sc2::TerminateProcess(imp_->process_settings_.process_info.back().process_id);
+   }
 }
 
 void CoordinatorImp::AddAgent(Agent* agent) {
