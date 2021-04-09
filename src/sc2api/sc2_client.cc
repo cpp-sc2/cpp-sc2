@@ -557,9 +557,9 @@ bool ObservationImp::UpdateObservation() {
 
     // Remap ability ids.
     {
-        for (ActionRaw& action : raw_actions_) {
-            ActionRawUnitCommand* ptrActionUnitCommand = dynamic_cast<ActionRawUnitCommand*>(&action);
-            ActionRawToggleAutocast* ptrActionToggleAutocast = dynamic_cast<ActionRawToggleAutocast*>(&action);
+        for (std::shared_ptr<ActionRaw> action : raw_actions_) {
+            ActionRawUnitCommand* ptrActionUnitCommand = dynamic_cast<ActionRawUnitCommand*>(action.get());
+            ActionRawToggleAutocast* ptrActionToggleAutocast = dynamic_cast<ActionRawToggleAutocast*>(action.get());
 
             if (ptrActionUnitCommand!=nullptr) {
                 ptrActionUnitCommand->ability_id = GetGeneralizedAbilityID(ptrActionUnitCommand->ability_id, *this);

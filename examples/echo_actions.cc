@@ -32,10 +32,10 @@ public:
         last_action_text_ = "";
 
         // For now, just show  the first action.
-        const sc2::ActionRaw& action = actions[0];
+        const std::shared_ptr<sc2::ActionRaw> action = actions[0];
 
 
-        const sc2::ActionRawUnitCommand* ptrActionRawUnitCommand=dynamic_cast<const sc2::ActionRawUnitCommand*>(&action);
+        const sc2::ActionRawUnitCommand* ptrActionRawUnitCommand=dynamic_cast<const sc2::ActionRawUnitCommand*>(action.get());
 
 
         if (ptrActionRawUnitCommand!=nullptr)  {
@@ -57,9 +57,20 @@ public:
                     last_action_text_ += "\nTargeting self";
             }
         } else {
-            const sc2::ActionRawCameraMove* ptrActionCameraMove = dynamic_cast<const sc2::ActionRawCameraMove*>(&action);
-            last_action_text_ = "Raw Camera Move\n";
-            last_action_text_ = "("+std::to_string(ptrActionCameraMove->x)+","+std::to_string(ptrActionCameraMove->y)+ ")\n";
+            const sc2::ActionRawCameraMove* ptrActionCameraMove = dynamic_cast<const sc2::ActionRawCameraMove*>(action.get());
+
+            if (ptrActionCameraMove!=nullptr) {
+                last_action_text_ = "Raw Camera Move\n";
+                last_action_text_ = "("+std::to_string(ptrActionCameraMove->x)+","+std::to_string(ptrActionCameraMove->y)+ ")\n";
+            } else {
+                const sc2::ActionRawToggleAutocast* ptrActionToggleAutocast = dynamic_cast<const sc2::ActionRawToggleAutocast*>(action.get());
+
+                if (ptrActionToggleAutocast!=nullptr) {
+                    last_action_text_ = "Raw Toggle Autocast\n"+GetAbilityText(ptrActionToggleAutocast->ability_id)+"\n";
+                }
+
+            }
+
         }
 
         debug->DebugTextOut(last_action_text_);

@@ -5,6 +5,7 @@
 #include "sc2_gametypes.h"
 #include <vector>
 #include <stdint.h>
+#include <memory>
 
 namespace sc2 {
 
@@ -65,6 +66,9 @@ struct ActionRawUnitCommand : public ActionRaw{
     //! Constructor.
     ActionRawUnitCommand();
 
+    bool queueCommandValid{false};
+    bool queueCommand{false};
+
     //! Comparison overload.
 
     bool operator==(const ActionRawUnitCommand& a) const {
@@ -92,7 +96,7 @@ struct ActionRawUnitCommand : public ActionRaw{
 
 };
 
-typedef std::vector<ActionRaw> RawActions;
+typedef std::vector<std::shared_ptr<ActionRaw>> RawActions;
 
 //! An action (command or ability) applied to selected units when using feature layers or the rendered interface.
 struct SpatialUnitCommand {

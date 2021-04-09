@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <cassert>
+#include <memory>
+
 
 
 namespace sc2 {
@@ -345,29 +347,35 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
         }
 
         if (action_raw.has_unit_command()) {
+
             const SC2APIProtocol::ActionRawUnitCommand& action_raw_command = action_raw.unit_command();
             if (!action_raw_command.has_ability_id()) {
                 continue;
             }
 
             // Construct and push the relevant action.
-            ActionRawUnitCommand action;
-            action.ability_id = AbilityID(action_raw_command.ability_id());
-            action.raw_ability_id = action_raw_command.ability_id();
+            std::shared_ptr<ActionRawUnitCommand> action = std::shared_ptr<ActionRawUnitCommand>(new ActionRawUnitCommand());
+
+            action->ability_id = AbilityID(action_raw_command.ability_id());
+            action->raw_ability_id = action_raw_command.ability_id();
 
             if (action_raw_command.has_target_unit_tag()) {
-                action.target_type = ActionRawUnitCommand::TargetUnitTag;
-                action.target_tag = action_raw_command.target_unit_tag();
+                action->target_type = ActionRawUnitCommand::TargetUnitTag;
+                action->target_tag = action_raw_command.target_unit_tag();
             }
             else if (action_raw_command.has_target_world_space_pos()) {
-                action.target_type = ActionRawUnitCommand::TargetPosition;
-                action.target_point.x = action_raw_command.target_world_space_pos().x();
-                action.target_point.y = action_raw_command.target_world_space_pos().y();
+                action->target_type = ActionRawUnitCommand::TargetPosition;
+                action->target_point.x = action_raw_command.target_world_space_pos().x();
+                action->target_point.y = action_raw_command.target_world_space_pos().y();
             }
 
             for (int j = 0; j < action_raw_command.unit_tags_size(); ++j)
-                action.unit_tags.push_back(action_raw_command.unit_tags(j));
+                action->unit_tags.push_back(action_raw_command.unit_tags(j));
 
+            if (action_raw_command.has_queue_command()) {
+                action->queueCommandValid = true;
+                action->queueCommand = action_raw_command.queue_command();
+            }
 
             // TODO: Add optional target positions.
             // optional Point target_world_space_pos = 2;
@@ -376,25 +384,29 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
         }
 
         if (action_raw.has_camera_move()) {
+
             const SC2APIProtocol::ActionRawCameraMove& action_raw_camera_move = action_raw.camera_move();
             if (!action_raw_camera_move.has_center_world_space()) continue;
             const SC2APIProtocol::Point center_world_space = action_raw_camera_move.center_world_space();
 
-            ActionRawCameraMove cameraMove;
-            cameraMove.x = center_world_space.x();
-            cameraMove.y = center_world_space.y();
+            std::shared_ptr<ActionRawCameraMove> cameraMove = std::shared_ptr<ActionRawCameraMove>(new ActionRawCameraMove());
+
+            cameraMove->x = center_world_space.x();
+            cameraMove->y = center_world_space.y();
             actions.push_back(cameraMove);
         }
 
         if (action_raw.has_toggle_autocast()) {
+
             const SC2APIProtocol::ActionRawToggleAutocast& action_raw_toggle_autocast = action_raw.toggle_autocast();
 
-            ActionRawToggleAutocast actionToggleAutocast;
-            actionToggleAutocast.ability_id = AbilityID(action_raw_toggle_autocast.ability_id());
-            actionToggleAutocast.raw_ability_id = action_raw_toggle_autocast.ability_id();
+            std::shared_ptr<ActionRawToggleAutocast> actionToggleAutocast = std::shared_ptr<ActionRawToggleAutocast>(new ActionRawToggleAutocast());
+
+            actionToggleAutocast->ability_id = AbilityID(action_raw_toggle_autocast.ability_id());
+            actionToggleAutocast->raw_ability_id = action_raw_toggle_autocast.ability_id();
 
             for (int j = 0; j < action_raw_toggle_autocast.unit_tags_size(); ++j)
-                actionToggleAutocast.unit_tags.push_back(action_raw_toggle_autocast.unit_tags(j));
+                actionToggleAutocast->unit_tags.push_back(action_raw_toggle_autocast.unit_tags(j));
 
              actions.push_back(actionToggleAutocast);
         }
