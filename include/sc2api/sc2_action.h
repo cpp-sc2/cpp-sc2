@@ -8,8 +8,26 @@
 
 namespace sc2 {
 
+class ActionRaw {
+public:
+
+    virtual ~ActionRaw() {
+
+    }
+};
+
 //! An action (command or ability) applied to a unit or set of units.
-struct ActionRaw {
+struct ActionRawCameraMove : public ActionRaw{
+    float x;
+    float y;
+
+    virtual ~ActionRawCameraMove() {
+
+    }
+};
+
+//! An action (command or ability) applied to a unit or set of units.
+struct ActionRawUnitCommand : public ActionRaw{
     //! Type of target. Target types are mutually exclusive.
     enum TargetType {
         //! No target generally means 'self', e.g., a order to make a unit.
@@ -32,11 +50,11 @@ struct ActionRaw {
     Point2D target_point;
 
     //! Constructor.
-    ActionRaw();
+    ActionRawUnitCommand();
 
     //! Comparison overload.
 
-    bool operator==(const ActionRaw& a) const {
+    bool operator==(const ActionRawUnitCommand& a) const {
         if (ability_id != a.ability_id) {
             return false;
         }
@@ -52,8 +70,15 @@ struct ActionRaw {
         if (target_point.y != a.target_point.y) {
             return false;
         }
+
         return true;
     }
+
+
+    virtual ~ActionRawUnitCommand() {
+
+    }
+
 };
 
 typedef std::vector<ActionRaw> RawActions;

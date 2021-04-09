@@ -340,35 +340,50 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
             continue;
         }
         const SC2APIProtocol::ActionRaw& action_raw = proto_action.action_raw();
-        if (!action_raw.has_unit_command()) {
-            continue;
-        }
-        const SC2APIProtocol::ActionRawUnitCommand& action_raw_command = action_raw.unit_command();
-        if (!action_raw_command.has_ability_id()) {
+        if (!(action_raw.has_unit_command() || action_raw.has_camera_move())) {
             continue;
         }
 
-        // Construct and push the relevant action.
-        ActionRaw action;
-        action.ability_id = AbilityID(action_raw_command.ability_id());
+        if (action_raw.has_unit_command()) {
+            const SC2APIProtocol::ActionRawUnitCommand& action_raw_command = action_raw.unit_command();
+            if (!action_raw_command.has_ability_id()) {
+                continue;
+            }
 
-        if (action_raw_command.has_target_unit_tag()) {
-            action.target_type = ActionRaw::TargetUnitTag;
-            action.target_tag = action_raw_command.target_unit_tag();
+            // Construct and push the relevant action.
+            ActionRawUnitCommand action;
+            action.ability_id = AbilityID(action_raw_command.ability_id());
+
+            if (action_raw_command.has_target_unit_tag()) {
+                action.target_type = ActionRawUnitCommand::TargetUnitTag;
+                action.target_tag = action_raw_command.target_unit_tag();
+            }
+            else if (action_raw_command.has_target_world_space_pos()) {
+                action.target_type = ActionRawUnitCommand::TargetPosition;
+                action.target_point.x = action_raw_command.target_world_space_pos().x();
+                action.target_point.y = action_raw_command.target_world_space_pos().y();
+            }
+
+            for (int j = 0; j < action_raw_command.unit_tags_size(); ++j)
+                action.unit_tags.push_back(action_raw_command.unit_tags(j));
+
+
+            // TODO: Add optional target positions.
+            // optional Point target_world_space_pos = 2;
+
+            actions.push_back(action);
         }
-        else if (action_raw_command.has_target_world_space_pos()) {
-            action.target_type = ActionRaw::TargetPosition;
-            action.target_point.x = action_raw_command.target_world_space_pos().x();
-            action.target_point.y = action_raw_command.target_world_space_pos().y();
+
+        if (action_raw.has_camera_move()) {
+            const SC2APIProtocol::ActionRawCameraMove& action_raw_camera_move = action_raw.camera_move();
+            if (!action_raw_camera_move.has_center_world_space()) continue;
+            const SC2APIProtocol::Point center_world_space = action_raw_camera_move.center_world_space();
+
+            ActionRawCameraMove cameraMove;
+            cameraMove.x = center_world_space.x();
+            cameraMove.y = center_world_space.y();
+            actions.push_back(cameraMove);
         }
-
-        for (int j = 0; j < action_raw_command.unit_tags_size(); ++j)
-            action.unit_tags.push_back(action_raw_command.unit_tags(j));
-
-        // TODO: Add optional target positions.
-        // optional Point target_world_space_pos = 2;
-
-        actions.push_back(action);
     }
 }
 

@@ -7,7 +7,7 @@
 
 namespace sc2 {
 
-ActionRaw::ActionRaw() :
+ActionRawUnitCommand::ActionRawUnitCommand() :
     ability_id(0),
     target_type(TargetNone),
     target_tag(NullTag) {

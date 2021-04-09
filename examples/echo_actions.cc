@@ -34,22 +34,32 @@ public:
         // For now, just show  the first action.
         const sc2::ActionRaw& action = actions[0];
 
-        // Show the index of the ability being used.
-        last_action_text_ = GetAbilityText(action.ability_id);
 
-        // Add targeting information.
-        switch (action.target_type) {
-            case sc2::ActionRaw::TargetUnitTag:
-                last_action_text_ += "\nTargeting Unit: " + std::to_string(action.target_tag);
-                break;
+        const sc2::ActionRawUnitCommand* ptrActionRawUnitCommand=dynamic_cast<const sc2::ActionRawUnitCommand*>(&action);
 
-            case sc2::ActionRaw::TargetPosition:
-                last_action_text_ += "\nTargeting Pos: " + std::to_string(action.target_point.x) + ", " + std::to_string(action.target_point.y);
-                break;
 
-            case sc2::ActionRaw::TargetNone:
-            default:
-                last_action_text_ += "\nTargeting self";
+        if (ptrActionRawUnitCommand!=nullptr)  {
+            // Show the index of the ability being used.
+            last_action_text_ = GetAbilityText(ptrActionRawUnitCommand->ability_id);
+
+            // Add targeting information.
+            switch (ptrActionRawUnitCommand->target_type) {
+                case sc2::ActionRawUnitCommand::TargetUnitTag:
+                    last_action_text_ += "\nTargeting Unit: " + std::to_string(ptrActionRawUnitCommand->target_tag);
+                    break;
+
+                case sc2::ActionRawUnitCommand::TargetPosition:
+                    last_action_text_ += "\nTargeting Pos: " + std::to_string(ptrActionRawUnitCommand->target_point.x) + ", " + std::to_string(ptrActionRawUnitCommand->target_point.y);
+                    break;
+
+                case sc2::ActionRawUnitCommand::TargetNone:
+                default:
+                    last_action_text_ += "\nTargeting self";
+            }
+        } else {
+            const sc2::ActionRawCameraMove* ptrActionCameraMove = dynamic_cast<const sc2::ActionRawCameraMove*>(&action);
+            last_action_text_ = "Raw Camera Move\n";
+            last_action_text_ = "("+std::to_string(ptrActionCameraMove->x)+","+std::to_string(ptrActionCameraMove->y)+ ")\n";
         }
 
         debug->DebugTextOut(last_action_text_);
