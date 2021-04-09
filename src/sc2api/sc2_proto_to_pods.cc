@@ -340,7 +340,7 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
             continue;
         }
         const SC2APIProtocol::ActionRaw& action_raw = proto_action.action_raw();
-        if (!(action_raw.has_unit_command() || action_raw.has_camera_move())) {
+        if (!(action_raw.has_unit_command() || action_raw.has_camera_move()) || action_raw.has_toggle_autocast()) {
             continue;
         }
 
@@ -353,6 +353,7 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
             // Construct and push the relevant action.
             ActionRawUnitCommand action;
             action.ability_id = AbilityID(action_raw_command.ability_id());
+            action.raw_ability_id = action_raw_command.ability_id();
 
             if (action_raw_command.has_target_unit_tag()) {
                 action.target_type = ActionRawUnitCommand::TargetUnitTag;
@@ -383,6 +384,19 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
             cameraMove.x = center_world_space.x();
             cameraMove.y = center_world_space.y();
             actions.push_back(cameraMove);
+        }
+
+        if (action_raw.has_toggle_autocast()) {
+            const SC2APIProtocol::ActionRawToggleAutocast& action_raw_toggle_autocast = action_raw.toggle_autocast();
+
+            ActionRawToggleAutocast actionToggleAutocast;
+            actionToggleAutocast.ability_id = AbilityID(action_raw_toggle_autocast.ability_id());
+            actionToggleAutocast.raw_ability_id = action_raw_toggle_autocast.ability_id();
+
+            for (int j = 0; j < action_raw_toggle_autocast.unit_tags_size(); ++j)
+                actionToggleAutocast.unit_tags.push_back(action_raw_toggle_autocast.unit_tags(j));
+
+             actions.push_back(actionToggleAutocast);
         }
     }
 }

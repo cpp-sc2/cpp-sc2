@@ -21,9 +21,19 @@ struct ActionRawCameraMove : public ActionRaw{
     float x;
     float y;
 
-    virtual ~ActionRawCameraMove() {
+    ActionRawCameraMove();
+    virtual ~ActionRawCameraMove();
+};
 
-    }
+struct ActionRawToggleAutocast : public ActionRaw {
+    //! The ID of the ability to invoke.
+    AbilityID ability_id;
+    AbilityID raw_ability_id;
+
+    //! Units this action applies to. In normal use, this would be the currently selected units.
+    std::vector<Tag> unit_tags;
+
+    ActionRawToggleAutocast();
 };
 
 //! An action (command or ability) applied to a unit or set of units.
@@ -40,6 +50,9 @@ struct ActionRawUnitCommand : public ActionRaw{
 
     //! The ID of the ability to invoke.
     AbilityID ability_id;
+
+    AbilityID raw_ability_id;
+
     //! Units this action applies to. In normal use, this would be the currently selected units.
     std::vector<Tag> unit_tags;
     //! Which target fields are valid.
@@ -75,9 +88,7 @@ struct ActionRawUnitCommand : public ActionRaw{
     }
 
 
-    virtual ~ActionRawUnitCommand() {
-
-    }
+    virtual ~ActionRawUnitCommand();
 
 };
 

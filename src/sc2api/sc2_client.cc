@@ -559,10 +559,15 @@ bool ObservationImp::UpdateObservation() {
     {
         for (ActionRaw& action : raw_actions_) {
             ActionRawUnitCommand* ptrActionUnitCommand = dynamic_cast<ActionRawUnitCommand*>(&action);
+            ActionRawToggleAutocast* ptrActionToggleAutocast = dynamic_cast<ActionRawToggleAutocast*>(&action);
 
             if (ptrActionUnitCommand!=nullptr) {
                 ptrActionUnitCommand->ability_id = GetGeneralizedAbilityID(ptrActionUnitCommand->ability_id, *this);
+            } else
+            if (ptrActionToggleAutocast!=nullptr) {
+                ptrActionToggleAutocast->ability_id = GetGeneralizedAbilityID(ptrActionToggleAutocast->ability_id, *this);
             }
+
         }
         for (SpatialUnitCommand& spatial_action : feature_layer_actions_.unit_commands) {
             spatial_action.ability_id = GetGeneralizedAbilityID(spatial_action.ability_id, *this);
