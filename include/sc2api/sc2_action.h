@@ -18,7 +18,8 @@ public:
 };
 
 //! An action (command or ability) applied to a unit or set of units.
-struct ActionRawCameraMove : public ActionRaw{
+class ActionRawCameraMove : public ActionRaw{
+public:
     float x;
     float y;
 
@@ -26,7 +27,8 @@ struct ActionRawCameraMove : public ActionRaw{
     virtual ~ActionRawCameraMove();
 };
 
-struct ActionRawToggleAutocast : public ActionRaw {
+class ActionRawToggleAutocast : public ActionRaw {
+public:
     //! The ID of the ability to invoke.
     AbilityID ability_id;
     AbilityID raw_ability_id;
@@ -38,7 +40,8 @@ struct ActionRawToggleAutocast : public ActionRaw {
 };
 
 //! An action (command or ability) applied to a unit or set of units.
-struct ActionRawUnitCommand : public ActionRaw{
+class ActionRawUnitCommand : public ActionRaw{
+public:
     //! Type of target. Target types are mutually exclusive.
     enum TargetType {
         //! No target generally means 'self', e.g., a order to make a unit.
