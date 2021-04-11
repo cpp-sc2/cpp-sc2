@@ -46,7 +46,10 @@ To edit and generate the documentation yourself:
 
 
 ## Contributing
-A detailed contributing guide can be found [here](https://github.com/cpp-sc2/cpp-sc2/issues/9).
+This project follows a [Code of Conduct](CODE_OF_CONDUCT.md) in order to ensure an open and welcoming environment.
+
+Please, read also the detailed [contributing guide](https://github.com/cpp-sc2/cpp-sc2/issues/9) before creating pull-requests to the project.
+It can save you a lot of time.
 
 
 ## Coding Standard
