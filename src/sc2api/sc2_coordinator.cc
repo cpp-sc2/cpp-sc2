@@ -4,10 +4,10 @@
 #include "sc2api/sc2_args.h"
 #include "sc2api/sc2_interfaces.h"
 #include "sc2api/sc2_control_interfaces.h"
+#include "sc2api/sc2_errors.h"
 
 #include "sc2utils/sc2_manage_process.h"
 #include "sc2utils/sc2_scan_directory.h"
-
 #include "s2clientprotocol/sc2api.pb.h"
 
 #include <algorithm>
@@ -97,6 +97,13 @@ bool AttachClients(ProcessSettings& process_settings, std::vector<Client*> clien
         Client* c = clients[i];
 
         connected = c->Control()->Connect(process_settings.net_address, pi.port, process_settings.timeout_ms);
+
+        if (!connected) {
+		std::cerr << "AttachClients: Attach to clients failed" << std::endl;
+		ClientResponseError error("AttachClients: Attach to clients failed");
+		throw error;
+	}
+
         assert(connected);
     }
 
