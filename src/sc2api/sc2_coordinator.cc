@@ -1,9 +1,10 @@
-#include "sc2api/sc2_coordinator.h"
 #include "sc2api/sc2_agent.h"
-#include "sc2api/sc2_replay_observer.h"
 #include "sc2api/sc2_args.h"
-#include "sc2api/sc2_interfaces.h"
 #include "sc2api/sc2_control_interfaces.h"
+#include "sc2api/sc2_coordinator.h"
+#include "sc2api/sc2_errors.h"
+#include "sc2api/sc2_interfaces.h"
+#include "sc2api/sc2_replay_observer.h"
 
 #include "sc2utils/sc2_manage_process.h"
 #include "sc2utils/sc2_scan_directory.h"
@@ -94,7 +95,8 @@ bool AttachClients(ProcessSettings& process_settings, std::vector<Client*> clien
         Client* c = clients[i];
 
         connected = c->Control()->Connect(process_settings.net_address, pi.port, process_settings.timeout_ms);
-        assert(connected);
+        if (!connected)
+            throw ClientConnectionError(process_settings.net_address, pi.port);
     }
 
     return connected;
