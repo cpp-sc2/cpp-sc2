@@ -30,18 +30,14 @@ $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 :: Enter the working directory.
 $ cd cpp-sc2
 
-:: Create build directory.
-$ mkdir build
-$ cd build
-
 :: Create Visual Studio project files.
 :: For Visual Studio 2019.
-$ cmake ../ -G "Visual Studio 16 2019"
+$ cmake -B build -G "Visual Studio 16 2019"
 :: For Visual Studio 2017.
-$ cmake ../ -G "Visual Studio 15 2017 Win64"
+$ cmake -B build -G "Visual Studio 15 2017 Win64"
 
 :: Build the project using Visual Studio.
-$ start cpp-sc2.sln
+$ start build\cpp-sc2.sln
 ```
 
 ## Windows (cmdline)
@@ -52,12 +48,11 @@ $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 :: Enter the working directory.
 $ cd cpp-sc2
 
-:: Create build directory.
-$ mkdir build
-$ cd build
+:: Configure the project.
+$ cmake -B build
 
 :: Build the project.
-$ cmake --build . --parallel
+$ cmake --build build --parallel
 ```
 
 ## Mac (Xcode)
@@ -68,14 +63,11 @@ $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 # Enter the working directory.
 $ cd cpp-sc2
 
-# Create build directory.
-$ mkdir build && cd build
-
 # Create Xcode project files.
-$ cmake ../ -G Xcode
+$ cmake -B build -G Xcode
 
 # Build the project using Xcode.
-$ open cpp-sc2.xcodeproj/
+$ open build/cpp-sc2.xcodeproj
 ```
 
 ## Mac (cmdline)
@@ -86,14 +78,11 @@ $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 # Enter the working directory.
 $ cd cpp-sc2
 
-# Create build directory.
-$ mkdir build && cd build
-
 # Create makefiles.
-$ cmake ../
+$ cmake -B build
 
 # Build the project.
-$ VERBOSE=1 cmake --build . --parallel
+$ cmake --build build --parallel
 ```
 
 ## Linux (cmdline)
@@ -104,14 +93,11 @@ $ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
 # Enter the working directory.
 $ cd cpp-sc2
 
-# Create build directory.
-$ mkdir build && cd build
-
 # Create makefiles.
-$ cmake ../
+$ cmake -B build
 
 # Build the project.
-$ VERBOSE=1 cmake --build . --parallel
+$ cmake --build build --parallel
 ```
 
 ## Compilation options
