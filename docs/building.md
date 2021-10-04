@@ -25,7 +25,7 @@ $ git submodule update --init --recursive
 ## Windows (Visual Studio)
 ```bat
 :: Clone the project.
-$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+$ git clone --recursive git@github.com:cpp-sc2/cpp-sc2.git
 
 :: Enter the working directory.
 $ cd cpp-sc2
@@ -43,7 +43,7 @@ $ start build\cpp-sc2.sln
 ## Windows (cmdline)
 ```bat
 :: Clone the project.
-$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+$ git clone --recursive git@github.com:cpp-sc2/cpp-sc2.git
 
 :: Enter the working directory.
 $ cd cpp-sc2
@@ -58,7 +58,7 @@ $ cmake --build build --parallel
 ## Mac (Xcode)
 ```bash
 # Clone the project.
-$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+$ git clone --recursive git@github.com:cpp-sc2/cpp-sc2.git
 
 # Enter the working directory.
 $ cd cpp-sc2
@@ -73,7 +73,7 @@ $ open build/cpp-sc2.xcodeproj
 ## Mac (cmdline)
 ```bash
 # Clone the project.
-$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+$ git clone --recursive git@github.com:cpp-sc2/cpp-sc2.git
 
 # Enter the working directory.
 $ cd cpp-sc2
@@ -88,7 +88,7 @@ $ cmake --build build --parallel
 ## Linux (cmdline)
 ```bash
 # Clone the project.
-$ git clone --recursive https://github.com/alkurbatov/cpp-sc2.git
+$ git clone --recursive git@github.com:cpp-sc2/cpp-sc2.git
 
 # Enter the working directory.
 $ cd cpp-sc2
