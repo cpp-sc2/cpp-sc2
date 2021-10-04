@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - dev
-    path-ignore:
+    paths-ignore:
       - '.github/ISSUE_TEMPLATE/**'
       - 'docs/**'
       - 'maps/**'
@@ -13,7 +13,7 @@ on:
       - 'LICENSE'
       - '**.md'
   pull_request:
-    path-ignore:
+    paths-ignore:
       - '.github/ISSUE_TEMPLATE/**'
       - 'docs/**'
       - 'maps/**'
