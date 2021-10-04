@@ -191,7 +191,7 @@ namespace sc2 {
     class TestBuildBarracksTechLabDifferentPoint : public TestUnitCommandTargetingPoint {
     public:
         TestBuildBarracksTechLabDifferentPoint() {
-            test_unit_type_ = UNIT_TYPEID::TERRAN_BARRACKS;
+            test_unit_type_ = UNIT_TYPEID::TERRAN_BARRACKSFLYING;
             test_ability_ = ABILITY_ID::BUILD_TECHLAB;
         }
 
