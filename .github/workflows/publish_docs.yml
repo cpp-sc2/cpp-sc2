@@ -1,0 +1,25 @@
+name: Publish documentation
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Make output folder
+        run: mkdir -p docs/html
+
+      - name: Generate static pages
+        run: doxygen
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "${GITHUB_ACTOR}@github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git add docs/html
+          git commit -m "chore: Regenerate documentation"
+          git push origin gh-pages
