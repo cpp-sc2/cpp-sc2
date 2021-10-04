@@ -9,6 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install packages
+        run: sudo apt-get install -y doxygen
 
       - name: Make output folder
         run: mkdir -p docs/html
@@ -20,6 +25,7 @@ jobs:
         run: |
           git config --global user.email "${GITHUB_ACTOR}@github.com"
           git config --global user.name "${GITHUB_ACTOR}"
+          git checkout -b gh-pages origin/gh-pages
           git add docs/html
           git commit -m "chore: Regenerate documentation"
           git push origin gh-pages
