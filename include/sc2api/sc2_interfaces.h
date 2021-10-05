@@ -489,6 +489,8 @@ public:
     virtual void DebugGodMode() = 0;
     //! Ignores mineral costs.
     virtual void DebugIgnoreMineral() = 0;
+    //! Ignores gas costs.
+    virtual void DebugIgnoreGas() = 0;
     //! Cooldowns become instant.
     virtual void DebugNoCooldowns() = 0;
     //! All tech becomes available.
