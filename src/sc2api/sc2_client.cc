@@ -953,6 +953,7 @@ public:
     void DebugGiveAllResources() override;
     void DebugGodMode() override;
     void DebugIgnoreMineral() override;
+    void DebugIgnoreGas() override;
     void DebugNoCooldowns() override;
     void DebugGiveAllTech() override;
     void DebugGiveAllUpgrades() override;
@@ -1062,6 +1063,10 @@ void DebugImp::DebugGodMode() {
 
 void DebugImp::DebugIgnoreMineral() {
     debug_state_.push_back(SC2APIProtocol::DebugGameState::minerals);
+}
+
+void DebugImp::DebugIgnoreGas() {
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::gas);
 }
 
 void DebugImp::DebugNoCooldowns() {
