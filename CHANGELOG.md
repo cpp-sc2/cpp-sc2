@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [](https://github.com/cpp-sc2/cpp-sc2/compare/v1.3.1...v) (2021-10-07)
+
+
+### Features
+
+* Introduce IsBuilding filter, [#87](https://github.com/cpp-sc2/cpp-sc2/issues/87) ([16d4468](https://github.com/cpp-sc2/cpp-sc2/commit/16d4468826d96ec7fffeb3d996c30e27be75e46b))
+* Introduce IsWorker filter, [#92](https://github.com/cpp-sc2/cpp-sc2/issues/92) ([b4190a8](https://github.com/cpp-sc2/cpp-sc2/commit/b4190a8ff587418e017df7f8c865a228f9d74c93))
+* Introduce sc2::Unit::is_building flag, [#87](https://github.com/cpp-sc2/cpp-sc2/issues/87) ([ca4339b](https://github.com/cpp-sc2/cpp-sc2/commit/ca4339b86599ceec4f358725eaadd972305b1a43))
+* Introduce sc2::Unit::IsBuildFinished ([08f93f3](https://github.com/cpp-sc2/cpp-sc2/commit/08f93f32d3b3fbe2082d02113d1ff844a4dd8c2b))
+* Rebase to the latest proto ([fcea655](https://github.com/cpp-sc2/cpp-sc2/commit/fcea655298d162b3e01e863b993d57de7c001010)) ([144b783](https://github.com/cpp-sc2/cpp-sc2/commit/144b7835f45278f21165c37c45f8bf6040f4a173))
+* Support different SC2 versions, [#77](https://github.com/cpp-sc2/cpp-sc2/issues/77) ([4a423a3](https://github.com/cpp-sc2/cpp-sc2/commit/4a423a3dcbd7b268c8fc2d9225a1073faacff3cf)) ([775bcad](https://github.com/cpp-sc2/cpp-sc2/commit/775bcad32871be86d3c9edffe84bdb944964384f))
+* Switch to 5.0.3 IDs, [#78](https://github.com/cpp-sc2/cpp-sc2/issues/78) ([bae3d5e](https://github.com/cpp-sc2/cpp-sc2/commit/bae3d5e49d0963fd1d7ea059da91bc5ca4e6025b))
+* Support sc2::Unit::is_hallucination, [#84](https://github.com/cpp-sc2/cpp-sc2/issues/84) ([5617655](https://github.com/cpp-sc2/cpp-sc2/commit/5617655cb450861607608cb8720682111a726821))
+* Update Civetweb to v1.13 ([538383e](https://github.com/cpp-sc2/cpp-sc2/commit/538383e15c220dffd693144168fced6cdaf6aa16))
+* Update the s2client-proto submodule ([5be7be2](https://github.com/cpp-sc2/cpp-sc2/commit/5be7be2a02dc58296dcc7151951ae4d72b899975))
+* Update the SDL submodule ([df661b2](https://github.com/cpp-sc2/cpp-sc2/commit/df661b2ee3f167d3617255e30c67be7a8db4ec55))
+
+
+### Bug Fixes
+
+* Abort game on unexpected cmdline options ([86f1823](https://github.com/cpp-sc2/cpp-sc2/commit/86f18230ade5c9f8f3f0f978938746669ae7db9c))
+* Broken linking with SDL2-static on Windows ([2a88b08](https://github.com/cpp-sc2/cpp-sc2/commit/2a88b0811d894e232e5857f0e35eeb96912298ec))
+* Don't mix runtime environments on Windows ([3c030f6](https://github.com/cpp-sc2/cpp-sc2/commit/3c030f6bb89d46239806909766ca8fa4ae0ce526))
+* Make '-e, --executable' optional ([794a1ff](https://github.com/cpp-sc2/cpp-sc2/commit/794a1fffeacefb416616f4e86bea0847a39ad7b0))
+* Throw when we can't connect to client ([085e588](https://github.com/cpp-sc2/cpp-sc2/commit/085e5886150dd565f6c2d1d7ed62383364e6310c))
+
+
+### Tests
+
+* Test BuildBarracksTechLabDifferentPointE failed ([c0b9869](https://github.com/cpp-sc2/cpp-sc2/commit/c0b9869dcaf2715c04eb563d3f11026b2fbf839d))
+
+
+### Build System
+
+* Make sc2renderer conditional, [#90](https://github.com/cpp-sc2/cpp-sc2/issues/90) ([cbc2a87](https://github.com/cpp-sc2/cpp-sc2/commit/cbc2a87d41b7dcd9a7d9ddc0c9e04757f0f74387))
+* Switch CI to Github Actions, [#93](https://github.com/cpp-sc2/cpp-sc2/issues/93) ([de3bf26](https://github.com/cpp-sc2/cpp-sc2/commit/de3bf26839fe25bdd7dcd81d2df1b6308cb4776e)) ([caf956e](https://github.com/cpp-sc2/cpp-sc2/commit/caf956e76642a93bf173d646c5b607e68dcc4ffe))
+
+
+### Ecosystem
+
+* New project: [blank-bot](https://github.com/cpp-sc2/blank-bot) - starter bot for StarCraft II with integrated cpp-sc2.
+* New project: [commandcenter](https://github.com/cpp-sc2/commandcenter) - original version of CommandCenter with integrated cpp-sc2.
+* new project: [docker-sc2](https://github.com/cpp-sc2/docker-sc2) - dockerized StarCraft II Linux client.
+
+
+### Refactoring
+
+* Fix protobuf warnings ([baff1c9](https://github.com/cpp-sc2/cpp-sc2/commit/baff1c956b4ab84d7625b66cb57bd625ea13800a))
+* Get rid of random_shuffle ([2ebc82b](https://github.com/cpp-sc2/cpp-sc2/commit/2ebc82bfc36af5c18c076a1d485fc3b138c73e08))
+* Move filters to sc2_unit_filters, [#82](https://github.com/cpp-sc2/cpp-sc2/issues/82) ([509786d](https://github.com/cpp-sc2/cpp-sc2/commit/509786dbcd225437841957a9e7d9ba2e2b9492b1)) ([40ae46b](https://github.com/cpp-sc2/cpp-sc2/commit/40ae46b27fb5ea25c22a76d89f95b4cbd70fd47f))
+* Reduce verbocity in examples ([fbe3c9c](https://github.com/cpp-sc2/cpp-sc2/commit/fbe3c9c3444267ee56b5e0cfaf204f26f546fa33))
+
+
+### Documentation
+
+* Add code of conduct, [#14](https://github.com/cpp-sc2/cpp-sc2/issues/14) ([dcf43b3](https://github.com/cpp-sc2/cpp-sc2/commit/dcf43b3c251a79850ac848dcafe19ea75276edbc))
+* Add links to other bots/projects ([2c792a5](https://github.com/cpp-sc2/cpp-sc2/commit/2c792a5ca6e58c6e9659151fc62589c5acaea90f)) ([df5f943](https://github.com/cpp-sc2/cpp-sc2/commit/df5f9434b2502b0078935bbfabf67079a70184d5))
+* Added #include <sc2api/sc2_unit_filters.h> to docs/tutorial3.md ([3d3fcbb](https://github.com/cpp-sc2/cpp-sc2/commit/3d3fcbbebffdfec590255bc62f5531d3a6904374))
+* Describe when it's better to use IsWorker ([4042ecb](https://github.com/cpp-sc2/cpp-sc2/commit/4042ecbadd575e2bba8195484b837098058e7f62))
+* Simplify build instructions ([56fb22e](https://github.com/cpp-sc2/cpp-sc2/commit/56fb22e1011d108803d39e7ca7422a6814b65c0e))
+* Update the CONTRIBUTING guide ([ca237c4](https://github.com/cpp-sc2/cpp-sc2/commit/ca237c48849ffe0b7cdfa1c0f924ff87d8eff3ad)) ([9a45b28](https://github.com/cpp-sc2/cpp-sc2/commit/9a45b288ee4e4becd6d6f3a7a6a16c7e21761609))
+
+
 ### [1.3.1](https://github.com/alkurbatov/cpp-sc2/compare/v1.3.0...v1.3.1) (2020-06-10)
 
 
@@ -84,6 +147,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * Provide better Windows build instructions ([2e0a4d4](https://github.com/alkurbatov/cpp-sc2/commit/2e0a4d445df6dc013d3035c18495e2910c2d62c6))
 * Set Windows build recommendations to VS 2019 ([6971da0](https://github.com/alkurbatov/cpp-sc2/commit/6971da07c837954c84b94ac47a91fbf968dbe087))
+
 
 ## [1.2.0](https://github.com/alkurbatov/cpp-sc2/compare/v1.1.0...v1.2.0) (2019-11-04)
 
