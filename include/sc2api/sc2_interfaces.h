@@ -340,6 +340,32 @@ public:
     //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Unit, AbilityID, Unit).
     virtual void UnitCommand(const Units& units, AbilityID ability, const Unit* target, bool queued_command = false) = 0;
 
+    //! Issues a command to a unit. Self targeting.
+    //!< \param tag The unit to send the command to.
+    //!< \param ability The ability id of the command.
+    virtual void UnitCommand(Tag tag, AbilityID ability, bool queued_command = false) = 0;
+
+    //! Issues a command to a unit. Targets a point.
+    //!< \param tag The unit to send the command to.
+    //!< \param ability The ability id of the command.
+    //!< \param point The 2D world position to target.
+    virtual void UnitCommand(Tag tag, AbilityID ability, const Point2D& point, bool queued_command = false) = 0;
+
+    //! Issues a command to a unit. Targets another unit.
+    //!< \param tag The unit to send the command to.
+    //!< \param ability The ability id of the command.
+    //!< \param target The unit that is a target of the unit getting the command.
+    virtual void UnitCommand(Tag tag, AbilityID ability, const Tag target, bool queued_command = false) = 0;
+
+    //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Tag, AbilityID).
+    virtual void UnitCommand(const std::vector<Tag>& tags, AbilityID ability, bool queued_move = false) = 0;
+
+    //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Tag, AbilityID, Point2D).
+    virtual void UnitCommand(const std::vector<Tag>& tags, AbilityID ability, const Point2D& point, bool queued_command = false) = 0;
+
+    //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Tag, AbilityID, Tag).
+    virtual void UnitCommand(const std::vector<Tag>& tags, AbilityID ability, const Tag target, bool queued_command = false) = 0;
+
     //! Returns a list of unit tags that have sent commands out in the last call to SendActions. This will be used to determine
     //! if a unit actually has a command when the observation is received.
     //!< \return Array of units that have sent commands.
