@@ -28,10 +28,10 @@ public:
     void UnitCommand(const Units& units, AbilityID ability, const Unit* target, bool queued_command = false) override;
     void UnitCommand(Tag tag, AbilityID ability, bool queued_command = false) override;
     void UnitCommand(Tag tag, AbilityID ability, const Point2D& point, bool queued_command = false) override;
-    void UnitCommand(Tag tag, AbilityID ability, const Tag target, bool queued_command = false) override;
+    void UnitCommand(Tag tag, AbilityID ability, const Tag target_tag, bool queued_command = false) override;
     void UnitCommand(const std::vector<Tag>& tags, AbilityID ability, bool queued_command = false) override;
     void UnitCommand(const std::vector<Tag>& tags, AbilityID ability, const Point2D& point, bool queued_command = false) override;
-    void UnitCommand(const std::vector<Tag>& tags, AbilityID ability, const Tag target, bool queued_command = false) override;
+    void UnitCommand(const std::vector<Tag>& tags, AbilityID ability, const Tag target_tag, bool queued_command = false) override;
 
     void ToggleAutocast(Tag unit_tag, AbilityID ability) override;
     void ToggleAutocast(const std::vector<Tag>& unit_tags, AbilityID ability) override;
@@ -198,14 +198,14 @@ void ActionImp::UnitCommand(Tag tag, AbilityID ability, const Point2D& point, bo
     tag_command->add_unit_tags(tag);
 }
 
-void ActionImp::UnitCommand(Tag tag, AbilityID ability, const Tag target, bool queued_command) {
+void ActionImp::UnitCommand(Tag tag, AbilityID ability, const Tag target_tag, bool queued_command) {
     SC2APIProtocol::RequestAction* request_action = GetRequestAction();
     SC2APIProtocol::Action* action = request_action->add_actions();
     SC2APIProtocol::ActionRaw* action_raw = action->mutable_action_raw();
     SC2APIProtocol::ActionRawUnitCommand* tag_command = action_raw->mutable_unit_command();
 
     tag_command->set_ability_id(ability);
-    tag_command->set_target_unit_tag(target);
+    tag_command->set_target_unit_tag(target_tag);
     tag_command->set_queue_command(queued_command);
     tag_command->add_unit_tags(tag);
 }
@@ -241,14 +241,14 @@ void ActionImp::UnitCommand(const std::vector<Tag>& tags, AbilityID ability, con
     }
 }
 
-void ActionImp::UnitCommand(const std::vector<Tag>& tags, AbilityID ability, const Tag target, bool queued_command) {
+void ActionImp::UnitCommand(const std::vector<Tag>& tags, AbilityID ability, const Tag target_tag, bool queued_command) {
     SC2APIProtocol::RequestAction* request_action = GetRequestAction();
     SC2APIProtocol::Action* action = request_action->add_actions();
     SC2APIProtocol::ActionRaw* action_raw = action->mutable_action_raw();
     SC2APIProtocol::ActionRawUnitCommand* tag_command = action_raw->mutable_unit_command();
 
     tag_command->set_ability_id(ability);
-    tag_command->set_target_unit_tag(target);
+    tag_command->set_target_unit_tag(target_tag);
     tag_command->set_queue_command(queued_command);
 
     for (auto tag : tags) {
