@@ -14,7 +14,7 @@ public:
 
     PropertyReader();
     PropertyReader(const std::string& file_name);
-    ~PropertyReader();
+    ~PropertyReader() = default;
 
     bool IsLoaded() const;
     bool LoadFile(const std::string& file_name);

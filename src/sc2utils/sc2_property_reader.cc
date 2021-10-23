@@ -14,10 +14,6 @@ PropertyReader::PropertyReader(const std::string& file_name) :
     LoadFile(file_name);
 }
 
-PropertyReader::~PropertyReader() {
-
-}
-
 bool PropertyReader::IsLoaded() const {
     return file_read_;
 }
