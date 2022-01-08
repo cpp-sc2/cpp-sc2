@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/cpp-sc2/cpp-sc2/compare/v1.4.0...v1.4.1) (2022-01-08)
+
+
+### Features
+
+* Read path to game client from SC2PATH, [#107](https://github.com/cpp-sc2/cpp-sc2/issues/107) ([f1f65aa](https://github.com/cpp-sc2/cpp-sc2/commit/f1f65aa0e33d0391e1ce3b3e2bc0960bb057e3de))
+* Rebase to the latest proto ([dc67545](https://github.com/cpp-sc2/cpp-sc2/commit/dc67545b574a0956a6759c4f098e00c76dd76506))
+
+
+### Bug Fixes
+
+* **ci:** Fix typo ([c031314](https://github.com/cpp-sc2/cpp-sc2/commit/c0313149fe6afeb59d17c6417fad64e47dcd978b))
+* Extend error reporting when searching SC2 executable ([26284b6](https://github.com/cpp-sc2/cpp-sc2/commit/26284b6c7b61abf19fab7b94a65b068352ab49e3))
+* Missing DebugIgnoreGas ([2eb60b9](https://github.com/cpp-sc2/cpp-sc2/commit/2eb60b962a10358bbf662dbef11826a7ba57915d))
+
+
+### Performance Improvements
+
+* Speed up creation of Point objects ([02fe908](https://github.com/cpp-sc2/cpp-sc2/commit/02fe90836450ccb64523fe25aa15d95dd3d74460))
+
+
+### Refactoring
+
+* Use default destructors ([cac2237](https://github.com/cpp-sc2/cpp-sc2/commit/cac223700971b55e02643318e4d4276de56c749d))
+
+
+### Build System
+
+* Don't try to commit docs if no changes, [#109](https://github.com/cpp-sc2/cpp-sc2/issues/109) ([7906e37](https://github.com/cpp-sc2/cpp-sc2/commit/7906e3796dce97ae9400700b768ecd5339c9ec02))
+
+
+### Documentation
+
+* Add missing v1.4.0 to the changelog ([3c1fc5d](https://github.com/cpp-sc2/cpp-sc2/commit/3c1fc5da475de28a74663cade40faa3d424f8ac0))
+* Correct clone URLs ([6200ee0](https://github.com/cpp-sc2/cpp-sc2/commit/6200ee03dcce1fae17174a760f9cc3969e40e17b))
+
 ## [1.4.0](https://github.com/cpp-sc2/cpp-sc2/compare/v1.3.1...v1.4.0) (2021-10-07)
 
 
