@@ -5,6 +5,7 @@
 #include "sc2utils/sc2_property_reader.h"
 
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 
 namespace sc2 {
@@ -77,6 +78,9 @@ bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, Ga
         { "-t", "--timeout", "Timeout for how long the library will block for a response.", false },
         { "-d", "--data_version", "Data hash of the game version to run (see versions.json)", false }
     });
+
+    if (const char* sc2path = std::getenv("SC2PATH"))
+        process_settings.process_path = sc2path;
 
     if (!arg_parser.Parse(argc, argv))
         return false;
