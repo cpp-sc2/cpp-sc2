@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [](https://github.com/cpp-sc2/cpp-sc2/compare/v1.3.1...v) (2021-10-07)
+## [1.4.0](https://github.com/cpp-sc2/cpp-sc2/compare/v1.3.1...v1.4.0) (2021-10-07)
 
 
 ### Features
