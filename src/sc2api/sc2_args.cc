@@ -39,26 +39,34 @@ bool ParseFromFile(ProcessSettings& process_settings, GameSettings& game_setting
 #else
     const char kDirectoryDivider = '/';
 #endif
-    
+
+std::string ParseExecuteInfo(ProcessSettings& process_settings, GameSettings& game_settings) {
+    std::string execute_info_filepath = GetUserDirectory();
+    if (execute_info_filepath.empty())
+        return "Failed to determine path to the user's directory";
+
+    execute_info_filepath += kDirectoryDivider;
+    execute_info_filepath += StarCraft2UserDirectory;
+    execute_info_filepath += kDirectoryDivider;
+    execute_info_filepath += StarCraft2ExecuteInfo;
+
+    if (!ParseFromFile(process_settings, game_settings, execute_info_filepath))
+        return "Failed to parse " + execute_info_filepath;
+
+    if (!FindLatestExe(process_settings.process_path))
+        return "Failed to find latest StarCraft II executable in " + process_settings.process_path;
+
+    return std::string();
+}
+
 bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, GameSettings& game_settings) {
     assert(argc);
     ArgParser arg_parser(argv[0]);
 
-    // First attempt to parse from the SC2 user directory.
-    bool parsed = false;
-    {
-        std::string execute_info_filepath = GetUserDirectory();
-        if (execute_info_filepath.length() > 0) {
-            execute_info_filepath += kDirectoryDivider;
-            execute_info_filepath += StarCraft2UserDirectory;
-            execute_info_filepath += kDirectoryDivider;
-            execute_info_filepath += StarCraft2ExecuteInfo;
-            parsed = ParseFromFile(process_settings, game_settings, execute_info_filepath);
-            if (parsed) {
-                parsed = FindLatestExe(process_settings.process_path);
-            }
-        }
-    }
+    // NB (alkurbatov): First attempt to parse from the SC2 user directory.
+    // Note that ExecuteInfo.txt may be missing on Linux and command line
+    // options should be used instead.
+    std::string parse_error = ParseExecuteInfo(process_settings, game_settings);
 
     arg_parser.AddOptions({
         { "-e", "--executable", "The path to StarCraft II.", false },
@@ -67,24 +75,22 @@ bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, Ga
         { "-r", "--realtime", "Whether to run StarCraft II in real time or not.", false },
         { "-m", "--map", "Which map to run.", false },
         { "-t", "--timeout", "Timeout for how long the library will block for a response.", false },
-        { "-d", "--data_version", "Data hash of the game version to run (see versions.json)", false}
+        { "-d", "--data_version", "Data hash of the game version to run (see versions.json)", false }
     });
-
-    if (argc == 1 && !parsed) {
-        // If there is no file and no command line arguments print how to use command line arguments.
-        std::cout << "Please run StarCraft II before running this API" << std::endl;
-        std::cout << "Command Line ";
-        arg_parser.PrintUsage();
-        std::cout << "For more options: ";
-        std::cout << argv[0] << " --help" << std::endl << std::endl;
-    }
 
     if (!arg_parser.Parse(argc, argv))
         return false;
 
     arg_parser.Get("executable", process_settings.process_path);
     if (process_settings.process_path.length() < 2) {
-        std::cerr << "Unable to find executable." << std::endl;
+        std::cerr << "Path to StarCraft II executable is not specified.\n";
+
+        if (!parse_error.empty())
+            std::cerr << parse_error << '\n';
+
+        std::cerr << "Please run StarCraft II before running this application or provide command line arguments.\n";
+        std::cerr << "For more options: " << argv[0] << " --help\n\n";
+
         return false;
     }
 
