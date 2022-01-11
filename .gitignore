@@ -57,6 +57,7 @@ CodeAnalyst/
 # OS X internals
 .DS_Store
 
+# Doxygen files
 docs/html
 docs/latex
 doxygen.log
@@ -68,3 +69,6 @@ include/sc2api/sc2_typeenums.h
 node_modules
 package.json
 package-lock.json
+
+# Clangd cache
+.cache/
