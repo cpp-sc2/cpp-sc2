@@ -76,10 +76,6 @@ include_directories("../contrib/SDL-mirror/include")
 include_directories("../contrib/ipv6-parse")
 include_directories("../include")
 
-if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
-
 if (MSVC)
     set(CMAKE_CXX_FLAGS "/EHsc" CACHE STRING "" FORCE)
     set(CMAKE_CXX_FLAGS_DEBUG "/MTd /ZI /Od" CACHE STRING "" FORCE)
