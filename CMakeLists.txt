@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.15)
+cmake_policy(VERSION 3.15)
 
 project(cpp-sc2)
 
@@ -35,44 +36,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${PROJECT_BINARY_DIR}/bin)
 # Build with c++14 support.
 set(CMAKE_CXX_STANDARD 14)
 
-# Disable default libraries in visual studio
-if (MSVC)
-    # Default to statically-linked runtime.
-    if("${MSVC_RUNTIME}" STREQUAL "")
-        set(MSVC_RUNTIME "static")
-    endif()
-
-    # Set compiler options.
-    set(variables
-        CMAKE_C_FLAGS_DEBUG
-        CMAKE_C_FLAGS_MINSIZEREL
-        CMAKE_C_FLAGS_RELEASE
-        CMAKE_C_FLAGS_RELWITHDEBINFO
-        CMAKE_CXX_FLAGS_DEBUG
-        CMAKE_CXX_FLAGS_MINSIZEREL
-        CMAKE_CXX_FLAGS_RELEASE
-        CMAKE_CXX_FLAGS_RELWITHDEBINFO
-    )
-    if(${MSVC_RUNTIME} STREQUAL "static")
-        message(STATUS
-          "MSVC -> forcing use of statically-linked runtime."
-        )
-        foreach(variable ${variables})
-            if(${variable} MATCHES "/MD")
-                string(REGEX REPLACE "/MD" "/MT" ${variable} "${${variable}}")
-            endif()
-        endforeach()
-    else()
-        message(STATUS
-            "MSVC -> forcing use of dynamically-linked runtime."
-        )
-        foreach(variable ${variables})
-            if(${variable} MATCHES "/MT")
-                string(REGEX REPLACE "/MT" "/MD" ${variable} "${${variable}}")
-            endif()
-        endforeach()
-    endif()
-endif ()
+# Use statically linked runtime
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # Allow creating filters for projects in visual studio.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
