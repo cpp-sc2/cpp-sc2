@@ -63,4 +63,4 @@ of two space tabs.
 
 ### Maps and Replays
 This repository only comes with a few maps for testing.
-Additional maps and replays can be found [here](https://github.com/Blizzard/s2client-proto#downloads).
+Additional maps and replays can be found [here](https://aiarena.net/wiki/maps/).
