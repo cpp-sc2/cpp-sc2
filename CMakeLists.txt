@@ -80,13 +80,19 @@ set_target_properties(libprotoc PROPERTIES FOLDER contrib)
 set_target_properties(protoc PROPERTIES FOLDER contrib)
 set_target_properties(ipv6-parse PROPERTIES FOLDER contrib)
 
+# civetweb's cmake does not set debug postfix
+set_target_properties(civetweb-c-library PROPERTIES DEBUG_POSTFIX "d")
+
 if (MSVC)
+    # Setup MSVC parallelized builds
+    add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
+
     set_target_properties(libprotobuf libprotobuf-lite libprotoc protoc PROPERTIES COMPILE_FLAGS "/W0")
     set_source_files_properties(${libprotobuf_files} PROPERTIES COMPILE_FLAGS "/W0")
     set_source_files_properties(${protobuf_SHARED_OR_STATIC} PROPERTIES COMPILE_FLAGS "/W0")
     set_source_files_properties(${libprotobuf_lite_files} PROPERTIES COMPILE_FLAGS "/W0")
     add_definitions(-D_SCL_SECURE_NO_WARNINGS)
-endif (MSVC)
+endif ()
 
 add_subdirectory("src")
 

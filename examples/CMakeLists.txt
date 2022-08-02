@@ -1,26 +1,18 @@
-include_directories("../include")
-include_directories("common")
-
-# Setup MSVC parallelized builds
-add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
-
-# Included for all examples
-include_directories(SYSTEM "${PROJECT_BINARY_DIR}/generated")
-include_directories(SYSTEM "${CMAKE_SOURCE_DIR}/contrib/SDL-mirror/include")
-
 # Function to generate an example project with extra libraries
 function (example_project_extra project_name source_code extra_libs)
     message(VERBOSE "Adding new example project ${project_name}, sources: ${source_code}, extra_libs: ${extra_libs}")
     file (GLOB example_project_sources ${source_code} "common/*.h" "common/*.cc")
     add_executable(${project_name} ${example_project_sources})
 
+    target_include_directories(${project_name} PRIVATE "${PROJECT_SOURCE_DIR}/examples/common")
+
     set_target_properties(${project_name} PROPERTIES FOLDER examples)
 
 	if (MSCV AND (NOT (MSVC_VERSION LESS 1910)))
-		target_link_libraries(${project_name} legacy_stdio_definitions)
+		target_link_libraries(${project_name} PRIVATE legacy_stdio_definitions)
 	endif ()
 
-    target_link_libraries(${project_name} sc2api sc2lib sc2utils ${extra_libs})
+    target_link_libraries(${project_name} PRIVATE cpp_sc2 ${extra_libs})
 endfunction ()
 
 # Function to generate a simple example project
@@ -38,7 +30,6 @@ example_project(intermediate_bot "intermediate_bot.cc")
 example_project(annoying_helper "annoying_helper.cc")
 example_project(proxy "proxy.cc")
 example_project(save_load "save_load.cc")
-# example_project(bot_mp_ipv6 "bot_mp_ipv6.cc")
 
 if (BUILD_SC2_RENDERER)
     example_project_extra(feature_layers "feature_layers.cc" sc2renderer)
