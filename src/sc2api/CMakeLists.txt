@@ -20,14 +20,12 @@ add_library(sc2api ${sources_sc2})
 target_include_directories(sc2api
     PUBLIC
         "${PROJECT_SOURCE_DIR}/include"
-        "${PROJECT_SOURCE_DIR}/contrib/civetweb/include"
-        "${PROJECT_SOURCE_DIR}/contrib/ipv6-parse")
+        "${PROJECT_SOURCE_DIR}/contrib/civetweb/include")
 
 target_link_libraries(sc2api
     PUBLIC
         sc2protocol
-        civetweb-c-library
-        ipv6-parse)
+        civetweb-c-library)
 
 set_target_properties(sc2api PROPERTIES DEBUG_POSTFIX "d")
 

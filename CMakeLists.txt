@@ -51,9 +51,6 @@ set(CIVETWEB_ENABLE_IPV6 ON CACHE BOOL "" FORCE)
 # Don't build civetweb with sanitizers
 set(CIVETWEB_ENABLE_ASAN OFF CACHE BOOL "" FORCE)
 
-# Settings for ipv6 parse library
-set(IPV6_PARSE_LIBRARY_ONLY ON CACHE BOOL "" FORCE)
-
 # Don't build protobuf tests.
 set(protobuf_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(protobuf_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -70,15 +67,11 @@ target_compile_options(civetweb-c-library PUBLIC -DUSE_IPV6=1)
 # Run protobufs cmake.
 add_subdirectory("contrib/protobuf/cmake")
 
-# Run ipv6-parse cmake.
-add_subdirectory("contrib/ipv6-parse")
-
 set_target_properties(civetweb-c-library PROPERTIES FOLDER contrib)
 set_target_properties(libprotobuf PROPERTIES FOLDER contrib)
 set_target_properties(libprotobuf-lite PROPERTIES FOLDER contrib)
 set_target_properties(libprotoc PROPERTIES FOLDER contrib)
 set_target_properties(protoc PROPERTIES FOLDER contrib)
-set_target_properties(ipv6-parse PROPERTIES FOLDER contrib)
 
 # civetweb's cmake does not set debug postfix
 set_target_properties(civetweb-c-library PROPERTIES DEBUG_POSTFIX "d")
