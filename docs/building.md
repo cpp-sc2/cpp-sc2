@@ -12,7 +12,7 @@ the required submodules with the following git command:
 $ git submodule update --init --recursive
 ```
 
-4. Windows: Download and install Visual Studio ([2019](https://www.visualstudio.com/downloads/) or older).
+4. Windows: Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
 
 5. Linux: Install 'gcc-c++'.
 
