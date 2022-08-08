@@ -4,7 +4,7 @@ add_library(sc2renderer ${sources_renderer})
 
 target_include_directories(sc2renderer
     PRIVATE
-        "${PROJECT_SOURCE_DIR}/contrib/SDL-mirror/include"
+        "${PROJECT_SOURCE_DIR}/contrib/SDL/include"
         "${PROJECT_SOURCE_DIR}/include")
 
 target_link_libraries(sc2renderer PRIVATE SDL2-static)

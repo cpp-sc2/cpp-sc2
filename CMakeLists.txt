@@ -92,7 +92,7 @@ add_subdirectory("src")
 if (BUILD_SC2_RENDERER)
     add_definitions(-DBUILD_SC2_RENDERER)
 
-    add_subdirectory("contrib/SDL-mirror")
+    add_subdirectory("contrib/SDL")
 
     set_target_properties(SDL2main PROPERTIES FOLDER contrib)
     set_target_properties(SDL2-static PROPERTIES FOLDER contrib)
