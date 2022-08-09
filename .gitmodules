@@ -8,6 +8,6 @@
 	path = contrib/civetweb
 	url = https://github.com/cpp-sc2/civetweb.git
 [submodule "SDL"]
-	path = SDL
+	path = contrib/SDL
 	url = https://github.com/libsdl-org/SDL
 	branch = 2.0.22
