@@ -135,8 +135,13 @@ void Matrix8BPPPlayers(const char* bytes, int w_mat, int h_mat, int off_x, int o
 void ImageRGB(const char* bytes, int width, int height, int off_x, int off_y) {
     assert(renderer_);
     assert(window_);
-
+#ifdef linux
+    SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormatFrom((void *) bytes, width, height, 24, 3 * width,
+                                                              SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGB24);
+#else
     SDL_Surface* surface = SDL_CreateRGBSurfaceFrom((void*)bytes, width, height, 24, 3 * width, 0xFF0000, 0x00FF00, 0x0000FF, 0x000000);
+#endif
+
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer_, surface);
     SDL_FreeSurface(surface);
 
