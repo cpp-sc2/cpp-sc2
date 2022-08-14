@@ -1,16 +1,14 @@
-file(GLOB sources_renderer "*.cc" "*.h" "${PROJECT_SOURCE_DIR}/include/sc2renderer/*.h")
+set(sc2renderer_sources sc2_renderer.cc)
 
-add_library(sc2renderer ${sources_renderer})
+add_library(sc2renderer STATIC ${sc2renderer_sources})
 
-target_include_directories(sc2renderer
-    PRIVATE
-        "${PROJECT_SOURCE_DIR}/contrib/SDL/include"
-        "${PROJECT_SOURCE_DIR}/include")
+set_target_properties(sc2renderer PROPERTIES FOLDER utilities)
+
+target_include_directories(sc2renderer PRIVATE "${PROJECT_SOURCE_DIR}/include")
+target_include_directories(sc2renderer SYSTEM PRIVATE "${SDL_SOURCE_DIR}/include")
 
 target_link_libraries(sc2renderer PRIVATE SDL2-static)
 
 if (MSVC)
-    set_target_properties(sc2renderer PROPERTIES COMPILE_FLAGS "/W4 /WX-")
+    target_compile_options(sc2renderer PRIVATE /W4 /WX-)
 endif()
-
-set_target_properties(sc2renderer PROPERTIES DEBUG_POSTFIX "d")
