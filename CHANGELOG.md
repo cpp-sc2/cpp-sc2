@@ -2,7 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.4.1](https://github.com/cpp-sc2/cpp-sc2/compare/v1.4.0...v1.4.1) (2022-01-08)
+
+## [2.0.0-alpha.0](https://github.com/cpp-sc2/cpp-sc2/compare/v1.4.1...v2.0.0-alpha.0) (2022-08-22)
+
+
+### Features
+
+* Rebase to the latest proto ([8aeb890](https://github.com/cpp-sc2/cpp-sc2/commit/8aeb8907a2e0b317a0a4616ef57e894daf00d76d), [3dcf423](https://github.com/cpp-sc2/cpp-sc2/commit/3dcf42398e65c9a0127a4d8d3c10ee966044d803))
+* Support 5.0.10 typeids ([a215b98](https://github.com/cpp-sc2/cpp-sc2/commit/a215b98fcd34adc7a963e964f056adf1b7f56d09))
+
+
+### Bug Fixes
+
+* Remove dummy typeids from units, abilities and buffs ([868a9cc](https://github.com/cpp-sc2/cpp-sc2/commit/868a9cc5f7cb7887444b3cb8296440c9048e502d), [480bc9c](https://github.com/cpp-sc2/cpp-sc2/commit/480bc9c0fc126c5b5024a0cc142edeaf45041b4d))
+
+
+### Documentation
+
+* Fix typo in CODE_OF_CONDUCT ([16a35ab](https://github.com/cpp-sc2/cpp-sc2/commit/16a35ab75fad4254fa58a2bea8178432c1e2b771))
+* Pin the oldest Visual Studio version ([0794d9a](https://github.com/cpp-sc2/cpp-sc2/commit/0794d9a0ce5cfd6c8140af8b5022b54759967f80))
+* Specify discord channel for questions regarding the API ([aefd931](https://github.com/cpp-sc2/cpp-sc2/commit/aefd931ab0a4fa75c6b94b5ad7573b0af64dcbd5))
+* Update maps link ([0b6682f](https://github.com/cpp-sc2/cpp-sc2/commit/0b6682f5b9c990c3314f75db9e8c03a4e8f65a11))
+* Update supporters links ([87fd044](https://github.com/cpp-sc2/cpp-sc2/commit/87fd0442aff2f989f870689565c1398ad95e5b14))
+
+
+### Build System
+
+* Cmake dependency approach refactor ([477c79f](https://github.com/cpp-sc2/cpp-sc2/commit/477c79f9f5dc78677ef9d3e63089243a9908c316))
+* Cmake project restructure ([f1cba80](https://github.com/cpp-sc2/cpp-sc2/commit/f1cba808cc584cc1f1f641b6447cacedde21e629))
+* Disable ipv6-parse ([9a475f8](https://github.com/cpp-sc2/cpp-sc2/commit/9a475f8203967cc1326eaf38d5171d0f4f78b2b3))
+* Removed unnecessary cmake policy settings ([d97cfe5](https://github.com/cpp-sc2/cpp-sc2/commit/d97cfe5154c2b47bf3e83302475081a4d0ffc74d))
+* Switch ladder CI to Ubuntu 20.04 ([3a8e89e](https://github.com/cpp-sc2/cpp-sc2/commit/3a8e89e50f480b552f29f69ccc6c3335ae57a29b))
+
+
+## [1.4.1](https://github.com/cpp-sc2/cpp-sc2/compare/v1.4.0...v1.4.1) (2022-01-08)
 
 
 ### Features
@@ -37,6 +70,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * Add missing v1.4.0 to the changelog ([3c1fc5d](https://github.com/cpp-sc2/cpp-sc2/commit/3c1fc5da475de28a74663cade40faa3d424f8ac0))
 * Correct clone URLs ([6200ee0](https://github.com/cpp-sc2/cpp-sc2/commit/6200ee03dcce1fae17174a760f9cc3969e40e17b))
+
 
 ## [1.4.0](https://github.com/cpp-sc2/cpp-sc2/compare/v1.3.1...v1.4.0) (2021-10-07)
 
