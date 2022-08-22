@@ -1,5 +1,18 @@
 cmake_minimum_required(VERSION 3.15)
 
+# Skip generating proto files with Protobuf compiler and use prebuilt files
+# Will still build Protobuf as libprotobuf is required for linking
+option(WSL2_CROSS_COMPILE "Building on WSL2 for Windows" OFF)
+
+# Only valid OS configuration should be in WSL2 context
+# Should not work wtih WIN32, APPLE, etc.
+if (WSL2_CROSS_COMPILE AND UNIX AND NOT APPLE)
+    set(CMAKE_TOOLCHAIN_FILE cmake/toolchain/x86-64-w64-mingw32.cmake)
+elseif (WSL2_CROSS_COMPILE)
+    message(FATAL_ERROR "Invalid environment.\
+                        WSL2_CROSS_COMPILE=ON for WSL only")
+endif ()
+
 project(cpp-sc2)
 
 include(FetchContent)
@@ -33,7 +46,9 @@ set(LIBRARY_DEBUG_POSTFIX d)
 set(CMAKE_DEBUG_POSTFIX ${LIBRARY_DEBUG_POSTFIX})
 
 # External subprojects
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/thirdparty/cmake")
+list(APPEND CMAKE_MODULE_PATH
+    "${PROJECT_SOURCE_DIR}/thirdparty/cmake"
+    "${PROJECT_SOURCE_DIR}/cmake/assets")
 
 # Build with c++14 support.
 set(CMAKE_CXX_STANDARD 14)
@@ -55,6 +70,10 @@ endif ()
 
 if (BUILD_API_TESTS)
     add_subdirectory(tests)
+endif ()
+
+if (WSL2_CROSS_COMPILE)
+    include(protos)
 endif ()
 
 # External subproject depedencies
