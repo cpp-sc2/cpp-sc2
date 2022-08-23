@@ -1,6 +1,9 @@
 # Build instructions
 
 ## Prerequisites
+
+For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
+
 1. Download and install [CMake](https://cmake.org/download/).
 
 2. A compiler with C++14 support.
@@ -114,4 +117,54 @@ However, sometimes one may need to compile with an older version of the game, e.
 always behind the Windows version. It is possible by specifying the game version manually, e.g.:
 ```bash
 $ cmake -DSC2_VERSION=4.10.0 ../
+```
+
+## WSL2 Support
+
+Thanks to interoperability between the [Windows and Linux file systems](https://docs.microsoft.com/en-us/windows/wsl/filesystems) in WSL2, it is possible to cross compile `cpp-sc2` under WSL2 for Windows and launch the executables from the WSL2 context using the Windows Starcraft II installation. Current implementation may not support custom installs of Starcraft II (e.g. to an external hard drive).
+
+This documentation assumes the user is familiar with WSL2 setup. For a more detailed walkthrough of using WSL2 for the first time, see the [Microsoft documentation on installing Linux on Windows with WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
+
+### Requirements
+
+Cross compilation is facilitated through the toolchain file: `cmake/toolchain/x86-64-w64-mingw32.cmake`, which will require the installation of MinGW packages and POSIX configuration changes:
+
+```bash
+$ sudo apt install mingw-w64-x86-64-dev \
+                g++-mingw-w64-x86-64 \
+                gcc-mingw-w64-x86-64 \
+                win-iconv-mingw-w64-dev
+
+# Use POSIX threading model for MinGW
+# Each command will return a prompt to select between three options:
+#   x86_64-w64-mingw32-gxx-win32 auto-mode (this is the default install behavior)
+#   x86_64-w64-mingw32-gxx-posix manual mode <---- Select this option
+#   x86_64-w64-mingw32-gxx-win32 manual mode
+#
+# Select the -posix post-fixed alternative for both gcc and g++ MinGW compilers
+# Alternatives can be changed at any time by re-running the commands
+$ sudo update-alternatives --config x86_64-w64-mingw32-gcc
+$ sudo update-alternatives --config x86_64-w64-mingw32-g++
+```
+
+### Building
+
+To cross compile, enable the `WSL2_CROSS_COMPILING` option either in the project root `CMakeLists.txt` or by passing the option from the command line:
+
+```bash
+# Generate CMake configuration
+$ cmake -B build -DWSL2_CROSS_COMPILE=ON
+
+# Compile
+$ cmake --build build -j
+
+# Built executables can be run from the WSL2 context
+$ ./build/bin/all_tests.exe
+Running test: sc2::TestAbilityRemap
+Launched SC2 (C:\Program Files (x86)\StarCraft II\Versions\Base87702\SC2_x64.exe), PID: 35288
+Waiting for connection.
+Connected to 127.0.0.1:8167
+Waiting for the JoinGame response.
+WaitJoinGame finished successfully.
+...
 ```
