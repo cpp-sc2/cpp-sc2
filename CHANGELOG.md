@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-alpha.1](https://github.com/cpp-sc2/cpp-sc2/compare/v2.0.0-alpha.0...v2.0.0-alpha.1) (2022-08-25)
+
+
+### Bug Fixes
+
+* mingw wsl2 header normalization ([9df2e25](https://github.com/cpp-sc2/cpp-sc2/commit/9df2e25f60f67f1242eb5a0833b56424e9738332))
+* sdl fetchcontent case sensitive fix ([22747b8](https://github.com/cpp-sc2/cpp-sc2/commit/22747b8bf14b3ea3b8b8510dde5c87093e36da58))
+
+
+### Build System
+
+* wsl2 cross compilation for windows ([7cfccf1](https://github.com/cpp-sc2/cpp-sc2/commit/7cfccf119bf8c26f0e7dbed222adf4fb7d872563))
+
+
+### Documentation
+
+* wsl2 cross compilation support ([6709720](https://github.com/cpp-sc2/cpp-sc2/commit/670972075050fe905f9cef8ec8f377a7ae01342b))
 
 ## [2.0.0-alpha.0](https://github.com/cpp-sc2/cpp-sc2/compare/v1.4.1...v2.0.0-alpha.0) (2022-08-22)
 
