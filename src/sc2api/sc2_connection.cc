@@ -8,7 +8,9 @@
 
 #include "civetweb.h"
 
-#if defined (_WIN32)
+#if defined (_WIN32) && defined(__MINGW32__)
+#include <winsock2.h>
+#elif defined (_WIN32)
 #include <WinSock2.h>
 #endif
 
