@@ -168,3 +168,18 @@ Waiting for the JoinGame response.
 WaitJoinGame finished successfully.
 ...
 ```
+
+### Downstream Projects
+
+When including `cpp-sc2` as a dependency (whether as a git submodule, or using CMake's `FetchContent`), the toolchain file for WSL2 cross compilation must be specified *prior* to the first CMake `project` declaration. The [BlankBot](https://github.com/cpp-sc2/blank-bot) repository provides the framework for incorporating WSL2 cross compilation, but for other projects looking to use the interface:
+
+1. Copy the `cpp-sc2` toolchain file [cmake/toolchain/x86-64-w64-mingw32.cmake](https://github.com/cpp-sc2/cpp-sc2/blob/master/cmake/toolchain/x86-64-w64-mingw32.cmake). This can be kept in-project as with `cpp-sc2` and `BlankBot`, or the path provided at CMake configuration time from the command line.
+
+2. Set `CMAKE_TOOLCHAIN_FILE` as the path to the toolchain file, and the `WSL2_CROSS_COMPILE` option to `ON` when cross compiling:
+
+```bash
+# From the command line
+$ cmake -B build \
+    -DCMAKE_TOOLCHAIN_FILE=/path/to/toolchain/file \
+    -DWSL2_CROSS_COMPILE=ON
+```

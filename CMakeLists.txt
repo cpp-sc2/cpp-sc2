@@ -4,13 +4,12 @@ cmake_minimum_required(VERSION 3.15)
 # Will still build Protobuf as libprotobuf is required for linking
 option(WSL2_CROSS_COMPILE "Building on WSL2 for Windows" OFF)
 
-# Only valid OS configuration should be in WSL2 context
-# Should not work wtih WIN32, APPLE, etc.
-if (WSL2_CROSS_COMPILE AND UNIX AND NOT APPLE)
-    set(CMAKE_TOOLCHAIN_FILE cmake/toolchain/x86-64-w64-mingw32.cmake)
+# Downstream projects including cpp-sc2 as a dependency must set toolchain the
+# toolchain file
+if (DEFINED CMAKE_TOOLCHAIN_FILE)
+    message(DEBUG "Toolchain file already set to ${CMAKE_TOOLCHAIN_FILE}")
 elseif (WSL2_CROSS_COMPILE)
-    message(FATAL_ERROR "Invalid environment.\
-                        WSL2_CROSS_COMPILE=ON for WSL only")
+    set(CMAKE_TOOLCHAIN_FILE cmake/toolchain/x86-64-w64-mingw32.cmake)
 endif ()
 
 project(cpp-sc2)
