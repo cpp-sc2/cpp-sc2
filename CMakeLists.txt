@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
 
+if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+    cmake_policy(SET CMP0135 NEW)
+endif ()
+
 # Skip generating proto files with Protobuf compiler and use prebuilt files
 # Will still build Protobuf as libprotobuf is required for linking
 option(WSL2_CROSS_COMPILE "Building on WSL2 for Windows" OFF)
