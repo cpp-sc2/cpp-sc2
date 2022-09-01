@@ -4,7 +4,7 @@ cpp-sc2
 [![Build Status](https://github.com/cpp-sc2/cpp-sc2/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/cpp-sc2/cpp-sc2/actions/workflows/ci.yml)
 
 The StarCraft II API provides access to in-game state observation and unit control. The API is a wrapper around protobuf defined protocol over a websocket connection.  
-While it's possible to write directly to the protocol, this library provides a C++ and class-based abstraction. You can see a simple example below.
+While it's possible to write directly to the protocol, this library provides a C++ and class-based abstraction.
 
 
 ## Documentation
@@ -28,8 +28,7 @@ This library uses [CMake](https://cmake.org/download/) to generate project files
 
 1. Civetweb
 2. Protobuf
-3. (optional) SDL
-4. ipv6-parse
+3. SDL (optional)
 
 Follow the instructions for submodules and building in [docs/building.md](docs/building.md).
 
