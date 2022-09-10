@@ -63,15 +63,6 @@ namespace sc2 {
         return offset_point;
     }
 
-    std::vector<Tag> TestUnitCommand::GetTagListFromUnits(Units units) {
-        std::vector<Tag> tags;
-        for (const auto& unit : units) {
-            tags.push_back(unit->tag);
-        }
-
-        return tags;
-    }
-
     void TestUnitCommand::SetOriginPoint() {
         const GameInfo& game_info = agent_->Observation()->GetGameInfo();
         origin_pt_ = FindCenterOfMap(game_info);

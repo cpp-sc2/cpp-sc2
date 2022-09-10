@@ -13,14 +13,108 @@ namespace sc2 {
 
     class TestAttackAttack : public TestUnitCommandTargetingPoint {
     public:
-        TestAttackAttack() {
+        TestAttackAttack() : test_units_tags_{ 0 }, test_tags_counter_{ 0 }, TAGS_SUBTESTS_QUANTITY{ 6 } {
             test_unit_type_ = UNIT_TYPEID::TERRAN_MARINE;
             test_ability_ = ABILITY_ID::ATTACK;
         }
 
-        void SetTestTime() override {
-            wait_game_loops_ = 50;
+        void AdditionalTestSetup() {
+            agent_->Debug()->DebugCreateUnit(test_unit_type_, origin_pt_, agent_->Observation()->GetPlayerID(), 2);
+            target_point_ = GetPointOffsetX(origin_pt_);
+            agent_->Debug()->DebugCreateUnit(sc2::UNIT_TYPEID::ZERG_ZERGLING, GetPointOffsetX(origin_pt_, -10), 2, 1);
+            agent_->Debug()->SendDebug();
         }
+
+        void SetTestTime() override {
+            wait_game_loops_ = 150;
+        }
+
+        void IssueUnitCommand(ActionInterface* act) {
+            if (test_tags_counter_ < TAGS_SUBTESTS_QUANTITY) {
+                test_units_tags_ = ConvertToTags(test_units_);
+
+                if (!orders_verified_ && ability_command_sent_) {
+                    VerifyUnitOrders(test_unit_, test_ability_);
+                }
+
+                if (ability_command_sent_) {
+                    orders_verified_ = false;
+                    ability_command_sent_ = false;
+                    ++test_tags_counter_;
+                    return;
+                }
+
+                uint32_t current_game_loop = agent_->Observation()->GetGameLoop();
+                order_on_game_loop_ = current_game_loop + 10;
+
+                switch (test_tags_counter_) {
+                    case 0:
+                        TestTagsTargetingPoint(act);
+                        break;
+                    case 1:
+                        TestTagTargetingPoint(act);
+                        break;
+                    case 2:
+                        TestTagsTargetingUnit(act);
+                        break;
+                    case 3:
+                        TestTagTargetingUnit(act);
+                        break;
+                    case 4:
+                        TestTagsNoTarget(act);
+                        break;
+                    case 5:
+                        TestTagNoTarget(act);
+                        break;
+                    default:
+                        break;
+                }
+
+                ability_command_sent_ = true;
+            }
+        }
+
+        void TestTagsTargetingPoint(ActionInterface* act) {
+            act->UnitCommand(test_units_tags_, test_ability_, target_point_);
+        }
+
+        void TestTagTargetingPoint(ActionInterface* act) {
+            act->UnitCommand(test_units_tags_.front(), test_ability_, GetPointOffsetX(target_point_, 5));
+        }
+
+        void TestTagsTargetingUnit(ActionInterface* act) {
+            test_ability_ = sc2::ABILITY_ID::GENERAL_MOVE;
+            const sc2::Units target_units_ = agent_->Observation()->GetUnits(sc2::Unit::Enemy);
+            sc2::Tag target_unit_tag_ = ConvertToTags(target_units_).front();
+
+            act->UnitCommand(test_units_tags_, test_ability_, target_unit_tag_);
+        }
+
+        void TestTagTargetingUnit(ActionInterface* act) {
+            test_ability_ = sc2::ABILITY_ID::GENERAL_MOVE;
+            const sc2::Units target_units_ = agent_->Observation()->GetUnits(sc2::Unit::Enemy);
+            sc2::Tag target_unit_tag_ = ConvertToTags(target_units_).front();
+
+            act->UnitCommand(test_units_tags_.front(), test_ability_, target_unit_tag_);
+        }
+
+        void TestTagsNoTarget(ActionInterface* act) {
+            orders_verified_ = true;
+            test_ability_ = sc2::ABILITY_ID::STOP_DANCE;
+
+            act->UnitCommand(test_units_tags_, test_ability_);
+        }
+
+        void TestTagNoTarget(ActionInterface* act) {
+            orders_verified_ = true;
+            test_ability_ = sc2::ABILITY_ID::STOP_DANCE;
+
+            act->UnitCommand(test_units_tags_.front(), test_ability_);
+        }
+
+        Tags test_units_tags_;
+        int test_tags_counter_;
+        int TAGS_SUBTESTS_QUANTITY;
     };
 
 
@@ -1688,7 +1782,6 @@ namespace sc2 {
             if (!test_unit_) {
                 ReportError("Could not find the test unit.");
             }
-
             if (test_unit_ && test_unit_->passengers.size() != 0) {
                 ReportError("Unit count in bunker is not 0.");
             }
@@ -1702,8 +1795,6 @@ namespace sc2 {
             KillAllUnits();
         }
     };
-
-
 
 //
 // UnitCommandTestBot

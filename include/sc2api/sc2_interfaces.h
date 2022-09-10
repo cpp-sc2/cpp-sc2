@@ -340,19 +340,49 @@ public:
     //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Unit, AbilityID, Unit).
     virtual void UnitCommand(const Units& units, AbilityID ability, const Unit* target, bool queued_command = false) = 0;
 
+    //! Issues a command to a unit. Self targeting.
+    //!< \param tag Tag of unit.
+    //!< \param ability The ability id of the command.
+    virtual void UnitCommand(Tag tag, AbilityID ability, bool queued_command = false) = 0;
+
+    //! Issues a command to a unit. Targets a point.
+    //!< \param tag Tag of unit.
+    //!< \param ability The ability id of the command.
+    //!< \param point The 2D world position to target.
+    virtual void UnitCommand(Tag tag, AbilityID ability, const Point2D& point, bool queued_command = false) = 0;
+
+    //! Issues a command to a unit. Targets another unit.
+    //!< \param tag Tag of unit.
+    //!< \param ability The ability id of the command.
+    //!< \param target_tag Tag of unit that is a target of the unit getting the command.
+    virtual void UnitCommand(Tag tag, AbilityID ability, const Tag target_tag, bool queued_command = false) = 0;
+
+    //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Tag, AbilityID).
+    //!< \param tags Tags of units.
+    virtual void UnitCommand(const Tags& tags, AbilityID ability, bool queued_move = false) = 0;
+
+    //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Tag, AbilityID, Point2D).
+    //!< \param tags Tags of units.
+    virtual void UnitCommand(const Tags& tags, AbilityID ability, const Point2D& point, bool queued_command = false) = 0;
+
+    //! Issues a command to multiple units (prefer this where possible). Same as UnitCommand(Tag, AbilityID, Tag).
+    //!< \param tags Tags of units.
+    virtual void UnitCommand(const Tags& tags, AbilityID ability, const Tag target_tag, bool queued_command = false) = 0;
+
     //! Returns a list of unit tags that have sent commands out in the last call to SendActions. This will be used to determine
     //! if a unit actually has a command when the observation is received.
     //!< \return Array of units that have sent commands.
-    virtual const std::vector<Tag>& Commands() const = 0;
+    virtual const Tags& Commands() const = 0;
 
     //! Enables or disables autocast of an ability on a unit.
     //!< \param unit_tag The unit to toggle the ability on.
     //!< \param ability The ability to be toggled.
     virtual void ToggleAutocast(Tag unit_tag, AbilityID ability) = 0;
+
     //! Enables or disables autocast of an ability on a list of units.
     //!< \param unit_tags The units to toggle the ability on.
     //!< \param ability The ability to be toggled.
-    virtual void ToggleAutocast(const std::vector<Tag>& unit_tags, AbilityID ability) = 0;
+    virtual void ToggleAutocast(const Tags& unit_tags, AbilityID ability) = 0;
 
     //! Sends a message to the game chat.
     //!< \param message Text of message to send.
