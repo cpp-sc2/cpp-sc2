@@ -923,7 +923,7 @@ public:
     };
     std::vector<DebugUnit> debug_unit_;
 
-    std::vector<Tag> debug_kill_tag_;
+    Tags debug_kill_tag_;
 
     bool has_move_camera;
     Point2D debug_move_camera_;
@@ -1418,10 +1418,10 @@ public:
     void Error(ClientError error, const std::vector<std::string>& errors = {}) override;
     void ErrorIf(bool condition, ClientError error, const std::vector<std::string>& errors = {}) override;
 
-    bool IssueEvents(const std::vector<Tag>& commands = {}) override;
+    bool IssueEvents(const Tags& commands = {}) override;
     void IssueUnitDestroyedEvents();
     void IssueUnitAddedEvents();
-    void IssueIdleEvents(const std::vector<Tag>& commands);
+    void IssueIdleEvents(const Tags& commands);
     void IssueBuildingCompletedEvents();
     void IssueUnitDamagedEvents();
 
@@ -2073,7 +2073,7 @@ void ControlImp::IssueUnitDamagedEvents() {
     }
 }
 
-void ControlImp::IssueIdleEvents(const std::vector<Tag>& commands) {
+void ControlImp::IssueIdleEvents(const Tags& commands) {
     auto& unit_pool = observation_imp_->unit_pool_;
     // identify idled units where commands were issued last step, but units have no orders now (maybe failed, maybe executed instantly)
     for (auto t : commands) {
@@ -2132,7 +2132,7 @@ void ControlImp::IssueUpgradeEvents() {
     }
 }
 
-bool ControlImp::IssueEvents(const std::vector<Tag>& commands) {
+bool ControlImp::IssueEvents(const Tags& commands) {
     if (observation_imp_->current_game_loop_ == observation_imp_->previous_game_loop) {
         return false;
     }

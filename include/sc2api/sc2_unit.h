@@ -218,7 +218,10 @@ public:
 };
 
 typedef std::vector<const Unit*> Units;
+typedef std::vector<Tag> Tags;
 typedef std::unordered_map<Tag, size_t> UnitIdxMap;
+
+Tags ConvertToTags(const Units& units);
 
 struct UnitDamage {
     const Unit* unit;
