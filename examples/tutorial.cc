@@ -59,10 +59,7 @@ public:
 
     // Runs once when the game starts
     virtual void OnGameStart() final {
-        auto unit_types = Observation()->GetUnitTypeData();
-        for (const auto unit_type : unit_types) {
-            unit_type_data_[unit_type.unit_type_id] = unit_type;
-        }
+        productionTracking();
         std::cout << "Hello, World!" << std::endl;
     }
 
@@ -75,8 +72,16 @@ public:
         return minutes + seconds;
     }
 
-    virtual void OnUnitCreated(const Unit* unit) final {
 
+    // Tracking when buildings are purchased
+    void productionTracking() {
+        auto unit_types = Observation()->GetUnitTypeData();
+        for (const auto unit_type : unit_types) {
+            unit_type_data_[unit_type.unit_type_id] = unit_type;
+        }
+    }
+
+    virtual void OnUnitCreated(const Unit* unit) final {
         auto it = unit_type_data_.find(unit->unit_type);
         std::cout << "Unit Produced: " << it->second.name << std::endl;
     }
@@ -90,8 +95,6 @@ public:
         }
     }
 };
-
-
 
 int main(int argc, char* argv[]) {
     Coordinator coordinator;
