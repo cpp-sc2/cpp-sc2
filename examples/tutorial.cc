@@ -4,6 +4,8 @@
 #include "bot_examples.h"
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <vector>
 
 using namespace sc2;
 
@@ -15,73 +17,10 @@ private:
     std::unordered_map<int, std::string> ability_id_to_name_;
     std::unordered_map<ABILITY_ID, std::string> ability_to_unit = InitializeAbilityIDToUnitNameMapping();
     std::unordered_map<ABILITY_ID, std::string> ability_to_upgrade = InitializeUpgradeMapping();
+    std::ofstream outFile;
 
 
 public:
-
-    // Runs once when the game starts
-    virtual void OnGameStart() final {
-
-        auto unit_types = Observation()->GetUnitTypeData();
-        auto abilities = Observation()->GetAbilityData();
-
-        for (const auto& ability : abilities) {
-            ability_id_to_name_[ability.ability_id] = ability.link_name;
-        }
-
-        buildingTracking();
-        std::cout << "Hello, World!" << std::endl;
-    }
-
-    // Checks to see if the unit is a production building
-    bool IsProductionBuilding(const sc2::UnitTypeID& unit_type) {
-        return unit_type == sc2::UNIT_TYPEID::TERRAN_COMMANDCENTER ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_ORBITALCOMMAND ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_PLANETARYFORTRESS ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_BARRACKS ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_FACTORY ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_STARPORT ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_NEXUS ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_GATEWAY ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_WARPGATE ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_STARGATE;
-    }
-
-    // Checks to see if the unit is an upgrade building
-    bool IsUpgradeBuilding(const sc2::UnitTypeID& unit_type) {
-        return
-            // Terran upgrade buildings
-            unit_type == sc2::UNIT_TYPEID::TERRAN_ENGINEERINGBAY ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_ARMORY ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_GHOSTACADEMY ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_FUSIONCORE ||
-            unit_type == sc2::UNIT_TYPEID::TERRAN_TECHLAB ||
-
-            // Protoss upgrade buildings
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_FORGE ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_TEMPLARARCHIVE ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_DARKSHRINE ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_ROBOTICSBAY ||
-            unit_type == sc2::UNIT_TYPEID::PROTOSS_FLEETBEACON ||
-
-            // Zerg upgrade buildings
-            unit_type == sc2::UNIT_TYPEID::ZERG_EVOLUTIONCHAMBER ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_SPIRE ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_GREATERSPIRE ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_HYDRALISKDEN ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_LURKERDENMP ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_INFESTATIONPIT ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_ULTRALISKCAVERN ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_SPAWNINGPOOL ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_ROACHWARREN ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_BANELINGNEST ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_HATCHERY ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_LAIR ||
-            unit_type == sc2::UNIT_TYPEID::ZERG_HIVE;
-    }
 
     // Maps all army units IDs to their correct names
     std::unordered_map< sc2::ABILITY_ID, std::string> InitializeAbilityIDToUnitNameMapping() {
@@ -211,33 +150,96 @@ public:
         return upgrade_mapping;
     }
 
-    // Tracks what unit is currently being built out of a production building
-    void unitTracking() {
+    // Checks to see if the unit is a production building
+    bool IsProductionBuilding(const sc2::UnitTypeID& unit_type) {
+        return unit_type == sc2::UNIT_TYPEID::TERRAN_COMMANDCENTER ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_ORBITALCOMMAND ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_PLANETARYFORTRESS ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_BARRACKS ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_FACTORY ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_STARPORT ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_NEXUS ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_GATEWAY ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_WARPGATE ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_ROBOTICSFACILITY ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_STARGATE;
+    }
+
+    // Checks to see if the unit is an upgrade building
+    bool IsUpgradeBuilding(const sc2::UnitTypeID& unit_type) {
+        return
+            // Terran upgrade buildings
+            unit_type == sc2::UNIT_TYPEID::TERRAN_ENGINEERINGBAY ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_ARMORY ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_GHOSTACADEMY ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_FUSIONCORE ||
+            unit_type == sc2::UNIT_TYPEID::TERRAN_TECHLAB ||
+
+            // Protoss upgrade buildings
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_FORGE ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_CYBERNETICSCORE ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_TWILIGHTCOUNCIL ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_TEMPLARARCHIVE ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_DARKSHRINE ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_ROBOTICSBAY ||
+            unit_type == sc2::UNIT_TYPEID::PROTOSS_FLEETBEACON ||
+
+            // Zerg upgrade buildings
+            unit_type == sc2::UNIT_TYPEID::ZERG_EVOLUTIONCHAMBER ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_SPIRE ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_GREATERSPIRE ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_HYDRALISKDEN ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_LURKERDENMP ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_INFESTATIONPIT ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_ULTRALISKCAVERN ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_SPAWNINGPOOL ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_ROACHWARREN ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_BANELINGNEST ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_HATCHERY ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_LAIR ||
+            unit_type == sc2::UNIT_TYPEID::ZERG_HIVE;
+    }
+
+    // Returns what unit is currently being built out of a production building
+    std::string unitTracking() {
+
         Units my_units = Observation()->GetUnits(Unit::Alliance::Self);
         for (const auto& unit : my_units) {
             if (IsProductionBuilding(unit->unit_type)) {
                 auto it = unit_type_data_.find(unit->unit_type);
-                if (!unit->orders.empty()) {
-                    auto ot = ability_to_upgrade.find(unit->orders[0].ability_id);
-                    std::cout << "Production building: " << it->second.name << " is producing a: " << ot->second << std::endl;
+                if (!unit->orders.empty()) {               
+                    auto ot = ability_to_unit.find(unit->orders[0].ability_id);
+                    return ot->second;
                 }
 
             }
         }
+        return "empty";
     }
 
     // Tracks what upgrade is currently built out of a production building
-    void upgradeTracking() {
+    std::string upgradeTracking() {
         Units my_units = Observation()->GetUnits(Unit::Alliance::Self);
         for (const auto& unit : my_units) {
             if (IsUpgradeBuilding(unit->unit_type)) {
                 auto it = unit_type_data_.find(unit->unit_type);
                 if (!unit->orders.empty()) {
                     auto ot = ability_to_upgrade.find(unit->orders[0].ability_id);
-                    std::cout << "Upgrade building: " << it->second.name << " is upgrading: " << ot->second << std::endl;
+                    return ot->second;
                 }
 
             }
+        }
+        return "empty";
+;
+    }
+
+    // Name needs updating
+    void buildingTracking() {
+        auto unit_types = Observation()->GetUnitTypeData();
+        
+        for (const auto unit_type : unit_types) {
+            unit_type_data_[unit_type.unit_type_id] = unit_type;
         }
     }
 
@@ -250,28 +252,51 @@ public:
         return minutes + seconds;
     }
 
-    // Track when buildings are purchased
-    void buildingTracking() {
-        auto unit_types = Observation()->GetUnitTypeData();
-        
-        for (const auto unit_type : unit_types) {
-            unit_type_data_[unit_type.unit_type_id] = unit_type;
-        }
-    }
-
     // Runs whenever a unit is being created
     virtual void OnUnitCreated(const Unit* unit) final {
         auto it = unit_type_data_.find(unit->unit_type);
-        std::cout << "Unit Produced: " << it->second.name << std::endl;
-    }
+        // Tracks when non-army units are created
+        if (IsProductionBuilding(unit->unit_type) || IsUpgradeBuilding(unit->unit_type)) {
+            outFile << it->second.name << "," << getCurrentTime() << std::endl;
+        }
 
+
+    }
 
     // Runs 22.4 times per in-game second
     virtual void OnStep() final {
-        upgradeTracking();
-        std::cout << static_cast<int>(ABILITY_ID::RESEARCH_TERRANINFANTRYWEAPONS) << std::endl;
+        std::string unit = unitTracking();
+        float time = getCurrentTime();
+
+        if (unit != "empty") {
+            outFile << unit << "," << time << std::endl;
+        }
+
+        if (unit != "empty") {
+            outFile << unit << "," << time << std::endl;
+        }
+    }
+
+    // Runs once when the game starts
+    virtual void OnGameStart() final {
+
+        auto unit_types = Observation()->GetUnitTypeData();
+        auto abilities = Observation()->GetAbilityData();
+        for (const auto& ability : abilities) {
+            ability_id_to_name_[ability.ability_id] = ability.link_name;
+        }
+        buildingTracking();
+
+
+        outFile.open("output.csv");
+        if (!outFile.is_open()) {
+            std::cerr << "Failed to open the file for writing!" << std::endl;
+        }
+        outFile << "Item,Time\n";
+
 
     }
+
 };
 
 int main(int argc, char* argv[]) {
@@ -296,7 +321,6 @@ int main(int argc, char* argv[]) {
 
     while (coordinator.Update()) {
     }
-
     return 0;
 }
 
