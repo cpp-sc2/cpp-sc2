@@ -11,12 +11,9 @@ endif ()
 FetchContent_Declare(
     protobuf
     GIT_REPOSITORY https://github.com/protocolbuffers/protobuf.git
-    GIT_TAG 1a74ba4cb4c2faee902e9088281d824385ba2bc6
+    GIT_TAG v3.23.4
 )
 FetchContent_MakeAvailable(protobuf)
-
-# Location of the protobuf project top level CMakeLists.txt
-add_subdirectory("${protobuf_SOURCE_DIR}/cmake" "${protobuf_BINARY_DIR}")
 
 set(protobuf_targets libprotobuf libprotobuf-lite libprotoc protoc)
 
