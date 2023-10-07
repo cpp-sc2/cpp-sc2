@@ -34,10 +34,8 @@ $ git clone --recursive git@github.com:cpp-sc2/cpp-sc2.git
 $ cd cpp-sc2
 
 :: Create Visual Studio project files.
-:: For Visual Studio 2019.
-$ cmake -B build -G "Visual Studio 16 2019"
-:: For Visual Studio 2017.
-$ cmake -B build -G "Visual Studio 15 2017 Win64"
+:: E.g. for Visual Studio 2022:
+$ cmake -B build -G "Visual Studio 17 2022"
 
 :: Build the project using Visual Studio.
 $ start build\cpp-sc2.sln
