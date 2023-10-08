@@ -8,22 +8,15 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
 2. A compiler with C++14 support.
 
-3. If you are already cloned the repository, make sure a recursive clone of the project is done to download all submodules.
-If you already cloned the repository without specifying `--recursive` you can initialize and checkout
-the required submodules with the following git command:
-```bash
-$ git submodule update --init --recursive
-```
+3. Windows: Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
 
-4. Windows: Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
+4. Linux: Install 'gcc-c++'.
 
-5. Linux: Install 'gcc-c++'.
+5. Linux: Install the 'make' utility.
 
-6. Linux: Install the 'make' utility.
+6. OS X: Install XCode.
 
-7. OS X: Install XCode.
-
-8. OS X: Install XCode command-line tools.
+7. OS X: Install XCode command-line tools.
 
 ## Windows (Visual Studio)
 ```bat
