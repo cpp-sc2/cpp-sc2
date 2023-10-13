@@ -18,7 +18,7 @@ namespace sc2 {
             test_ability_ = ABILITY_ID::ATTACK;
         }
 
-        void AdditionalTestSetup() {
+        void AdditionalTestSetup() override {
             agent_->Debug()->DebugCreateUnit(test_unit_type_, origin_pt_, agent_->Observation()->GetPlayerID(), 2);
             target_point_ = GetPointOffsetX(origin_pt_);
             agent_->Debug()->DebugCreateUnit(sc2::UNIT_TYPEID::ZERG_ZERGLING, GetPointOffsetX(origin_pt_, -10), 2, 1);
@@ -29,7 +29,7 @@ namespace sc2 {
             wait_game_loops_ = 150;
         }
 
-        void IssueUnitCommand(ActionInterface* act) {
+        void IssueUnitCommand(ActionInterface* act) override {
             if (test_tags_counter_ < TAGS_SUBTESTS_QUANTITY) {
                 test_units_tags_ = ConvertToTags(test_units_);
 

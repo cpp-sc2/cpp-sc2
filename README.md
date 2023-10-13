@@ -40,7 +40,7 @@ To edit and generate the documentation yourself:
 3. Checkout the master branch 'git checkout origin/master -b my-documentation-update
 4. Make changes to the code documentation or docs/ files
 5. From the root of the project run: doxygen Doxyfile
-6. Review your documenation changes by opening docs/html/index.html in your browser
+6. Review your documentation changes by opening docs/html/index.html in your browser
 7. Push your changes to your fork and send us a pull request
 
 

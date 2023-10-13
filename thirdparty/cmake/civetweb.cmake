@@ -10,6 +10,9 @@ set(CIVETWEB_ENABLE_ASAN OFF CACHE BOOL "" FORCE)
 # Enable websocket connections
 set(CIVETWEB_ENABLE_WEBSOCKETS ON CACHE BOOL "" FORCE)
 
+# Disable IPv6 as we use only IPv4
+set(CIVETWEB_ENABLE_IPV6 OFF CACHE BOOL "" FORCE)
+
 FetchContent_Declare(
     civetweb
     GIT_REPOSITORY https://github.com/cpp-sc2/civetweb.git
