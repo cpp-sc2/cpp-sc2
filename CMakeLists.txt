@@ -66,6 +66,9 @@ if (MSVC)
 
     # Use statically linked runtime
     set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Debug>:Debug>)
+
+    # Set startup project in Visual Studio
+    set_property( DIRECTORY PROPERTY VS_STARTUP_PROJECT all_tests)
 endif ()
 
 if (BUILD_API_EXAMPLES)

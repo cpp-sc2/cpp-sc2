@@ -26,7 +26,35 @@ set(sc2api_sources
     sc2_unit.cc
     "typeids/sc2_${SC2_VERSION}_typeenums.cpp")
 
-add_library(sc2api STATIC ${sc2api_sources})
+set(header_path "${PROJECT_SOURCE_DIR}/include/sc2api/")
+set(sc2api_headers
+    ${header_path}/sc2_action.h
+    ${header_path}/sc2_agent.h
+    ${header_path}/sc2_api.h
+    ${header_path}/sc2_args.h
+    ${header_path}/sc2_client.h
+    ${header_path}/sc2_common.h
+    ${header_path}/sc2_connection.h
+    ${header_path}/sc2_control_interfaces.h
+    ${header_path}/sc2_coordinator.h
+    ${header_path}/sc2_data.h
+    ${header_path}/sc2_errors.h
+    ${header_path}/sc2_gametypes.h
+    ${header_path}/sc2_game_settings.h
+    ${header_path}/sc2_interfaces.h
+    ${header_path}/sc2_map_info.h
+    ${header_path}/sc2_proto_interface.h
+    ${header_path}/sc2_proto_to_pods.h
+    ${header_path}/sc2_replay_observer.h
+    ${header_path}/sc2_score.h
+    ${header_path}/sc2_server.h
+    ${header_path}/sc2_typeenums.h
+    ${header_path}/sc2_types.h
+    ${header_path}/sc2_unit.h
+    ${header_path}/sc2_unit_filters.h
+    "${header_path}/typeids/sc2_${SC2_VERSION}_typeenums.h")
+
+add_library(sc2api STATIC ${sc2api_sources} ${sc2api_headers})
 
 target_include_directories(sc2api PUBLIC "${PROJECT_SOURCE_DIR}/include")
 target_include_directories(sc2api SYSTEM PUBLIC "${civetweb_SOURCE_DIR}/include")
