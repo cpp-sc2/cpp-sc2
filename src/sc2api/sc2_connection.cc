@@ -106,14 +106,14 @@ bool Connection::Connect(const std::string& address, int port, bool verbose) {
     StartCivetweb();
     verbose_ = verbose;
 
-    char ebuff[100] = { 0 };
+    char ebuff[256] = { 0 };
 
     connection_ = mg_connect_websocket_client(
         address.c_str(),
         port,
         0,
         ebuff,
-        100,
+        256,
         "/sc2api",
         nullptr,
         DataHandler,
@@ -121,6 +121,7 @@ bool Connection::Connect(const std::string& address, int port, bool verbose) {
         (void*) this);
 
     if (!connection_) {
+        std::cerr << "Failed to establish websocket connection: " << ebuff << std::endl;
         return false;
     }
 
