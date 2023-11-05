@@ -1,0 +1,39 @@
+From 44b561e5119151454b9572cbe75af622bb929b90 Mon Sep 17 00:00:00 2001
+From: Jacob Repp <jacobrepp@gmail.com>
+Date: Tue, 21 Nov 2017 16:16:31 -0800
+Subject: [PATCH 1/2] Setting TCP_NODELAY on outbound connections
+
+---
+ src/civetweb.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/src/civetweb.c b/src/civetweb.c
+index 1e28e649..bded168b 100644
+--- a/src/civetweb.c
++++ b/src/civetweb.c
+@@ -101,6 +101,8 @@
+ #pragma warning(disable : 4306)
+ /* conditional expression is constant: introduced by FD_SET(..) */
+ #pragma warning(disable : 4127)
++/* expression before comma has no effect; expected expression with side-effect: introduced by FD_SET in VC2017 */
++#pragma warning(disable : 4548)
+ /* non-constant aggregate initializer: issued due to missing C99 support */
+ #pragma warning(disable : 4204)
+ /* padding added after data member */
+@@ -9407,6 +9409,13 @@ connect_socket(
+ 		return 0;
+ 	}
+ 
++	int nodelay_on = 1;
++	setsockopt(*sock,
++		IPPROTO_TCP,
++		TCP_NODELAY,
++		(SOCK_OPT_TYPE)&nodelay_on,
++		sizeof(nodelay_on));
++
+ 	set_close_on_exec(*sock, NULL, ctx);
+ 
+ 	if (ip_ver == 4) {
+-- 
+2.39.3 (Apple Git-145)
+
