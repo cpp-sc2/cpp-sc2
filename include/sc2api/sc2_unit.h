@@ -185,7 +185,8 @@ public:
     int cargo_space_max;
     //! Number of harvesters associated with a town hall (e.g., Command Center). Only valid for this player's units.
     int assigned_harvesters;
-    //! Number of harvesters that can be assigned to a town hall (e.g., Command Center). Only valid for this player's units.
+    //! Number of harvesters that can be assigned to a town hall (e.g., Command Center) or a geyser (e.g., Refinery).
+    //! Only valid for this player's units.
     int ideal_harvesters;
     //! Target unit of a unit. Only valid for this player's units.
     Tag engaged_target_tag;

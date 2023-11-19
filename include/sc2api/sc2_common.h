@@ -45,6 +45,7 @@ Point3D operator/(const Point3D& lhs, float rhs);
 Point3D operator/(float lhs, const Point3D& rhs);
 
 //! 2D point.
+// When referring to Point2D, (0, 0) is bottom left.
 //!< \sa Distance2D(const Point2D& a, const Point2D& b) DistanceSquared2D(const Point2D& a, const Point2D& b) Normalize2D(Point2D& a) Dot2D(const Point2D& a, const Point2D& b)
 struct Point2D {
     float x;
