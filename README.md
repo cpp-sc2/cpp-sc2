@@ -8,6 +8,7 @@ While it's possible to write directly to the protocol, this library provides a C
 
 
 ## Documentation
+* [Getting Started with SC2 CPP Bot API](https://www.youtube.com/watch?v=Z7eX7YLPwc8).
 * A detailed tutorial is located in [docs/tutorial1.md](docs/tutorial1.md).  
 * The API documentation can be found on our [github pages site](https://cpp-sc2.github.io/cpp-sc2). The documentation is generated from code automatically, using [Doxygen](http://www.stack.nl/~dimitri/doxygen/)
 * For example of usage of this API please refer to [CommandCenter](https://github.com/cpp-sc2/commandcenter), [Suvorov bot](https://github.com/alkurbatov/suvorov-bot) and the [examples](https://github.com/cpp-sc2/cpp-sc2/tree/master/examples) folder in this project.
