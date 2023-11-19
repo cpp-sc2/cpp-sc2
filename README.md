@@ -21,7 +21,7 @@ You can download precompiled libraries for Windows and OS X [here](docs/precompi
 
 ## Support
 Have questions but don't want to create an issue? Join the unofficial Starcraft II AI Discord server ([Invite Link](https://discordapp.com/invite/Emm5Ztz)). Questions about this repository can be asked in the text channel `#cpp`.  
-Also, please consider to support this project on [Boosty](https://boosty.to/cpp-sc2) (preferred) or [Patreon](https://www.patreon.com/cppsc2). Support of the project allows to make releases more often and implement nice new features for developers.
+Also, please consider to support this project on [Boosty](https://boosty.to/cpp-sc2). Support of the project allows to make releases more often and implement new features for developers.
 
 
 ## Building the project
