@@ -8,43 +8,50 @@
 
 #include "civetweb.h"
 
-#if defined (_WIN32) && defined(__MINGW32__)
-#include <winsock2.h>
-#elif defined (_WIN32)
-#include <WinSock2.h>
-#endif
-
-namespace sc2 {
-
-void StartCivetweb() {
+namespace {
+bool StartCivetweb() {
     static bool is_initialized = false;
-    static const char* REQUEST_TIMEOUT_MS = "5000";
-    static const char* WEBSOCKET_TIMEOUT_MS = "1200000";
-    static const char* NUM_THREADS = "4";
-    static const char* NO_DELAY = "1";
 
     if (is_initialized) {
-        return;
+        return true;
     }
 
     const char* options[] = {
         "request_timeout_ms",
-        REQUEST_TIMEOUT_MS,
+        "5000",
         "websocket_timeout_ms",
-        WEBSOCKET_TIMEOUT_MS,
+        "1200000",
         "num_threads",
-        NUM_THREADS,
+        "4",
         "tcp_nodelay",
-        NO_DELAY,
+        "1",
         0
     };
 
-    mg_callbacks callbacks;
-    memset(&callbacks, 0, sizeof(callbacks));
-    mg_start(&callbacks, nullptr, options);
+    struct mg_callbacks callbacks = {0};
+
+    struct mg_init_data mg_start_init_data = {0};
+    mg_start_init_data.callbacks = &callbacks;
+    mg_start_init_data.configuration_options = options;
+
+    struct mg_error_data mg_start_error_data = {0};
+    char ebuff[256] = {0};
+    mg_start_error_data.text = ebuff;
+    mg_start_error_data.text_buffer_size = sizeof(ebuff);
+
+    const auto* ctx = mg_start2(&mg_start_init_data, &mg_start_error_data);
+    if (!ctx) {
+        std::cerr << "Failed to start civetweb server: " << ebuff << std::endl;
+        return false;
+    }
 
     is_initialized = true;
+    return true;
 }
+
+}  // anonymous namespace
+
+namespace sc2 {
 
 bool GetClientData(const mg_connection* connection, sc2::Connection*& out) {
     if (!connection) {
@@ -101,19 +108,20 @@ Connection::Connection() :
     condition_(),
     has_response_(false) {}
 
-
 bool Connection::Connect(const std::string& address, int port, bool verbose) {
-    StartCivetweb();
+    if (!StartCivetweb()) {
+        return false;
+    }
     verbose_ = verbose;
 
-    char ebuff[100] = { 0 };
+    char ebuff[256] = {0};
 
     connection_ = mg_connect_websocket_client(
         address.c_str(),
         port,
         0,
         ebuff,
-        100,
+        256,
         "/sc2api",
         nullptr,
         DataHandler,
@@ -121,6 +129,7 @@ bool Connection::Connect(const std::string& address, int port, bool verbose) {
         (void*) this);
 
     if (!connection_) {
+        std::cerr << "Failed to establish websocket connection: " << ebuff << std::endl;
         return false;
     }
 

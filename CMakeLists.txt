@@ -51,6 +51,7 @@ set(CMAKE_DEBUG_POSTFIX ${LIBRARY_DEBUG_POSTFIX})
 # External subprojects
 list(APPEND CMAKE_MODULE_PATH
     "${PROJECT_SOURCE_DIR}/thirdparty/cmake"
+    "${PROJECT_SOURCE_DIR}/thirdparty/civetweb"
     "${PROJECT_SOURCE_DIR}/cmake/assets")
 
 # Build with c++14 support.

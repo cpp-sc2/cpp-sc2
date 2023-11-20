@@ -1472,6 +1472,7 @@ bool ControlImp::Connect(const std::string& address, int port, int timeout_ms) {
         timeout_seconds = 1;
     }
 
+    std::cout << "Connecting to " << address << ":" << port << "...\n";
 
     for (unsigned int count_seconds = 0; count_seconds < timeout_seconds; ++count_seconds) {
         if (proto_.ConnectToGame(address, port, timeout_ms)) {
@@ -1479,17 +1480,10 @@ bool ControlImp::Connect(const std::string& address, int port, int timeout_ms) {
             break;
         }
         SleepFor(1000);
-
-        if (count_seconds == 0) {
-            std::cout << "Waiting for connection";
-        } else {
-            std::cout << ".";
-        }
     }
-    std::cout << std::endl;
 
     if (!connected) {
-        std::cerr << "Unable to connect to game" << std::endl;
+        std::cerr << "Unable to connect to game\n";
         return false;
     }
 
