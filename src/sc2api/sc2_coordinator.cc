@@ -1,21 +1,20 @@
+#include "sc2api/sc2_coordinator.h"
+
+#include <algorithm>
+#include <cassert>
+#include <fstream>
+#include <iostream>
+#include <thread>
+
+#include "s2clientprotocol/sc2api.pb.h"
 #include "sc2api/sc2_agent.h"
 #include "sc2api/sc2_args.h"
 #include "sc2api/sc2_control_interfaces.h"
-#include "sc2api/sc2_coordinator.h"
 #include "sc2api/sc2_errors.h"
 #include "sc2api/sc2_interfaces.h"
 #include "sc2api/sc2_replay_observer.h"
-
 #include "sc2utils/sc2_manage_process.h"
 #include "sc2utils/sc2_scan_directory.h"
-
-#include "s2clientprotocol/sc2api.pb.h"
-
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <cassert>
-#include <thread>
 
 namespace sc2 {
 
@@ -32,7 +31,8 @@ void RunParallel(const std::function<void(Agent* a)>& step, std::vector<Agent*>&
     }
 }
 
-int LaunchProcess(ProcessSettings& process_settings, Client* client, int window_width, int window_height, int window_start_x, int window_start_y, int port, int client_num=0) {
+int LaunchProcess(ProcessSettings& process_settings, Client* client, int window_width, int window_height,
+                  int window_start_x, int window_start_y, int port, int client_num = 0) {
     assert(client);
     process_settings.process_info.push_back(sc2::ProcessInfo());
     ProcessInfo& pi = process_settings.process_info.back();
@@ -41,10 +41,7 @@ int LaunchProcess(ProcessSettings& process_settings, Client* client, int window_
     pi.port = port;
 
     // Command line arguments that will be passed to sc2.
-    std::vector<std::string> cl = {
-        "-listen", process_settings.net_address,
-        "-port", std::to_string(pi.port)
-    };
+    std::vector<std::string> cl = {"-listen", process_settings.net_address, "-port", std::to_string(pi.port)};
 
     cl.push_back("-displayMode");
     if (process_settings.full_screen && client_num == 0)
@@ -53,33 +50,37 @@ int LaunchProcess(ProcessSettings& process_settings, Client* client, int window_
         cl.push_back("0");
 
     if (process_settings.data_version.size() > 0) {
-        cl.push_back("-dataVersion"); cl.push_back(process_settings.data_version);
+        cl.push_back("-dataVersion");
+        cl.push_back(process_settings.data_version);
     }
 
     for (const std::string& command : process_settings.extra_command_lines)
         cl.push_back(command);
 
-    cl.push_back("-windowwidth"); cl.push_back(std::to_string(window_width));
-    cl.push_back("-windowheight"); cl.push_back(std::to_string(window_height));
+    cl.push_back("-windowwidth");
+    cl.push_back(std::to_string(window_width));
+    cl.push_back("-windowheight");
+    cl.push_back(std::to_string(window_height));
 
     if (client_num < 2) {
-        cl.push_back("-windowx"); cl.push_back(std::to_string(window_start_x + window_width * client_num));
-        cl.push_back("-windowy"); cl.push_back(std::to_string(window_start_y));
-    }
-    else if (client_num < 4) {
-        cl.push_back("-windowx"); cl.push_back(std::to_string(window_start_x + window_width * (client_num - 2)));
-        cl.push_back("-windowy"); cl.push_back(std::to_string(window_start_y + window_height));
+        cl.push_back("-windowx");
+        cl.push_back(std::to_string(window_start_x + window_width * client_num));
+        cl.push_back("-windowy");
+        cl.push_back(std::to_string(window_start_y));
+    } else if (client_num < 4) {
+        cl.push_back("-windowx");
+        cl.push_back(std::to_string(window_start_x + window_width * (client_num - 2)));
+        cl.push_back("-windowy");
+        cl.push_back(std::to_string(window_start_y + window_height));
     }
 
     pi.process_path = process_settings.process_path;
     pi.process_id = StartProcess(process_settings.process_path, cl);
     if (!pi.process_id) {
-        std::cerr << "Unable to start sc2 executable with path: "
-            << process_settings.process_path
-            << std::endl;
-    }
-    else {
-        std::cout << "Launched SC2 (" << process_settings.process_path << "), PID: " << std::to_string(pi.process_id) << std::endl;
+        std::cerr << "Unable to start sc2 executable with path: " << process_settings.process_path << std::endl;
+    } else {
+        std::cout << "Launched SC2 (" << process_settings.process_path << "), PID: " << std::to_string(pi.process_id)
+                  << std::endl;
     }
 
     client->Control()->SetProcessInfo(pi);
@@ -102,19 +103,15 @@ bool AttachClients(ProcessSettings& process_settings, std::vector<Client*> clien
     return connected;
 }
 
-int LaunchProcesses(ProcessSettings& process_settings, std::vector<Client*> clients, int window_width, int window_height, int window_start_x, int window_start_y) {
+int LaunchProcesses(ProcessSettings& process_settings, std::vector<Client*> clients, int window_width,
+                    int window_height, int window_start_x, int window_start_y) {
     int last_port = 0;
     // Start an sc2 process for each bot.
     int clientIndex = 0;
     for (auto c : clients) {
-        last_port = LaunchProcess(process_settings, 
-            c, 
-            window_width, 
-            window_height, 
-            window_start_x, 
-            window_start_y, 
-            process_settings.port_start + static_cast<int>(process_settings.process_info.size()) - 1, 
-            clientIndex++);
+        last_port = LaunchProcess(
+            process_settings, c, window_width, window_height, window_start_x, window_start_y,
+            process_settings.port_start + static_cast<int>(process_settings.process_info.size()) - 1, clientIndex++);
     }
 
     AttachClients(process_settings, clients);
@@ -126,7 +123,7 @@ static void CallOnStep(Agent* a) {
     ControlInterface* control = a->Control();
     if (!control->IsInGame()) {
         a->OnGameEnd();
-        control->RequestLeaveGame(); // Only for multiplayer.
+        control->RequestLeaveGame();  // Only for multiplayer.
         return;
     }
 
@@ -191,13 +188,13 @@ public:
     bool use_generalized_ability_id = true;
 };
 
-CoordinatorImp::CoordinatorImp() :
-    agents_(),
-    replay_observers_(),
-    game_ended_(),
-    starcraft_started_(false),
-    game_settings_(),
-    process_settings_(false, 1, "", "127.0.0.1", kDefaultProtoInterfaceTimeout, 8168, false) {
+CoordinatorImp::CoordinatorImp()
+    : agents_(),
+      replay_observers_(),
+      game_ended_(),
+      starcraft_started_(false),
+      game_settings_(),
+      process_settings_(false, 1, "", "127.0.0.1", kDefaultProtoInterfaceTimeout, 8168, false) {
 }
 
 CoordinatorImp::~CoordinatorImp() {
@@ -208,9 +205,7 @@ CoordinatorImp::~CoordinatorImp() {
 
 bool CoordinatorImp::AnyObserverAvailable() const {
     return std::any_of(replay_observers_.cbegin(), replay_observers_.cend(),
-                       [](ReplayObserver* r) {
-                           return !r->Control()->IsInGame();
-                       });
+                       [](ReplayObserver* r) { return !r->Control()->IsInGame(); });
 }
 
 bool CoordinatorImp::ShouldIgnore(ReplayObserver* r, const std::string& file) {
@@ -230,7 +225,7 @@ bool CoordinatorImp::ShouldRelaunch(ReplayObserver* r) {
     const ReplayInfo& replay_info = r->ReplayControl()->GetReplayInfo();
 
     bool version_match = replay_info.base_build == r->Control()->Proto().GetBaseBuild() &&
-        replay_info.data_version == r->Control()->Proto().GetDataVersion();
+                         replay_info.data_version == r->Control()->Proto().GetDataVersion();
     if (version_match)
         return false;
 
@@ -254,7 +249,8 @@ void CoordinatorImp::StartReplay() {
     assert(!replay_observers_.empty());
     if (!starcraft_started_) {
         last_port_ = LaunchProcesses(process_settings_,
-            std::vector<sc2::Client*>(replay_observers_.begin(), replay_observers_.end()), window_width_, window_height_, window_start_x_, window_start_y_);
+                                     std::vector<sc2::Client*>(replay_observers_.begin(), replay_observers_.end()),
+                                     window_width_, window_height_, window_start_x_, window_start_y_);
     }
 
     // Run a replay with each available replay observer.
@@ -279,7 +275,8 @@ void CoordinatorImp::StartReplay() {
                 break;
             }
 
-            bool launched = r->ReplayControl()->LoadReplay(file, interface_settings_, replay_settings_.player_id, process_settings_.realtime);
+            bool launched = r->ReplayControl()->LoadReplay(file, interface_settings_, replay_settings_.player_id,
+                                                           process_settings_.realtime);
             replays.pop_back();
             if (launched)
                 break;
@@ -314,8 +311,7 @@ void CoordinatorImp::StepAgents() {
 
     if (agents_.size() == 1) {
         step_agent(agents_.front());
-    }
-    else {
+    } else {
         RunParallel(step_agent, agents_);
     }
 
@@ -333,7 +329,6 @@ void CoordinatorImp::StepAgents() {
             CallOnStep(a);
         }
     }
-
 }
 
 void CoordinatorImp::StepAgentsRealtime() {
@@ -367,15 +362,14 @@ void CoordinatorImp::StepAgentsRealtime() {
 
         if (!control->IsInGame()) {
             a->OnGameEnd();
-            a->Control()->RequestLeaveGame(); // Only for multiplayer.
+            a->Control()->RequestLeaveGame();  // Only for multiplayer.
             return;
         }
     };
 
     if (process_settings_.multi_threaded) {
         RunParallel(step_agent, agents_);
-    }
-    else {
+    } else {
         for (auto a : agents_) {
             step_agent(a);
         }
@@ -416,8 +410,7 @@ void CoordinatorImp::StepReplayObservers() {
 
     if (replay_observers_.size() == 1) {
         run_replay(replay_observers_.front());
-    }
-    else {
+    } else {
         // Run all steps in parallel.
         std::vector<std::thread> threads;
         threads.reserve(replay_observers_.size());
@@ -443,7 +436,6 @@ void CoordinatorImp::StepReplayObservers() {
         }
     }
 }
-
 
 void CoordinatorImp::StepReplayObserversRealtime() {
     // Run all replay observers.
@@ -477,8 +469,7 @@ void CoordinatorImp::StepReplayObserversRealtime() {
 
     if (replay_observers_.size() == 1) {
         run_replay(replay_observers_.front());
-    }
-    else {
+    } else {
         // Run all steps in parallel.
         std::vector<std::thread> threads;
         threads.reserve(replay_observers_.size());
@@ -530,7 +521,8 @@ bool CoordinatorImp::WaitForAllResponses() {
                 break;
             }
 
-            if (!replay_observer->Control()->HasResponsePending() || replay_observer->Control()->GetAppState() != AppState::normal) {
+            if (!replay_observer->Control()->HasResponsePending() ||
+                replay_observer->Control()->GetAppState() != AppState::normal) {
                 continue;
             }
             has_responses = true;
@@ -561,16 +553,16 @@ bool CoordinatorImp::WaitForAllResponses() {
 bool CoordinatorImp::CreateGame() {
     // Create the game with the first client.
     Agent* firstClient = agents_.front();
-    return firstClient->Control()->CreateGame(game_settings_.map_name, game_settings_.player_setup, process_settings_.realtime);
+    return firstClient->Control()->CreateGame(game_settings_.map_name, game_settings_.player_setup,
+                                              process_settings_.realtime);
 }
 
 bool CoordinatorImp::JoinGame() {
     int i = 0;
     for (auto c : agents_) {
-        bool game_join_request = c->Control()->RequestJoinGame(game_settings_.player_setup[i++],
-            interface_settings_,
-            game_settings_.ports,
-            game_settings_.raw_affects_selection);
+        bool game_join_request =
+            c->Control()->RequestJoinGame(game_settings_.player_setup[i++], interface_settings_, game_settings_.ports,
+                                          game_settings_.raw_affects_selection);
 
         if (!game_join_request) {
             std::cerr << "Unable to join game." << std::endl;
@@ -641,14 +633,8 @@ bool CoordinatorImp::Relaunch(ReplayObserver* replay_observer) {
     // Control interface has been reconstructed.
     control = replay_observer->Control();
 
-    last_port_ = LaunchProcess(process_settings_,
-        replay_observer,
-        window_width_,
-        window_height_,
-        window_start_x_,
-        window_start_y_,
-        last_port_ + 1
-    );
+    last_port_ = LaunchProcess(process_settings_, replay_observer, window_width_, window_height_, window_start_x_,
+                               window_start_y_, last_port_ + 1);
 
     const ProcessInfo& pi_new = control->GetProcessInfo();
 
@@ -711,7 +697,6 @@ void Coordinator::SetReplayRecovery(bool value) {
     imp_->replay_recovery_ = value;
 }
 
-
 bool Coordinator::LoadSettings(int argc, char** argv) {
     return ParseSettings(argc, argv, imp_->process_settings_, imp_->game_settings_);
 }
@@ -733,21 +718,20 @@ void Coordinator::LaunchStarcraft() {
     // The process may have died.
     int port_start = 0;
     if (imp_->process_settings_.process_info.size() != imp_->agents_.size()) {
-        port_start = LaunchProcesses(imp_->process_settings_,
-            std::vector<sc2::Client*>(imp_->agents_.begin(), imp_->agents_.end()), imp_->window_width_, imp_->window_height_, imp_->window_start_x_, imp_->window_start_y_);
+        port_start = LaunchProcesses(
+            imp_->process_settings_, std::vector<sc2::Client*>(imp_->agents_.begin(), imp_->agents_.end()),
+            imp_->window_width_, imp_->window_height_, imp_->window_start_x_, imp_->window_start_y_);
     }
 
-    SetupPorts( imp_->agents_.size(), port_start);
+    SetupPorts(imp_->agents_.size(), port_start);
 
     imp_->starcraft_started_ = true;
     imp_->last_port_ = port_start;
 }
 
 void Coordinator::Connect(int port) {
-    if (!imp_->agents_.front()->Control()->Connect(
-        imp_->process_settings_.net_address,
-        port,
-        imp_->process_settings_.timeout_ms)) {
+    if (!imp_->agents_.front()->Control()->Connect(imp_->process_settings_.net_address, port,
+                                                   imp_->process_settings_.timeout_ms)) {
         std::cerr << "Failed to attach to starcraft." << std::endl;
         exit(1);
     }
@@ -770,8 +754,7 @@ bool Coordinator::Update() {
     if (imp_->agents_.size() > 0) {
         if (imp_->process_settings_.realtime) {
             imp_->StepAgentsRealtime();
-        }
-        else {
+        } else {
             imp_->StepAgents();
         }
     }
@@ -779,8 +762,7 @@ bool Coordinator::Update() {
     if (imp_->replay_observers_.size() > 0 && imp_->starcraft_started_) {
         if (imp_->process_settings_.realtime) {
             imp_->StepReplayObserversRealtime();
-        }
-        else {
+        } else {
             imp_->StepReplayObservers();
         }
     }
@@ -898,7 +880,7 @@ void Coordinator::SetFeatureLayers(const FeatureLayerSettings& settings) {
     // Feature Layers must be set before LaunchStarcraft is called.
     assert(!imp_->starcraft_started_);
     imp_->interface_settings_.use_feature_layers = true;
-    imp_->interface_settings_.feature_layer_settings= settings;
+    imp_->interface_settings_.feature_layer_settings = settings;
 }
 
 void Coordinator::SetRender(const RenderSettings& settings) {
@@ -934,8 +916,7 @@ bool Coordinator::SetReplayPath(const std::string& path) {
 
     if (HasExtension(path, ".SC2Replay")) {
         imp_->replay_settings_.replay_file.push_back(path);
-    }
-    else {
+    } else {
         imp_->replay_settings_.replay_dir = path;
 
         // Gather and append all files from the directory.
@@ -981,13 +962,12 @@ void Coordinator::AddCommandLine(const std::string& option) {
     imp_->process_settings_.extra_command_lines.push_back(option);
 }
 
-void Coordinator::SetRawAffectsSelection(bool value)
-{
+void Coordinator::SetRawAffectsSelection(bool value) {
     imp_->game_settings_.raw_affects_selection = value;
 }
 
 void Coordinator::SetFullScreen(bool value) {
-     imp_->process_settings_.full_screen = value;
+    imp_->process_settings_.full_screen = value;
 }
 
 std::string Coordinator::GetExePath() const {
@@ -1006,11 +986,10 @@ void Coordinator::SetupPorts(size_t num_agents, int port_start, bool check_singl
                 ++humans;
             }
         }
-    }
-    else {
+    } else {
         humans = num_agents;
     }
-    if (humans > 1 ) {
+    if (humans > 1) {
         imp_->game_settings_.ports.shared_port = ++port_start;
         imp_->game_settings_.ports.server_ports.game_port = ++port_start;
         imp_->game_settings_.ports.server_ports.base_port = ++port_start;
@@ -1022,4 +1001,4 @@ void Coordinator::SetupPorts(size_t num_agents, int port_start, bool check_singl
         }
     }
 }
-}
+}  // namespace sc2

@@ -3617,7 +3617,6 @@ enum class EFFECT_ID {
     THERMALLANCE = 5,
 };
 
-
 //! Converts a UNIT_TYPEID into a string of the same name.
 const char* UnitTypeToName(UnitTypeID id);
 

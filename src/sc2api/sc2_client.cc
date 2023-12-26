@@ -1,21 +1,20 @@
 #include "sc2api/sc2_client.h"
-#include "sc2api/sc2_common.h"
-#include "sc2api/sc2_proto_interface.h"
-#include "sc2api/sc2_interfaces.h"
-#include "sc2api/sc2_control_interfaces.h"
-#include "sc2api/sc2_proto_to_pods.h"
-#include "sc2api/sc2_game_settings.h"
-
-#include "sc2utils/sc2_manage_process.h"
 
 #include <algorithm>
-#include <iostream>
-#include <unordered_map>
 #include <cassert>
-#include <limits>
 #include <fstream>
+#include <iostream>
+#include <limits>
+#include <unordered_map>
 
 #include "s2clientprotocol/sc2api.pb.h"
+#include "sc2api/sc2_common.h"
+#include "sc2api/sc2_control_interfaces.h"
+#include "sc2api/sc2_game_settings.h"
+#include "sc2api/sc2_interfaces.h"
+#include "sc2api/sc2_proto_interface.h"
+#include "sc2api/sc2_proto_to_pods.h"
+#include "sc2utils/sc2_manage_process.h"
 
 namespace {
 
@@ -31,8 +30,7 @@ private:
     sc2::SampleImage visibility_data_;
 };
 
-MapState::MapState(const SC2APIProtocol::MapState& map):
-    creep_data_(map.creep()), visibility_data_(map.visibility()) {
+MapState::MapState(const SC2APIProtocol::MapState& map) : creep_data_(map.creep()), visibility_data_(map.visibility()) {
 }
 
 bool MapState::HasCreep(const sc2::Point2D& point) const {
@@ -135,23 +133,44 @@ public:
 
     std::vector<PlayerResult> player_results_;
 
-    ObservationImp(ProtoInterface& proto, ObservationPtr& observation, ResponseObservationPtr& response, ControlInterface& control);
+    ObservationImp(ProtoInterface& proto, ObservationPtr& observation, ResponseObservationPtr& response,
+                   ControlInterface& control);
     void ClearFlags();
 
-    uint32_t GetPlayerID() const { return player_id_; }
-    uint32_t GetGameLoop() const final { return current_game_loop_; }
+    uint32_t GetPlayerID() const {
+        return player_id_;
+    }
+    uint32_t GetGameLoop() const final {
+        return current_game_loop_;
+    }
     Units GetUnits() const final;
     Units GetUnits(Filter filter) const final;
     Units GetUnits(Unit::Alliance alliance, Filter filter = {}) const final;
     const Unit* GetUnit(Tag tag) const final;
-    const RawActions& GetRawActions() const final { return raw_actions_; }
-    const SpatialActions& GetFeatureLayerActions() const final { return feature_layer_actions_; };
-    const SpatialActions& GetRenderedActions() const final { return rendered_actions_; }
-    const std::vector<ChatMessage>& GetChatMessages() const final { return chat_; }
-    const std::vector<PowerSource>& GetPowerSources() const final { return power_sources_; }
-    const std::vector<Effect>& GetEffects() const final { return effects_; }
-    const std::vector<UpgradeID>& GetUpgrades() const final { return upgrades_; }
-    const Score& GetScore() const final { return score_; }
+    const RawActions& GetRawActions() const final {
+        return raw_actions_;
+    }
+    const SpatialActions& GetFeatureLayerActions() const final {
+        return feature_layer_actions_;
+    };
+    const SpatialActions& GetRenderedActions() const final {
+        return rendered_actions_;
+    }
+    const std::vector<ChatMessage>& GetChatMessages() const final {
+        return chat_;
+    }
+    const std::vector<PowerSource>& GetPowerSources() const final {
+        return power_sources_;
+    }
+    const std::vector<Effect>& GetEffects() const final {
+        return effects_;
+    }
+    const std::vector<UpgradeID>& GetUpgrades() const final {
+        return upgrades_;
+    }
+    const Score& GetScore() const final {
+        return score_;
+    }
     const Abilities& GetAbilityData(bool force_refresh = false) const final;
     const UnitTypes& GetUnitTypeData(bool force_refresh = false) const final;
     const Upgrades& GetUpgradeData(bool force_refresh = false) const final;
@@ -164,32 +183,59 @@ public:
     bool IsPlacable(const Point2D& point) const final;
     float TerrainHeight(const Point2D& point) const final;
 
-    uint32_t GetMinerals() const final { return minerals_; }
-    uint32_t GetVespene() const final { return vespene_;  }
-    uint32_t GetFoodCap() const final { return food_cap_; }
-    uint32_t GetFoodUsed() const final { return food_used_; }
-    uint32_t GetFoodArmy() const final { return food_army_; }
-    uint32_t GetFoodWorkers() const final { return food_workers_; }
-    uint32_t GetIdleWorkerCount() const final { return idle_worker_count_; }
-    uint32_t GetArmyCount() const final { return army_count_; }
-    uint32_t GetWarpGateCount() const final { return warp_gate_count_; }
-    uint32_t GetLarvaCount() const final { return larva_count_; }
-    Point2D GetCameraPos() const final { return camera_pos_; }
-    Point3D GetStartLocation() const final { return start_location_; }
-    const std::vector<PlayerResult>& GetResults() const final { return player_results_; }
+    uint32_t GetMinerals() const final {
+        return minerals_;
+    }
+    uint32_t GetVespene() const final {
+        return vespene_;
+    }
+    uint32_t GetFoodCap() const final {
+        return food_cap_;
+    }
+    uint32_t GetFoodUsed() const final {
+        return food_used_;
+    }
+    uint32_t GetFoodArmy() const final {
+        return food_army_;
+    }
+    uint32_t GetFoodWorkers() const final {
+        return food_workers_;
+    }
+    uint32_t GetIdleWorkerCount() const final {
+        return idle_worker_count_;
+    }
+    uint32_t GetArmyCount() const final {
+        return army_count_;
+    }
+    uint32_t GetWarpGateCount() const final {
+        return warp_gate_count_;
+    }
+    uint32_t GetLarvaCount() const final {
+        return larva_count_;
+    }
+    Point2D GetCameraPos() const final {
+        return camera_pos_;
+    }
+    Point3D GetStartLocation() const final {
+        return start_location_;
+    }
+    const std::vector<PlayerResult>& GetResults() const final {
+        return player_results_;
+    }
 
     const SC2APIProtocol::Observation* GetRawObservation() const final;
 
     bool UpdateObservation();
 };
 
-ObservationImp::ObservationImp(ProtoInterface& proto, ObservationPtr& observation, ResponseObservationPtr& response, ControlInterface& control) :
-    proto_(proto),
-    observation_(observation),
-    response_(response),
-    control_(control),
-    current_game_loop_(std::numeric_limits<uint32_t>::max()),
-    previous_game_loop(std::numeric_limits<uint32_t>::max()) {
+ObservationImp::ObservationImp(ProtoInterface& proto, ObservationPtr& observation, ResponseObservationPtr& response,
+                               ControlInterface& control)
+    : proto_(proto),
+      observation_(observation),
+      response_(response),
+      control_(control),
+      current_game_loop_(std::numeric_limits<uint32_t>::max()),
+      previous_game_loop(std::numeric_limits<uint32_t>::max()) {
     ClearFlags();
 }
 
@@ -205,9 +251,7 @@ void ObservationImp::ClearFlags() {
 
 Units ObservationImp::GetUnits() const {
     Units units;
-    unit_pool_.ForEachExistingUnit([&](Unit& unit) {
-        units.push_back(&unit);
-    });
+    unit_pool_.ForEachExistingUnit([&](Unit& unit) { units.push_back(&unit); });
     return units;
 }
 
@@ -578,7 +622,7 @@ bool ObservationImp::UpdateObservation() {
     if (observation_raw.HasErrors()) {
         return false;
     }
-    
+
     unit_pool_.ClearExisting();
     Convert(observation_raw, unit_pool_, current_game_loop_, previous_game_loop);
 
@@ -612,8 +656,8 @@ bool ObservationImp::UpdateObservation() {
     power_sources_.clear();
     for (int i = 0, e = player_raw.power_sources_size(); i < e; ++i) {
         const SC2APIProtocol::PowerSource& power_source = player_raw.power_sources(i);
-        power_sources_.push_back(
-            PowerSource(Point2D(power_source.pos().x(), power_source.pos().y()), power_source.radius(), power_source.tag()));
+        power_sources_.push_back(PowerSource(Point2D(power_source.pos().x(), power_source.pos().y()),
+                                             power_source.radius(), power_source.tag()));
     }
 
     upgrades_previous_ = upgrades_;
@@ -624,7 +668,8 @@ bool ObservationImp::UpdateObservation() {
 
     player_results_.clear();
     for (const auto& player_result : response_->player_result()) {
-        player_results_.push_back(PlayerResult(player_result.player_id(), ConvertGameResultFromProto(player_result.result())));
+        player_results_.push_back(
+            PlayerResult(player_result.player_id(), ConvertGameResultFromProto(player_result.result())));
     }
 
     return true;
@@ -646,8 +691,10 @@ public:
 
     QueryImp(ProtoInterface& proto, ControlInterface& control, ObservationInterface& observation);
 
-    AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements, bool use_generalized_ability_id = true) final;
-    std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements, bool use_generalized_ability_id = true) final;
+    AvailableAbilities GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements,
+                                           bool use_generalized_ability_id = true) final;
+    std::vector<AvailableAbilities> GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements,
+                                                         bool use_generalized_ability_id = true) final;
 
     float PathingDistance(const Point2D& start, const Point2D& end) final;
     float PathingDistance(const Unit* start_unit, const Point2D& end) final;
@@ -657,14 +704,14 @@ public:
     std::vector<bool> Placement(const std::vector<PlacementQuery>& queries) final;
 };
 
-QueryImp::QueryImp(ProtoInterface& proto, ControlInterface& control, ObservationInterface& observation) :
-    proto_(proto),
-    control_(control),
-    observation_(observation) {
+QueryImp::QueryImp(ProtoInterface& proto, ControlInterface& control, ObservationInterface& observation)
+    : proto_(proto), control_(control), observation_(observation) {
 }
 
-AvailableAbilities QueryImp::GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements, bool use_generalized_ability_id) {
-    std::vector<AvailableAbilities> available_abilities = GetAbilitiesForUnits({ unit }, ignore_resource_requirements, use_generalized_ability_id);
+AvailableAbilities QueryImp::GetAbilitiesForUnit(const Unit* unit, bool ignore_resource_requirements,
+                                                 bool use_generalized_ability_id) {
+    std::vector<AvailableAbilities> available_abilities =
+        GetAbilitiesForUnits({unit}, ignore_resource_requirements, use_generalized_ability_id);
     control_.ErrorIf(available_abilities.empty(), ClientError::NoAbilitiesForTag);
     if (available_abilities.size() < 1) {
         return AvailableAbilities();
@@ -672,7 +719,8 @@ AvailableAbilities QueryImp::GetAbilitiesForUnit(const Unit* unit, bool ignore_r
     return available_abilities[0];
 }
 
-std::vector<AvailableAbilities> QueryImp::GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements, bool use_generalized_ability_id) {
+std::vector<AvailableAbilities> QueryImp::GetAbilitiesForUnits(const Units& units, bool ignore_resource_requirements,
+                                                               bool use_generalized_ability_id) {
     std::vector<AvailableAbilities> available_abilities_out;
 
     // Make the request.
@@ -719,8 +767,7 @@ std::vector<AvailableAbilities> QueryImp::GetAbilitiesForUnits(const Units& unit
             AvailableAbility available_ability;
             if (use_generalized_ability_id) {
                 available_ability.ability_id = GetGeneralizedAbilityID(ability.ability_id(), observation_);
-            }
-            else {
+            } else {
                 available_ability.ability_id = ability.ability_id();
             }
 
@@ -766,8 +813,7 @@ std::vector<float> QueryImp::PathingDistance(const std::vector<PathingQuery>& qu
         SC2APIProtocol::RequestQueryPathing* pathing_query = request_query->add_pathing();
         if (query.start_unit_tag_) {
             pathing_query->set_unit_tag(query.start_unit_tag_);
-        }
-        else {
+        } else {
             SC2APIProtocol::Point2D* startPos = pathing_query->mutable_start_pos();
             startPos->set_x(query.start_.x);
             startPos->set_y(query.start_.y);
@@ -809,7 +855,7 @@ bool QueryImp::Placement(const AbilityID& ability, const Point2D& target_pos, co
 
     PlacementQuery query;
     query.ability = ability;
-    query.target_pos= target_pos;
+    query.target_pos = target_pos;
     query.placing_unit_tag = unit ? unit->tag : NullTag;
     queries.push_back(query);
 
@@ -833,18 +879,18 @@ std::vector<bool> QueryImp::Placement(const std::vector<PlacementQuery>& queries
     }
 
     if (!proto_.SendRequest(request)) {
-        return std::vector<bool>(queries.size() ,false);
+        return std::vector<bool>(queries.size(), false);
     }
 
     GameResponsePtr response = control_.WaitForResponse();
     ResponseQueryPtr response_query;
     SET_MESSAGE_RESPONSE(response_query, response, query);
     if (response_query.HasErrors()) {
-        return std::vector<bool>(queries.size() ,false);
+        return std::vector<bool>(queries.size(), false);
     }
 
     if (response_query->placements_size() != queries.size()) {
-        return std::vector<bool>(queries.size() ,false);
+        return std::vector<bool>(queries.size(), false);
     }
 
     std::vector<bool> results;
@@ -857,7 +903,6 @@ std::vector<bool> QueryImp::Placement(const std::vector<PlacementQuery>& queries
 
     return results;
 }
-
 
 //-------------------------------------------------------------------------------------------------
 // DebugImp: An implementation of DebugInterface.
@@ -904,11 +949,7 @@ public:
     std::vector<SC2APIProtocol::DebugGameState> debug_state_;
 
     struct DebugSetUnitValue {
-        enum class UnitValue {
-            Energy,
-            Life,
-            Shields
-        };
+        enum class UnitValue { Energy, Life, Shields };
         UnitValue unit_value;
         float value;
         Tag tag;
@@ -939,8 +980,10 @@ public:
     DebugImp(ProtoInterface& proto, ObservationInterface& observation, ControlInterface& control);
 
     void DebugTextOut(const std::string& out, Color color = Colors::White) override;
-    void DebugTextOut(const std::string& out, const Point2D& pt_virtual_2D, Color color = Colors::White, uint32_t size = 8) override;
-    void DebugTextOut(const std::string& out, const Point3D& pt3D, Color color = Colors::White, uint32_t size = 8) override;
+    void DebugTextOut(const std::string& out, const Point2D& pt_virtual_2D, Color color = Colors::White,
+                      uint32_t size = 8) override;
+    void DebugTextOut(const std::string& out, const Point3D& pt3D, Color color = Colors::White,
+                      uint32_t size = 8) override;
     void DebugLineOut(const Point3D& p0, const Point3D& p1, Color color = Colors::White) override;
     void DebugBoxOut(const Point3D& p_min, const Point3D& p_max, Color color = Colors::White) override;
     void DebugSphereOut(const Point3D& p, float r, Color color = Colors::White) override;
@@ -968,16 +1011,16 @@ public:
     void SendDebug() override;
 };
 
-DebugImp::DebugImp(ProtoInterface& proto, ObservationInterface& observation, ControlInterface& control) :
-    proto_(proto),
-    observation_(observation),
-    control_(control),
-    has_move_camera(false),
-    app_test_set_(false),
-    endgame_surrender_(false),
-    endgame_victory_(false),
-    set_score_(false),
-    score_(0.0f) {
+DebugImp::DebugImp(ProtoInterface& proto, ObservationInterface& observation, ControlInterface& control)
+    : proto_(proto),
+      observation_(observation),
+      control_(control),
+      has_move_camera(false),
+      app_test_set_(false),
+      endgame_surrender_(false),
+      endgame_victory_(false),
+      set_score_(false),
+      score_(0.0f) {
 }
 
 void DebugImp::DebugTextOut(const std::string& out, Color color) {
@@ -1094,15 +1137,15 @@ void DebugImp::DebugEndGame(bool victory) {
     if (victory) {
         endgame_surrender_ = false;
         endgame_victory_ = true;
-    }
-    else {
+    } else {
         endgame_surrender_ = true;
         endgame_victory_ = false;
     }
 }
 
 void DebugImp::DebugSetEnergy(float value, const Unit* unit) {
-    if (!unit) return;
+    if (!unit)
+        return;
     DebugSetUnitValue unit_value;
     unit_value.unit_value = DebugSetUnitValue::UnitValue::Energy;
     unit_value.value = value;
@@ -1111,7 +1154,8 @@ void DebugImp::DebugSetEnergy(float value, const Unit* unit) {
 }
 
 void DebugImp::DebugSetLife(float value, const Unit* unit) {
-    if (!unit) return;
+    if (!unit)
+        return;
     DebugSetUnitValue unit_value;
     unit_value.unit_value = DebugSetUnitValue::UnitValue::Life;
     unit_value.value = value;
@@ -1120,7 +1164,8 @@ void DebugImp::DebugSetLife(float value, const Unit* unit) {
 }
 
 void DebugImp::DebugSetShields(float value, const Unit* unit) {
-    if (!unit) return;
+    if (!unit)
+        return;
     DebugSetUnitValue unit_value;
     unit_value.unit_value = DebugSetUnitValue::UnitValue::Shields;
     unit_value.value = value;
@@ -1138,7 +1183,8 @@ void DebugImp::DebugCreateUnit(UnitTypeID unit_type, const Point2D& p, uint32_t 
 }
 
 void DebugImp::DebugKillUnit(const Unit* unit) {
-    if (!unit) return;
+    if (!unit)
+        return;
     debug_kill_tag_.push_back(unit->tag);
 }
 
@@ -1168,8 +1214,7 @@ void DebugImp::SendDebug() {
                 pos->set_x(entry.pt.x);
                 pos->set_y(entry.pt.y);
                 pos->set_z(entry.pt.z);
-            }
-            else {
+            } else {
                 SC2APIProtocol::Point* pos = debug_text->mutable_virtual_pos();
                 pos->set_x(entry.pt.x);
                 pos->set_y(entry.pt.y);
@@ -1243,15 +1288,15 @@ void DebugImp::SendDebug() {
         SC2APIProtocol::DebugCommand* command = request_debug->add_debug();
         SC2APIProtocol::DebugSetUnitValue* unit_value = command->mutable_unit_value();
         switch (set_unit_value.unit_value) {
-        case DebugSetUnitValue::UnitValue::Energy:
-            unit_value->set_unit_value(SC2APIProtocol::DebugSetUnitValue_UnitValue_Energy);
-            break;
-        case DebugSetUnitValue::UnitValue::Life:
-            unit_value->set_unit_value(SC2APIProtocol::DebugSetUnitValue_UnitValue_Life);
-            break;
-        case DebugSetUnitValue::UnitValue::Shields:
-            unit_value->set_unit_value(SC2APIProtocol::DebugSetUnitValue_UnitValue_Shields);
-            break;
+            case DebugSetUnitValue::UnitValue::Energy:
+                unit_value->set_unit_value(SC2APIProtocol::DebugSetUnitValue_UnitValue_Energy);
+                break;
+            case DebugSetUnitValue::UnitValue::Life:
+                unit_value->set_unit_value(SC2APIProtocol::DebugSetUnitValue_UnitValue_Life);
+                break;
+            case DebugSetUnitValue::UnitValue::Shields:
+                unit_value->set_unit_value(SC2APIProtocol::DebugSetUnitValue_UnitValue_Shields);
+                break;
         }
         unit_value->set_value(set_unit_value.value);
         unit_value->set_unit_tag(set_unit_value.tag);
@@ -1345,7 +1390,6 @@ void DebugImp::SendDebug() {
     }
 }
 
-
 //-------------------------------------------------------------------------------------------------
 // ControlImp: an implementation of ControlInterface.
 //-------------------------------------------------------------------------------------------------
@@ -1384,7 +1428,8 @@ public:
     bool Connect(const std::string& address, int port, int timeout_ms) override;
     bool CreateGame(const std::string& map_name, const std::vector<PlayerSetup>& players, bool realtime) override;
 
-    bool RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports = Ports(), bool raw_affects_selection = false) override;
+    bool RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports = Ports(),
+                         bool raw_affects_selection = false) override;
     bool WaitJoinGame() override;
 
     bool RequestLeaveGame() override;
@@ -1432,28 +1477,38 @@ public:
 
     void ResolveMap(const std::string& map_name, SC2APIProtocol::RequestCreateGame* request);
 
-    const std::vector<ClientError>& GetClientErrors() const final { return client_errors_; };
-    const std::vector<std::string>& GetProtocolErrors() const final { return protocol_errors_; };
+    const std::vector<ClientError>& GetClientErrors() const final {
+        return client_errors_;
+    };
+    const std::vector<std::string>& GetProtocolErrors() const final {
+        return protocol_errors_;
+    };
 
-    void ClearClientErrors() override { client_errors_.clear(); };
-    void ClearProtocolErrors() override { protocol_errors_.clear(); };
-    void UseGeneralizedAbility(bool value) override { observation_imp_->use_generalized_ability_ = value; };
+    void ClearClientErrors() override {
+        client_errors_.clear();
+    };
+    void ClearProtocolErrors() override {
+        protocol_errors_.clear();
+    };
+    void UseGeneralizedAbility(bool value) override {
+        observation_imp_->use_generalized_ability_ = value;
+    };
 
     void Save() override;
     void Load() override;
 };
 
-ControlImp::ControlImp(Client& client) :
-    client_(client),
-    app_state_(AppState::normal),
-    is_multiplayer_(false),
-    observation_imp_(nullptr),
-    query_imp_(nullptr),
-    debug_imp_(nullptr) {
+ControlImp::ControlImp(Client& client)
+    : client_(client),
+      app_state_(AppState::normal),
+      is_multiplayer_(false),
+      observation_imp_(nullptr),
+      query_imp_(nullptr),
+      debug_imp_(nullptr) {
     proto_.SetControl(this);
     observation_imp_ = std::make_unique<ObservationImp>(proto_, observation_, response_, *this);
     query_imp_ = std::make_unique<QueryImp>(proto_, *this, *observation_imp_);
-    debug_imp_= std::make_unique<DebugImp>(proto_, *observation_imp_, *this);
+    debug_imp_ = std::make_unique<DebugImp>(proto_, *observation_imp_, *this);
 }
 
 ControlImp::~ControlImp() {
@@ -1535,7 +1590,7 @@ bool ControlImp::RemoteSaveMap(const void* data, int data_size, std::string remo
     return success;
 }
 
-void ControlImp::ResolveMap (const std::string& map_name, SC2APIProtocol::RequestCreateGame* request) {
+void ControlImp::ResolveMap(const std::string& map_name, SC2APIProtocol::RequestCreateGame* request) {
     // BattleNet map
     if (!HasExtension(map_name, ".SC2Map")) {
         request->set_battlenet_map_name(map_name);
@@ -1647,7 +1702,8 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
     return success;
 }
 
-bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports, bool raw_affects_selection) {
+bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports,
+                                 bool raw_affects_selection) {
     observation_imp_->ClearFlags();
 
     is_multiplayer_ = ports.IsValid();
@@ -1847,8 +1903,7 @@ GameResponsePtr ControlImp::WaitForResponse() {
             // Mark the game app as unresponsive.
             app_state_ = AppState::timeout;
             Error(ClientError::SC2ProtocolTimeout);
-        }
-        else {
+        } else {
             // Wait for a ping response. If this fails, the game is unresponsive.
             // TODO: Implement a timeout parameter for this wait.
             GameResponsePtr response_ping = proto_.WaitForResponseInternal();
@@ -1963,8 +2018,7 @@ bool ControlImp::GetObservation() {
         if (response->error_size() > 0) {
             for (int i = 0; i < response->error_size(); ++i)
                 std::cerr << "Error string: " << response->error(i) << std::endl;
-        }
-        else {
+        } else {
             std::cerr << "No error strings in result." << std::endl;
         }
         std::cerr << std::endl;
@@ -1986,7 +2040,6 @@ bool ControlImp::GetObservation() {
 }
 
 bool ControlImp::WaitJoinGame() {
-
     std::cout << "Waiting for the JoinGame response." << std::endl;
     GameResponsePtr response = WaitForResponse();
     if (!response.get()) {
@@ -2045,12 +2098,10 @@ void ControlImp::IssueUnitDestroyedEvents() {
 }
 
 void ControlImp::IssueUnitAddedEvents() {
-
     for (auto unit : observation_imp_->unit_pool_.GetNewUnits()) {
         if (unit->alliance == Unit::Alliance::Self) {
             client_.OnUnitCreated(unit);
-        }
-        else if (unit->alliance == Unit::Alliance::Neutral && unit->display_type == Unit::DisplayType::Visible) {
+        } else if (unit->alliance == Unit::Alliance::Neutral && unit->display_type == Unit::DisplayType::Visible) {
             client_.OnNeutralUnitCreated(unit);
         }
     }
@@ -2062,14 +2113,15 @@ void ControlImp::IssueUnitAddedEvents() {
 }
 
 void ControlImp::IssueUnitDamagedEvents() {
-    for (auto const &u : observation_imp_->unit_pool_.GetDamagedUnits()) {
+    for (auto const& u : observation_imp_->unit_pool_.GetDamagedUnits()) {
         client_.OnUnitDamaged(u.unit, u.health, u.shields);
     }
 }
 
 void ControlImp::IssueIdleEvents(const Tags& commands) {
     auto& unit_pool = observation_imp_->unit_pool_;
-    // identify idled units where commands were issued last step, but units have no orders now (maybe failed, maybe executed instantly)
+    // identify idled units where commands were issued last step, but units have no orders now (maybe failed, maybe
+    // executed instantly)
     for (auto t : commands) {
         const auto* unit = unit_pool.GetExistingUnit(t);
         if (unit && unit->orders.empty())
@@ -2078,8 +2130,8 @@ void ControlImp::IssueIdleEvents(const Tags& commands) {
 
     // add newly created units (if they are completed)
     for (auto const* u : unit_pool.GetNewUnits()) {
-      if (u->build_progress >= 1.0f && u->orders.empty())
-        unit_pool.AddUnitIdled(u);
+        if (u->build_progress >= 1.0f && u->orders.empty())
+            unit_pool.AddUnitIdled(u);
     }
 
     // send only one idle event for any unit in any frame
@@ -2147,9 +2199,8 @@ bool ControlImp::IssueEvents(const Tags& commands) {
 
 void ControlImp::OnGameStart() {
     Units units = observation_imp_->GetUnits(Unit::Alliance::Self, [](const Unit& unit) {
-        return unit.unit_type == UNIT_TYPEID::TERRAN_COMMANDCENTER ||
-                unit.unit_type == UNIT_TYPEID::PROTOSS_NEXUS ||
-                unit.unit_type == UNIT_TYPEID::ZERG_HATCHERY;
+        return unit.unit_type == UNIT_TYPEID::TERRAN_COMMANDCENTER || unit.unit_type == UNIT_TYPEID::PROTOSS_NEXUS ||
+               unit.unit_type == UNIT_TYPEID::ZERG_HATCHERY;
     });
 
     if (units.empty()) {
@@ -2221,8 +2272,7 @@ void ControlImp::Load() {
 // Client
 //-------------------------------------------------------------------------------------------------
 
-Client::Client() :
-    control_imp_(nullptr) {
+Client::Client() : control_imp_(nullptr) {
     control_imp_ = new ControlImp(*this);
 }
 
@@ -2257,4 +2307,4 @@ void Client::Reset() {
     control_imp_ = new ControlImp(*this);
 }
 
-}
+}  // namespace sc2

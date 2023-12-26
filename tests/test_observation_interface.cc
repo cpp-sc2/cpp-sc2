@@ -1,18 +1,18 @@
-#include "test_unit_command_common.h"
-#include "sc2api/sc2_api.h"
-#include "sc2api/sc2_unit_filters.h"
-#include "sc2lib/sc2_lib.h"
-#include "sc2utils/sc2_manage_process.h"
 #include "test_observation_interface.h"
 
 #include <iostream>
 #include <random>
 #include <string>
 
+#include "sc2api/sc2_api.h"
+#include "sc2api/sc2_unit_filters.h"
+#include "sc2lib/sc2_lib.h"
+#include "sc2utils/sc2_manage_process.h"
+#include "test_unit_command_common.h"
 
 namespace sc2 {
 
-    class TestGetAbilityData : public TestSequence{
+class TestGetAbilityData : public TestSequence {
     void OnTestFinish() {
         const ObservationInterface* obs = agent_->Observation();
         AbilityData ability = obs->GetAbilityData().at(static_cast<int>(ABILITY_ID::EFFECT_BLINK_STALKER));
@@ -47,7 +47,7 @@ namespace sc2 {
         if (!building_ability.is_building) {
             ReportError("is_building is reporting an incorrect value BUILD_NEXUS creates a building");
         }
-        
+
         if (building_ability.footprint_radius != 2.5f) {
             ReportError("footprint_radius is incorrect, should be 2.5");
         }
@@ -64,17 +64,21 @@ namespace sc2 {
 
         KillAllUnits();
     }
-    };
+};
 
-    class TestGetFoodCount : public TestSequence{
+class TestGetFoodCount : public TestSequence {
     void OnTestStart() {
         wait_game_loops_ = 10;
         Point2D origin_pt_ = GetMapCenter();
         Point2D offset_ = Point2D(10.0f, 10.0f);
-        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_ZEALOT, origin_pt_, agent_->Observation()->GetPlayerID(), 10);
-        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_PROBE, origin_pt_, agent_->Observation()->GetPlayerID(), 10);
-        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_PYLON, origin_pt_ + offset_, agent_->Observation()->GetPlayerID(), 2);
-        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_WARPGATE, origin_pt_ + offset_, agent_->Observation()->GetPlayerID(), 1);
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_ZEALOT, origin_pt_, agent_->Observation()->GetPlayerID(),
+                                         10);
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_PROBE, origin_pt_, agent_->Observation()->GetPlayerID(),
+                                         10);
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_PYLON, origin_pt_ + offset_,
+                                         agent_->Observation()->GetPlayerID(), 2);
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_WARPGATE, origin_pt_ + offset_,
+                                         agent_->Observation()->GetPlayerID(), 1);
         agent_->Debug()->SendDebug();
     }
 
@@ -97,7 +101,8 @@ namespace sc2 {
             ReportError("Supply Count is Incorrect");
         }
         if (obs->GetFoodCap() != 16) {
-            std::string errorStr = "Supply cap is Incorrect the supply is reporting 16 instead of " + std::to_string(obs->GetFoodCap());
+            std::string errorStr =
+                "Supply cap is Incorrect the supply is reporting 16 instead of " + std::to_string(obs->GetFoodCap());
             ReportError(errorStr.c_str());
         }
         if (obs->GetWarpGateCount() != 1) {
@@ -108,110 +113,109 @@ namespace sc2 {
         }
         KillAllUnits();
     }
-    };
+};
 
-    class TestGetBuffData : public TestSequence {
-        void OnTestFinish() {
-            const Buffs buffs = agent_->Observation()->GetBuffData();
-            BuffData stim = buffs.at(static_cast<uint32_t>(BUFF_ID::STIMPACK));
-            if (stim.buff_id != static_cast<uint32_t>(BUFF_ID::STIMPACK)) {
-                ReportError("Wrong Buff ID returned");
-            }
-            if (stim.name != "Stimpack") {
-                std::string errorStr = "Wrong Buff Name : " + stim.name;
-                ReportError(errorStr.c_str());
-            }
+class TestGetBuffData : public TestSequence {
+    void OnTestFinish() {
+        const Buffs buffs = agent_->Observation()->GetBuffData();
+        BuffData stim = buffs.at(static_cast<uint32_t>(BUFF_ID::STIMPACK));
+        if (stim.buff_id != static_cast<uint32_t>(BUFF_ID::STIMPACK)) {
+            ReportError("Wrong Buff ID returned");
         }
-    };
+        if (stim.name != "Stimpack") {
+            std::string errorStr = "Wrong Buff Name : " + stim.name;
+            ReportError(errorStr.c_str());
+        }
+    }
+};
 
-    class TestGetResources : public TestSequence {
-        void OnTestStart() {
-            wait_game_loops_ = 10;
-            agent_->Debug()->DebugGiveAllResources();
-            agent_->Debug()->SendDebug();
+class TestGetResources : public TestSequence {
+    void OnTestStart() {
+        wait_game_loops_ = 10;
+        agent_->Debug()->DebugGiveAllResources();
+        agent_->Debug()->SendDebug();
+    }
+    void OnTestFinish() {
+        const ObservationInterface* obs = agent_->Observation();
+        if (obs->GetMinerals() != 5000) {
+            ReportError("Incorrect Mineral Count");
         }
-        void OnTestFinish() {
-            const ObservationInterface* obs = agent_->Observation();
-            if (obs->GetMinerals() != 5000) {
-                ReportError("Incorrect Mineral Count");
-            }
-            if (obs->GetVespene() != 5000) {
-                ReportError("Incorrect Vespene Count");
-            }
+        if (obs->GetVespene() != 5000) {
+            ReportError("Incorrect Vespene Count");
         }
-    };
+    }
+};
 
-    class TestGetUnitData : public TestSequence {
-        void OnTestStart() {
-            const ObservationInterface* obs = agent_->Observation();
-            const UnitTypes unit_data = obs->GetUnitTypeData();
-            UnitTypeData stalker_data = unit_data.at(static_cast<uint32_t>(UNIT_TYPEID::PROTOSS_STALKER));
-            UnitTypeData Overlord_data = unit_data.at(static_cast<uint32_t>(UNIT_TYPEID::ZERG_OVERLORDTRANSPORT));
-            Point2D origin_pt_ = GetMapCenter();
-            agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_STALKER, origin_pt_, agent_->Observation()->GetPlayerID(), 1);
-            agent_->Debug()->SendDebug();
+class TestGetUnitData : public TestSequence {
+    void OnTestStart() {
+        const ObservationInterface* obs = agent_->Observation();
+        const UnitTypes unit_data = obs->GetUnitTypeData();
+        UnitTypeData stalker_data = unit_data.at(static_cast<uint32_t>(UNIT_TYPEID::PROTOSS_STALKER));
+        UnitTypeData Overlord_data = unit_data.at(static_cast<uint32_t>(UNIT_TYPEID::ZERG_OVERLORDTRANSPORT));
+        Point2D origin_pt_ = GetMapCenter();
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_STALKER, origin_pt_, agent_->Observation()->GetPlayerID(),
+                                         1);
+        agent_->Debug()->SendDebug();
 
-            if (stalker_data.attributes.empty()) {
-                std::string errorStr = "UnitTypeData is reporting an no attributes";
-                ReportError(errorStr.c_str());
-            }
-            if (!stalker_data.available) {
-                std::string errorStr = "UnitTypeData is reporting stalkers are unavailable";
-                ReportError(errorStr.c_str());
-            }
-            if (stalker_data.cargo_size != 2) {
-                std::string errorStr = "UnitTypeData is reporting an incorrect cargo value. Expected : 0 Result : " + std::to_string(stalker_data.cargo_size);
-                ReportError(errorStr.c_str());
-            }
-            if (stalker_data.mineral_cost != 125) {
-                std::string errorStr = "UnitTypeData is reporting an incorrect mineral cost value. Expected : 125 Result : " + std::to_string(stalker_data.mineral_cost);
-                ReportError(errorStr.c_str());
-            }
-            if (stalker_data.vespene_cost != 50) {
-                std::string errorStr = "UnitTypeData is reporting an incorrect vespene value. Expected : 50 Result : " + std::to_string(stalker_data.vespene_cost);
-                ReportError(errorStr.c_str());
-            }
-            if (stalker_data.name != "Stalker") {
-                std::string errorStr = "UnitTypeData is reporting an incorrect name. Expected : Stalker Result : " + stalker_data.name;
-                ReportError(errorStr.c_str());
-            }
-            if (stalker_data.unit_type_id != UNIT_TYPEID::PROTOSS_STALKER) {
-                std::string errorStr = "UnitTypeData is reporting an incorrect unittypeID Expected : 74 Result : " + std::to_string(stalker_data.unit_type_id);
-                ReportError(errorStr.c_str());
-            }
-            if (stalker_data.weapons.empty()) {
-                std::string errorStr = "UnitTypeData is reporting no weapons";
-                ReportError(errorStr.c_str());
-            }
-            if (!Overlord_data.weapons.empty()) {
-                std::string errorStr = "UnitTypeData is reporting weapons for an overlord";
-                ReportError(errorStr.c_str());
-            }
+        if (stalker_data.attributes.empty()) {
+            std::string errorStr = "UnitTypeData is reporting an no attributes";
+            ReportError(errorStr.c_str());
         }
-        
-        void OnTestFinish() {
-            KillAllUnits();
+        if (!stalker_data.available) {
+            std::string errorStr = "UnitTypeData is reporting stalkers are unavailable";
+            ReportError(errorStr.c_str());
         }
-    };
+        if (stalker_data.cargo_size != 2) {
+            std::string errorStr = "UnitTypeData is reporting an incorrect cargo value. Expected : 0 Result : " +
+                                   std::to_string(stalker_data.cargo_size);
+            ReportError(errorStr.c_str());
+        }
+        if (stalker_data.mineral_cost != 125) {
+            std::string errorStr =
+                "UnitTypeData is reporting an incorrect mineral cost value. Expected : 125 Result : " +
+                std::to_string(stalker_data.mineral_cost);
+            ReportError(errorStr.c_str());
+        }
+        if (stalker_data.vespene_cost != 50) {
+            std::string errorStr = "UnitTypeData is reporting an incorrect vespene value. Expected : 50 Result : " +
+                                   std::to_string(stalker_data.vespene_cost);
+            ReportError(errorStr.c_str());
+        }
+        if (stalker_data.name != "Stalker") {
+            std::string errorStr =
+                "UnitTypeData is reporting an incorrect name. Expected : Stalker Result : " + stalker_data.name;
+            ReportError(errorStr.c_str());
+        }
+        if (stalker_data.unit_type_id != UNIT_TYPEID::PROTOSS_STALKER) {
+            std::string errorStr = "UnitTypeData is reporting an incorrect unittypeID Expected : 74 Result : " +
+                                   std::to_string(stalker_data.unit_type_id);
+            ReportError(errorStr.c_str());
+        }
+        if (stalker_data.weapons.empty()) {
+            std::string errorStr = "UnitTypeData is reporting no weapons";
+            ReportError(errorStr.c_str());
+        }
+        if (!Overlord_data.weapons.empty()) {
+            std::string errorStr = "UnitTypeData is reporting weapons for an overlord";
+            ReportError(errorStr.c_str());
+        }
+    }
 
-struct TestGetCloakedEnemyUnit: TestSequence {
+    void OnTestFinish() {
+        KillAllUnits();
+    }
+};
+
+struct TestGetCloakedEnemyUnit : TestSequence {
     void OnTestStart() {
         wait_game_loops_ = 10;
         Point2D origin_pt_ = GetMapCenter();
 
-        agent_->Debug()->DebugCreateUnit(
-            UNIT_TYPEID::PROTOSS_VOIDRAY,
-            origin_pt_,
-            agent_->Observation()->GetPlayerID(),
-            1
-        );
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_VOIDRAY, origin_pt_, agent_->Observation()->GetPlayerID(),
+                                         1);
 
-        agent_->Debug()->DebugCreateUnit(
-            UNIT_TYPEID::PROTOSS_DARKTEMPLAR,
-            origin_pt_,
-            agent_->Observation()->GetPlayerID() + 1,
-            10
-        );
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_DARKTEMPLAR, origin_pt_,
+                                         agent_->Observation()->GetPlayerID() + 1, 10);
 
         agent_->Debug()->SendDebug();
     }
@@ -219,8 +223,7 @@ struct TestGetCloakedEnemyUnit: TestSequence {
     void OnTestFinish() {
         const ObservationInterface* obs = agent_->Observation();
 
-        Units found_dark_templars = obs->GetUnits(
-            Unit::Alliance::Enemy, IsUnit(UNIT_TYPEID::PROTOSS_DARKTEMPLAR));
+        Units found_dark_templars = obs->GetUnits(Unit::Alliance::Enemy, IsUnit(UNIT_TYPEID::PROTOSS_DARKTEMPLAR));
 
         if (found_dark_templars.size() != 10) {
             ReportErrorAndCleanup("Dark Templars Count is Incorrect");
@@ -236,17 +239,13 @@ struct TestGetCloakedEnemyUnit: TestSequence {
     }
 };
 
-struct TestUnitUpgradesLevel: TestSequence {
+struct TestUnitUpgradesLevel : TestSequence {
     void OnTestStart() {
         wait_game_loops_ = 10;
         Point2D origin_pt_ = GetMapCenter();
 
-        agent_->Debug()->DebugCreateUnit(
-            UNIT_TYPEID::PROTOSS_ZEALOT,
-            origin_pt_,
-            agent_->Observation()->GetPlayerID(),
-            1
-        );
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_ZEALOT, origin_pt_, agent_->Observation()->GetPlayerID(),
+                                         1);
         agent_->Debug()->DebugGiveAllUpgrades();
 
         agent_->Debug()->SendDebug();
@@ -255,8 +254,7 @@ struct TestUnitUpgradesLevel: TestSequence {
     void OnTestFinish() {
         const ObservationInterface* obs = agent_->Observation();
 
-        Units found_zealots = obs->GetUnits(
-            Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT));
+        Units found_zealots = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_ZEALOT));
 
         if (found_zealots.size() != 1) {
             ReportErrorAndCleanup("Zealots Count is Incorrect");
@@ -282,20 +280,16 @@ struct TestUnitUpgradesLevel: TestSequence {
     }
 };
 
-struct TestUnitHallucinationAttribute: TestSequence {
-    TestUnitHallucinationAttribute(): TestSequence(), test_unit_(nullptr) {
+struct TestUnitHallucinationAttribute : TestSequence {
+    TestUnitHallucinationAttribute() : TestSequence(), test_unit_(nullptr) {
     }
 
     void OnTestStart() override {
         wait_game_loops_ = 10;
         Point2D origin_pt_ = GetMapCenter();
 
-        agent_->Debug()->DebugCreateUnit(
-            UNIT_TYPEID::PROTOSS_SENTRY,
-            origin_pt_,
-            agent_->Observation()->GetPlayerID(),
-            1
-        );
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::PROTOSS_SENTRY, origin_pt_, agent_->Observation()->GetPlayerID(),
+                                         1);
 
         agent_->Debug()->SendDebug();
     }
@@ -304,8 +298,7 @@ struct TestUnitHallucinationAttribute: TestSequence {
         const ObservationInterface* obs = agent_->Observation();
 
         if (!test_unit_) {
-            sc2::Units found_sentries = obs->GetUnits(
-                Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_SENTRY));
+            sc2::Units found_sentries = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_SENTRY));
 
             if (found_sentries.empty())
                 return;
@@ -321,7 +314,7 @@ struct TestUnitHallucinationAttribute: TestSequence {
             agent_->Actions()->UnitCommand(test_unit_, ABILITY_ID::HALLUCINATION_PHOENIX);
     }
 
-    void OnTestFinish() override{
+    void OnTestFinish() override {
         const ObservationInterface* obs = agent_->Observation();
 
         if (!test_unit_) {
@@ -334,8 +327,7 @@ struct TestUnitHallucinationAttribute: TestSequence {
             return;
         }
 
-        sc2::Units found_phoenixes = obs->GetUnits(
-            Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOENIX));
+        sc2::Units found_phoenixes = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PHOENIX));
 
         if (found_phoenixes.size() != 1) {
             ReportErrorAndCleanup("Illusion of phoenix not found");
@@ -350,7 +342,7 @@ struct TestUnitHallucinationAttribute: TestSequence {
         KillAllUnits();
     }
 
- private:
+private:
     const sc2::Unit* test_unit_;
 };
 
@@ -363,12 +355,11 @@ public:
     TestObservationBot();
 
 private:
-    void OnTestsBegin () final;
-    void OnTestsEnd () final;
+    void OnTestsBegin() final;
+    void OnTestsEnd() final;
 };
 
-TestObservationBot::TestObservationBot() :
-    UnitTestBot() {
+TestObservationBot::TestObservationBot() : UnitTestBot() {
     // Sequences.
     Add(TestGetUnitData());
     Add(TestGetAbilityData());
@@ -384,8 +375,7 @@ void TestObservationBot::OnTestsBegin() {
     Debug()->DebugGiveAllUpgrades();
 };
 
-void TestObservationBot::OnTestsEnd () {
-
+void TestObservationBot::OnTestsEnd() {
 }
 
 //
@@ -417,4 +407,4 @@ bool TestObservationInterface(int argc, char** argv) {
     return bot.Success();
 }
 
-}
+}  // namespace sc2

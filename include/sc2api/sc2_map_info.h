@@ -3,13 +3,12 @@
 */
 #pragma once
 
-#include "sc2_common.h"
-#include "sc2_gametypes.h"
-
-#include "s2clientprotocol/sc2api.pb.h"
-
 #include <string>
 #include <vector>
+
+#include "s2clientprotocol/sc2api.pb.h"
+#include "sc2_common.h"
+#include "sc2_gametypes.h"
 
 namespace sc2 {
 
@@ -62,17 +61,15 @@ struct PlayerInfo {
     AIBuild ai_build;
     std::string player_name;
 
-    PlayerInfo(uint32_t player_id, PlayerType player_type,
-        Race race_requested, Race race_actual,
-        Difficulty difficulty, AIBuild ai_build,
-        const std::string& player_name):
-        player_id(player_id),
-        player_type(player_type),
-        race_requested(race_requested),
-        race_actual(race_actual),
-        difficulty(difficulty),
-        ai_build(ai_build),
-        player_name(player_name) {};
+    PlayerInfo(uint32_t player_id, PlayerType player_type, Race race_requested, Race race_actual, Difficulty difficulty,
+               AIBuild ai_build, const std::string& player_name)
+        : player_id(player_id),
+          player_type(player_type),
+          race_requested(race_requested),
+          race_actual(race_actual),
+          difficulty(difficulty),
+          ai_build(ai_build),
+          player_name(player_name){};
 };
 
 //! Initial data for a game and map.
@@ -163,4 +160,4 @@ private:
     SampleImage height_map_;
 };
 
-}
+}  // namespace sc2

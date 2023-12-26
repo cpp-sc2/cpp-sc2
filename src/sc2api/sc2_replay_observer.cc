@@ -1,10 +1,11 @@
 #include "sc2api/sc2_replay_observer.h"
-#include "sc2api/sc2_interfaces.h"
-#include "sc2api/sc2_control_interfaces.h"
-#include "sc2api/sc2_proto_to_pods.h"
-#include "sc2api/sc2_game_settings.h"
 
 #include <iostream>
+
+#include "sc2api/sc2_control_interfaces.h"
+#include "sc2api/sc2_game_settings.h"
+#include "sc2api/sc2_interfaces.h"
+#include "sc2api/sc2_proto_to_pods.h"
 
 namespace sc2 {
 
@@ -21,16 +22,16 @@ public:
     ReplayControlImp(ControlInterface* control_interface, ReplayObserver* replay_observer);
 
     virtual bool GatherReplayInfo(const std::string& path, bool download_data) override;
-    virtual bool LoadReplay(const std::string& replay_path, const InterfaceSettings& settings, uint32_t player_id, bool realtime=false) override;
+    virtual bool LoadReplay(const std::string& replay_path, const InterfaceSettings& settings, uint32_t player_id,
+                            bool realtime = false) override;
     virtual bool WaitForReplay() override;
     virtual void UseGeneralizedAbility(bool value) override;
 
     virtual const ReplayInfo& GetReplayInfo() const override;
 };
 
-ReplayControlImp::ReplayControlImp(ControlInterface* control_interface, ReplayObserver* replay_observer) :
-    control_interface_(control_interface),
-    replay_observer_(replay_observer) {
+ReplayControlImp::ReplayControlImp(ControlInterface* control_interface, ReplayObserver* replay_observer)
+    : control_interface_(control_interface), replay_observer_(replay_observer) {
 }
 
 bool ReplayControlImp::GatherReplayInfo(const std::string& path, bool download_data) {
@@ -64,12 +65,11 @@ bool ReplayControlImp::GatherReplayInfo(const std::string& path, bool download_d
 
     if (proto_replay_info.has_error()) {
         SC2APIProtocol::ResponseReplayInfo_Error err = proto_replay_info.error();
-        std::cerr << "ResponseReplayInfo: replay info contains an error: " <<
-            std::to_string(static_cast<int>(err)) << std::endl;
+        std::cerr << "ResponseReplayInfo: replay info contains an error: " << std::to_string(static_cast<int>(err))
+                  << std::endl;
 
         if (proto_replay_info.has_error_details()) {
-            std::cerr << "ResponseReplayInfo: error details: " <<
-                proto_replay_info.error_details() << std::endl;
+            std::cerr << "ResponseReplayInfo: error details: " << proto_replay_info.error_details() << std::endl;
         }
 
         return false;
@@ -142,7 +142,8 @@ bool ReplayControlImp::GatherReplayInfo(const std::string& path, bool download_d
     return true;
 }
 
-bool ReplayControlImp::LoadReplay(const std::string& replay_path, const InterfaceSettings& settings, uint32_t player_id, bool realtime) {
+bool ReplayControlImp::LoadReplay(const std::string& replay_path, const InterfaceSettings& settings, uint32_t player_id,
+                                  bool realtime) {
     // Send the request.
     GameRequestPtr request = control_interface_->Proto().MakeRequest();
     SC2APIProtocol::RequestStartReplay* start_replay_request = request->mutable_start_replay();
@@ -181,7 +182,7 @@ bool ReplayControlImp::LoadReplay(const std::string& replay_path, const Interfac
 
     if (!control_interface_->Proto().SendRequest(request)) {
         std::cerr << "LoadReplay: load replay request failed." << std::endl;
-        assert(0); 
+        assert(0);
         return false;
     }
 
@@ -198,7 +199,8 @@ bool ReplayControlImp::WaitForReplay() {
     }
 
     if (!response->has_start_replay()) {
-        std::cerr << "WaitForReplay: received the wrong type of response: " << std::to_string(int(response->response_case())) << std::endl;
+        std::cerr << "WaitForReplay: received the wrong type of response: "
+                  << std::to_string(int(response->response_case())) << std::endl;
         assert(0);
         return false;
     }
@@ -260,8 +262,7 @@ public:
     void SendActions() final;
 };
 
-ObserverActionImp::ObserverActionImp(ControlInterface* control) :
-    control_(control) {
+ObserverActionImp::ObserverActionImp(ControlInterface* control) : control_(control) {
 }
 
 SC2APIProtocol::RequestObserverAction* ObserverActionImp::GetRequest() {
@@ -303,9 +304,9 @@ void ObserverActionImp::SendActions() {
 // ReplayObserver.
 //-------------------------------------------------------------------------------------------------
 
-ReplayObserver::ReplayObserver() :
-    replay_control_imp_(new ReplayControlImp(Control(), this)),
-    observer_action_imp_(new ObserverActionImp(Control())) {
+ReplayObserver::ReplayObserver()
+    : replay_control_imp_(new ReplayControlImp(Control(), this)),
+      observer_action_imp_(new ObserverActionImp(Control())) {
 }
 
 ReplayObserver::~ReplayObserver() {
@@ -332,4 +333,4 @@ void ReplayObserver::Reset() {
     observer_action_imp_->control_ = Control();
 }
 
-}
+}  // namespace sc2

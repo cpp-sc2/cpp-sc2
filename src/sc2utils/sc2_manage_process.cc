@@ -1,59 +1,63 @@
 #include "sc2utils/sc2_manage_process.h"
-#include "sc2utils/sc2_scan_directory.h"
+
+#include <stdio.h>
 
 #include <algorithm>
-#include <iostream>
 #include <cassert>
-#include <stdio.h>
 #include <chrono>
-#include <thread>
 #include <fstream>
+#include <iostream>
+#include <thread>
+
+#include "sc2utils/sc2_scan_directory.h"
 
 #if defined(_WIN32)
 
 // Windows headers for process manipulation.
-#include <windows.h>
-#include <shlobj.h>
 #include <conio.h>
+#include <shlobj.h>
 #include <tchar.h>
-#include <vector>
-#include <string>
+#include <windows.h>
+
 #include <codecvt>
-#include <locale>
 #include <cstring>
+#include <locale>
+#include <string>
+#include <vector>
 
 #elif defined(__APPLE__)
 
 // Mac headers for process manipulation.
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/select.h>
-#include <sys/ioctl.h>
-#include <signal.h>
-#include <errno.h>
-#include <cstring>
-#include <unistd.h>
-#include <pwd.h>
-#include <termios.h>
-#include <mach-o/dyld.h>
-#include <ctype.h>
-
 #include <Carbon/Carbon.h>
+#include <ctype.h>
+#include <errno.h>
+#include <mach-o/dyld.h>
+#include <pwd.h>
+#include <signal.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <unistd.h>
+
+#include <cstring>
 
 #elif defined(__linux__)
 
 // Linux headers for process manipulation.
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/select.h>
-#include <sys/ioctl.h>
-#include <signal.h>
 #include <errno.h>
-#include <cstring>
-#include <unistd.h>
-#include <pwd.h>
-#include <termios.h>
 #include <linux/limits.h>
+#include <pwd.h>
+#include <signal.h>
+#include <sys/ioctl.h>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <unistd.h>
+
+#include <cstring>
 
 #else
 #error "Unsupported platform"
@@ -69,19 +73,12 @@ bool DoesFileExist(const std::string& path) {
     return std::ifstream(path).good();
 }
 
-bool HasExtension (const std::string& map_name, const std::string& extention) {
+bool HasExtension(const std::string& map_name, const std::string& extention) {
     if (map_name.size() < extention.size())
         return false;
 
-    return std::equal(
-        map_name.end() - extention.size(),
-        map_name.end(),
-        extention.begin(),
-        extention.end(),
-        [](char a, char b) {
-            return tolower(a) == tolower(b);
-        }
-    );
+    return std::equal(map_name.end() - extention.size(), map_name.end(), extention.begin(), extention.end(),
+                      [](char a, char b) { return tolower(a) == tolower(b); });
 }
 
 #ifdef _WIN32
@@ -104,13 +101,7 @@ std::string GetUserDirectory() {
     unsigned int csidl = CSIDL_PERSONAL;
     WCHAR windowsPath[MAX_PATH];
 
-    HRESULT result = SHGetFolderPathW(
-        nullptr,
-        csidl,
-        nullptr,
-        SHGFP_TYPE_CURRENT,
-        windowsPath
-    );
+    HRESULT result = SHGetFolderPathW(nullptr, csidl, nullptr, SHGFP_TYPE_CURRENT, windowsPath);
 
     if (result == S_OK) {
         std::wstring_convert<std::codecvt_utf8_utf16<WCHAR>, WCHAR> convertor;
@@ -197,18 +188,17 @@ uint64_t StartProcess(const std::string& process_path, const std::vector<std::st
         strcat_s(buffer, command_line[i].c_str());
     }
 
-    if (!CreateProcess(process_path.c_str(), // Module name
-        buffer,                 // Command line
-        NULL,                   // Process handle not inheritable
-        NULL,                   // Thread handle not inheritable
-        FALSE,                  // Set handle inheritance to FALSE
-        0,                      // No creation flags
-        NULL,                   // Use parent's environment block
-        NULL,                   // Use parent's starting directory
-        &process.si_,           // Pointer to STARTUPINFO structure
-        &process.pi_)          // Pointer to PROCESS_INFORMATION structure
-        )
-    {
+    if (!CreateProcess(process_path.c_str(),  // Module name
+                       buffer,                // Command line
+                       NULL,                  // Process handle not inheritable
+                       NULL,                  // Thread handle not inheritable
+                       FALSE,                 // Set handle inheritance to FALSE
+                       0,                     // No creation flags
+                       NULL,                  // Use parent's environment block
+                       NULL,                  // Use parent's starting directory
+                       &process.si_,          // Pointer to STARTUPINFO structure
+                       &process.pi_)          // Pointer to PROCESS_INFORMATION structure
+    ) {
         SetCurrentDirectory(current_directory);
         return uint64_t(0);
     }
@@ -320,7 +310,7 @@ std::string GetUserDirectory() {
 
 static std::string GetExePath() {
 #if defined(__linux__)
-    char path[PATH_MAX + 1] = { 0 };
+    char path[PATH_MAX + 1] = {0};
     if (readlink("/proc/self/exe", path, PATH_MAX) == -1)
         return std::string();
 
@@ -403,8 +393,7 @@ uint64_t StartProcess(const std::string& process_path, const std::vector<std::st
     pid_t p = fork();
     if (p == 0) {
         if (execve(char_list[0], &char_list[0], nullptr) == -1) {
-            std::cerr << "Failed to execute process " << char_list[0]
-                << " error: " << strerror(errno) << std::endl;
+            std::cerr << "Failed to execute process " << char_list[0] << " error: " << strerror(errno) << std::endl;
             exit(-1);
         }
 
@@ -468,7 +457,7 @@ bool FindLatestExe(std::string& path) {
         return false;
 
     static const char VersionsFolder[] = "Versions\\";
-    static std::size_t BaseFolderNameLen = 10; // "Base00000\"
+    static std::size_t BaseFolderNameLen = 10;  // "Base00000\"
     std::size_t versions_pos = path.find(VersionsFolder);
     if (versions_pos == std::string::npos) {
         return DoesFileExist(path);
@@ -526,4 +515,4 @@ bool FindBaseExe(std::string& path, uint32_t base_build) {
     return true;
 }
 
-}
+}  // namespace sc2

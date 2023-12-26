@@ -1,28 +1,28 @@
 #include "sc2api/sc2_data.h"
-#include "sc2api/sc2_interfaces.h"
-#include "sc2api/sc2_proto_to_pods.h"
 
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
 #include "s2clientprotocol/sc2api.pb.h"
+#include "sc2api/sc2_interfaces.h"
+#include "sc2api/sc2_proto_to_pods.h"
 
 // TODO: Fill out the log functions
 
 namespace sc2 {
 
-AbilityData::AbilityData() :
-    available(false),
-    ability_id(0),
-    link_index(0),
-    remaps_to_ability_id(0),
-    target(Target::None),
-    allow_minimap(false),
-    allow_autocast(false),
-    is_building(false),
-    footprint_radius(0.0f),
-    is_instant_placement(false),
-    cast_range(0.0f) {
+AbilityData::AbilityData()
+    : available(false),
+      ability_id(0),
+      link_index(0),
+      remaps_to_ability_id(0),
+      target(Target::None),
+      allow_minimap(false),
+      allow_autocast(false),
+      is_building(false),
+      footprint_radius(0.0f),
+      is_instant_placement(false),
+      cast_range(0.0f) {
 }
 
 void AbilityData::ReadFromProto(const SC2APIProtocol::AbilityData& ability_data) {
@@ -173,18 +173,30 @@ std::string AbilityData::Log() const {
 
 static Attribute ConvertAttributeEnum(SC2APIProtocol::Attribute attribute) {
     switch (attribute) {
-        case SC2APIProtocol::Attribute::Light:       return Attribute::Light;
-        case SC2APIProtocol::Attribute::Armored:     return Attribute::Armored;
-        case SC2APIProtocol::Attribute::Biological:  return Attribute::Biological;
-        case SC2APIProtocol::Attribute::Mechanical:  return Attribute::Mechanical;
-        case SC2APIProtocol::Attribute::Robotic:     return Attribute::Robotic;
-        case SC2APIProtocol::Attribute::Psionic:     return Attribute::Psionic;
-        case SC2APIProtocol::Attribute::Massive:     return Attribute::Massive;
-        case SC2APIProtocol::Attribute::Structure:   return Attribute::Structure;
-        case SC2APIProtocol::Attribute::Hover:       return Attribute::Hover;
-        case SC2APIProtocol::Attribute::Heroic:      return Attribute::Heroic;
-        case SC2APIProtocol::Attribute::Summoned:    return Attribute::Summoned;
-        default:                                     return Attribute::Invalid;
+        case SC2APIProtocol::Attribute::Light:
+            return Attribute::Light;
+        case SC2APIProtocol::Attribute::Armored:
+            return Attribute::Armored;
+        case SC2APIProtocol::Attribute::Biological:
+            return Attribute::Biological;
+        case SC2APIProtocol::Attribute::Mechanical:
+            return Attribute::Mechanical;
+        case SC2APIProtocol::Attribute::Robotic:
+            return Attribute::Robotic;
+        case SC2APIProtocol::Attribute::Psionic:
+            return Attribute::Psionic;
+        case SC2APIProtocol::Attribute::Massive:
+            return Attribute::Massive;
+        case SC2APIProtocol::Attribute::Structure:
+            return Attribute::Structure;
+        case SC2APIProtocol::Attribute::Hover:
+            return Attribute::Hover;
+        case SC2APIProtocol::Attribute::Heroic:
+            return Attribute::Heroic;
+        case SC2APIProtocol::Attribute::Summoned:
+            return Attribute::Summoned;
+        default:
+            return Attribute::Invalid;
     }
 }
 
@@ -201,10 +213,14 @@ void DamageBonus::ReadFromProto(const SC2APIProtocol::DamageBonus& damage_bonus)
 
 static Weapon::TargetType ConvertTargetTypeEnum(SC2APIProtocol::Weapon::TargetType type) {
     switch (type) {
-        case SC2APIProtocol::Weapon::Ground:     return Weapon::TargetType::Ground;
-        case SC2APIProtocol::Weapon::Air:        return Weapon::TargetType::Air;
-        case SC2APIProtocol::Weapon::Any:        return Weapon::TargetType::Any;
-        default:                                 return Weapon::TargetType::Invalid;
+        case SC2APIProtocol::Weapon::Ground:
+            return Weapon::TargetType::Ground;
+        case SC2APIProtocol::Weapon::Air:
+            return Weapon::TargetType::Air;
+        case SC2APIProtocol::Weapon::Any:
+            return Weapon::TargetType::Any;
+        default:
+            return Weapon::TargetType::Invalid;
     }
 }
 
@@ -390,4 +406,4 @@ AbilityID GetGeneralizedAbilityID(uint32_t ability_id, const ObservationInterfac
     return AbilityID(ability_id);
 }
 
-}
+}  // namespace sc2

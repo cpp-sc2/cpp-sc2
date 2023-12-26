@@ -4,27 +4,18 @@
 
 namespace sc2 {
 
-ImageData::ImageData () :
-    width(0),
-    height(0),
-    bits_per_pixel(0)
-{
+ImageData::ImageData() : width(0), height(0), bits_per_pixel(0) {
 }
 
-GameInfo::GameInfo () :
-    width(0),
-    height(0)
-{
+GameInfo::GameInfo() : width(0), height(0) {
 }
 
-SampleImage::SampleImage(const SC2APIProtocol::ImageData& data):
-    data_(data.data()), area_({0, 0}, {data.size().x(), data.size().y()}),
-    bits_per_pixel_(data.bits_per_pixel()) {
+SampleImage::SampleImage(const SC2APIProtocol::ImageData& data)
+    : data_(data.data()), area_({0, 0}, {data.size().x(), data.size().y()}), bits_per_pixel_(data.bits_per_pixel()) {
 }
 
-SampleImage::SampleImage(const ImageData& data):
-    data_(data.data), area_({0, 0}, {data.width, data.height}),
-    bits_per_pixel_(data.bits_per_pixel) {
+SampleImage::SampleImage(const ImageData& data)
+    : data_(data.data), area_({0, 0}, {data.width, data.height}), bits_per_pixel_(data.bits_per_pixel) {
 }
 
 bool SampleImage::GetBit(const Point2DI& point, bool* dst) const {
@@ -58,8 +49,7 @@ Rect2DI SampleImage::Area() const {
     return area_;
 }
 
-PathingGrid::PathingGrid(const GameInfo& info):
-    pathing_grid_(info.pathing_grid) {
+PathingGrid::PathingGrid(const GameInfo& info) : pathing_grid_(info.pathing_grid) {
 }
 
 bool PathingGrid::IsPathable(const Point2DI& point) const {
@@ -90,8 +80,7 @@ void PathingGrid::Dump(const std::string& file_path) const {
     }
 }
 
-PlacementGrid::PlacementGrid(const GameInfo& info):
-    placement_grid_(info.placement_grid) {
+PlacementGrid::PlacementGrid(const GameInfo& info) : placement_grid_(info.placement_grid) {
 }
 
 bool PlacementGrid::IsPlacable(const Point2DI& point) const {
@@ -122,8 +111,7 @@ void PlacementGrid::Dump(const std::string& file_path) const {
     }
 }
 
-HeightMap::HeightMap(const GameInfo& info):
-    height_map_(info.terrain_height) {
+HeightMap::HeightMap(const GameInfo& info) : height_map_(info.terrain_height) {
 }
 
 float HeightMap::TerrainHeight(const Point2DI& point) const {
@@ -145,4 +133,4 @@ void HeightMap::Dump(const std::string& file_path) const {
     }
 }
 
-}
+}  // namespace sc2

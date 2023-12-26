@@ -1,7 +1,7 @@
-#include "test_framework.h"
-#include "sc2api/sc2_api.h"
-
 #include <algorithm>
+
+#include "sc2api/sc2_api.h"
+#include "test_framework.h"
 
 namespace sc2 {
 
@@ -16,12 +16,11 @@ const int kMiniMapY = 300;
 
 class TestRenderBasic : public TestSequence {
 public:
-
     void OnTestStart() override {
         wait_game_loops_ = 5;
     }
 
-    void VerifyRenderedData (const SC2APIProtocol::ImageData& image) {
+    void VerifyRenderedData(const SC2APIProtocol::ImageData& image) {
         if (image.bits_per_pixel() != 24) {
             ReportError("Image data not RGB format.");
             return;
@@ -51,11 +50,8 @@ public:
         const ObservationInterface* obs = agent_->Observation();
 
         const SpatialSetup& setup = obs->GetGameInfo().options.render;
-        if (setup.map_resolution_x != kMapX
-            || setup.map_resolution_y != kMapY
-            || setup.minimap_resolution_x != kMiniMapX
-            || setup.minimap_resolution_y != kMiniMapY
-        ) {
+        if (setup.map_resolution_x != kMapX || setup.map_resolution_y != kMapY ||
+            setup.minimap_resolution_x != kMiniMapX || setup.minimap_resolution_y != kMiniMapY) {
             ReportError("Interface options unexpected size.");
             return;
         }
@@ -86,22 +82,19 @@ public:
     RenderedTestBot();
 
 private:
-    void OnTestsBegin () final;
-    void OnTestsEnd () final;
+    void OnTestsBegin() final;
+    void OnTestsEnd() final;
 };
 
-RenderedTestBot::RenderedTestBot() :
-    UnitTestBot() {
+RenderedTestBot::RenderedTestBot() : UnitTestBot() {
     // Sequences.
     Add(TestRenderBasic());
 }
 
-void RenderedTestBot::OnTestsBegin() {
-};
+void RenderedTestBot::OnTestsBegin(){};
 
-void RenderedTestBot::OnTestsEnd () {
+void RenderedTestBot::OnTestsEnd() {
 }
-
 
 //
 // TestRendered
@@ -139,4 +132,4 @@ bool TestRendered(int argc, char** argv) {
     return bot.Success();
 }
 
-}
+}  // namespace sc2

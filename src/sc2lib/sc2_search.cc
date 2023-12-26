@@ -8,15 +8,15 @@ namespace search {
 
 static const float PI = 3.1415927f;
 
-size_t CalculateQueries(float radius, float step_size, const Point2D& center, std::vector<QueryInterface::PlacementQuery>& queries) {
+size_t CalculateQueries(float radius, float step_size, const Point2D& center,
+                        std::vector<QueryInterface::PlacementQuery>& queries) {
     Point2D current_grid, previous_grid(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
     size_t valid_queries = 0;
     // Find a buildable location on the circumference of the sphere
     float loc = 0.0f;
     while (loc < 360.0f) {
-        Point2D point = Point2D(
-            (radius * std::cos((loc * PI) / 180.0f)) + center.x,
-            (radius * std::sin((loc * PI) / 180.0f)) + center.y);
+        Point2D point = Point2D((radius * std::cos((loc * PI) / 180.0f)) + center.x,
+                                (radius * std::sin((loc * PI) / 180.0f)) + center.y);
 
         QueryInterface::PlacementQuery query(ABILITY_ID::BUILD_COMMANDCENTER, point);
 
@@ -66,21 +66,28 @@ std::vector<std::pair<Point3D, std::vector<Unit> > > Cluster(const Units& units,
     return clusters;
 }
 
-
-std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* observation, QueryInterface* query, ExpansionParameters parameters) {
-    Units resources = observation->GetUnits(
-        [](const Unit& unit) {
-            return unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD || unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD750 ||
-                unit.unit_type == UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD || unit.unit_type == UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD750 ||
-                unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERMINERALFIELD || unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERMINERALFIELD750 ||
-                unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERRICHMINERALFIELD || unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERRICHMINERALFIELD750 ||
-                unit.unit_type == UNIT_TYPEID::NEUTRAL_LABMINERALFIELD || unit.unit_type == UNIT_TYPEID::NEUTRAL_LABMINERALFIELD750 ||
-                unit.unit_type == UNIT_TYPEID::NEUTRAL_BATTLESTATIONMINERALFIELD || unit.unit_type == UNIT_TYPEID::NEUTRAL_BATTLESTATIONMINERALFIELD750 ||
-                unit.unit_type == UNIT_TYPEID::NEUTRAL_VESPENEGEYSER || unit.unit_type == UNIT_TYPEID::NEUTRAL_PROTOSSVESPENEGEYSER ||
-                unit.unit_type == UNIT_TYPEID::NEUTRAL_SPACEPLATFORMGEYSER || unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERVESPENEGEYSER ||
-                unit.unit_type == UNIT_TYPEID::NEUTRAL_SHAKURASVESPENEGEYSER || unit.unit_type == UNIT_TYPEID::NEUTRAL_RICHVESPENEGEYSER;
-        }
-    );
+std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* observation, QueryInterface* query,
+                                                 ExpansionParameters parameters) {
+    Units resources = observation->GetUnits([](const Unit& unit) {
+        return unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD750 ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD750 ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERMINERALFIELD ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERMINERALFIELD750 ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERRICHMINERALFIELD ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERRICHMINERALFIELD750 ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_LABMINERALFIELD ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_LABMINERALFIELD750 ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_BATTLESTATIONMINERALFIELD ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_BATTLESTATIONMINERALFIELD750 ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_VESPENEGEYSER ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_PROTOSSVESPENEGEYSER ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_SPACEPLATFORMGEYSER ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_PURIFIERVESPENEGEYSER ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_SHAKURASVESPENEGEYSER ||
+               unit.unit_type == UNIT_TYPEID::NEUTRAL_RICHVESPENEGEYSER;
+    });
 
     std::vector<Point3D> expansion_locations;
     std::vector<std::pair<Point3D, std::vector<Unit> > > clusters = Cluster(resources, parameters.cluster_distance_);
@@ -139,7 +146,6 @@ std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* obs
     return expansion_locations;
 }
 
+}  // namespace search
 
-}
-
-}
+}  // namespace sc2

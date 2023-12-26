@@ -1,15 +1,13 @@
 #pragma once
 
-namespace sc2 {
+#include <cassert>
+#include <string>
 
 #include "sc2api/sc2_common.h"
-#include <string>
-#include <cassert>
+#include "sc2api/sc2_map_info.h"
 
-enum class FeatureLayerType {
-    MAP,
-    MINIMAP
-};
+namespace sc2 {
+enum class FeatureLayerType { MAP, MINIMAP };
 
 struct FeatureLayer8BPP {
     bool InBounds(const Point2DI& pos) {
@@ -26,9 +24,8 @@ struct FeatureLayer8BPP {
     std::string data;
 };
 
-
 Point2DI ConvertWorldToCamera(const GameInfo& game_info, const Point2D camera_world, const Point2D& world);
 Point2DI ConvertWorldToMinimap(const GameInfo& game_info, const Point2D& world);
 const char* GetPlayerRelativeLayer(Agent* agent, FeatureLayerType type, FeatureLayer8BPP& layer);
 
-}
+}  // namespace sc2

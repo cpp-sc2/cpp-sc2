@@ -1,9 +1,9 @@
+#include <iostream>
+
 #include "sc2api/sc2_api.h"
 #include "sc2api/sc2_unit_filters.h"
 #include "sc2lib/sc2_lib.h"
 #include "sc2utils/sc2_manage_process.h"
-
-#include <iostream>
 
 using namespace sc2;
 
@@ -54,7 +54,6 @@ public:
 
 private:
     bool has_save = false;
-
 };
 
 //*************************************************************************************************
@@ -65,16 +64,15 @@ int main(int argc, char* argv[]) {
     }
 
     WorkerRushBot bot;
-    coordinator.SetParticipants({
-        CreateParticipant(sc2::Race::Terran, &bot),
-        CreateComputer(sc2::Race::Protoss)
-    });
+    coordinator.SetParticipants({CreateParticipant(sc2::Race::Terran, &bot), CreateComputer(sc2::Race::Protoss)});
 
     coordinator.LaunchStarcraft();
     coordinator.StartGame(sc2::kMapBelShirVestigeLE);
 
-    while (coordinator.Update());
-    while (!sc2::PollKeyPress());
+    while (coordinator.Update())
+        ;
+    while (!sc2::PollKeyPress())
+        ;
 
     return 0;
 }

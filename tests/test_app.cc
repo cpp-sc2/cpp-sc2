@@ -1,10 +1,11 @@
+#include <iostream>
+#include <random>
+#include <string>
+
+#include "feature_layers_shared.h"
+#include "sc2api/sc2_api.h"
 #include "test_framework.h"
 #include "test_movement_combat.h"
-#include "sc2api/sc2_api.h"
-#include <iostream>
-#include <string>
-#include <random>
-#include "feature_layers_shared.h"
 
 namespace sc2 {
 
@@ -13,13 +14,10 @@ public:
     DebugInterface::AppTest app_test_;
     int delay_ms_;
 
-    TestAppBasic() :
-        TestSequence() {
+    TestAppBasic() : TestSequence() {
     }
 
-    TestAppBasic(DebugInterface::AppTest app_test, int delay_ms = 0) :
-        app_test_(app_test),
-        delay_ms_(delay_ms) {
+    TestAppBasic(DebugInterface::AppTest app_test, int delay_ms = 0) : app_test_(app_test), delay_ms_(delay_ms) {
     }
 
     void OnTestStart() override {
@@ -37,8 +35,7 @@ class AppTestBotHang : public UnitTestBot {
 public:
     bool reported_hang_;
 
-    AppTestBotHang() :
-        reported_hang_(false) {
+    AppTestBotHang() : reported_hang_(false) {
         Add(TestAppBasic(DebugInterface::hang));
     }
 
@@ -48,7 +45,8 @@ public:
     void OnTestsEnd() override {
     }
 
-    void OnError(const std::vector<ClientError>& client_errors, const std::vector<std::string>& protocol_errors = {}) override {
+    void OnError(const std::vector<ClientError>& client_errors,
+                 const std::vector<std::string>& protocol_errors = {}) override {
         for (auto e : client_errors) {
             if (e == ClientError::SC2ProtocolTimeout) {
                 reported_hang_ = true;
@@ -62,8 +60,7 @@ class AppTestBotCrash : public UnitTestBot {
 public:
     bool reported_crash_;
 
-    AppTestBotCrash() :
-        reported_crash_(false) {
+    AppTestBotCrash() : reported_crash_(false) {
         Add(TestAppBasic(DebugInterface::crash));
     }
 
@@ -73,7 +70,8 @@ public:
     void OnTestsEnd() override {
     }
 
-    void OnError(const std::vector<ClientError>& client_errors, const std::vector<std::string>& protocol_errors = {}) override {
+    void OnError(const std::vector<ClientError>& client_errors,
+                 const std::vector<std::string>& protocol_errors = {}) override {
         for (auto e : client_errors) {
             if (e == ClientError::SC2AppFailure) {
                 reported_crash_ = true;
@@ -133,7 +131,6 @@ bool TestCrash(int argc, char** argv) {
     return bot1.reported_crash_;
 }
 
-
 //
 // TestFeatureLayers
 //
@@ -147,5 +144,4 @@ bool TestApp(int argc, char** argv) {
     return true;
 }
 
-}
-
+}  // namespace sc2

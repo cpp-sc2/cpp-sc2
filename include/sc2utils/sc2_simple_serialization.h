@@ -2,17 +2,17 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
 #include <fstream>
 #include <iostream>
 #include <set>
+#include <string>
 #include <typeinfo>
+#include <vector>
 
 namespace sc2 {
 
-
-template<class Stream> bool IsReading(const Stream&) {
+template <class Stream>
+bool IsReading(const Stream&) {
     return typeid(Stream) == typeid(std::ifstream);
 }
 
@@ -38,14 +38,14 @@ static inline void SerializeT(std::ifstream& s, bool& t) {
 void inline SerializeT(std::ofstream& s, bool t) {
     if (t) {
         s << "1" << std::endl;
-    }
-    else {
+    } else {
         s << "0" << std::endl;
     }
 }
 
 // All other types, assumed to be 32-bit.
-template<typename T> void SerializeT(std::ifstream& s, T& t) {
+template <typename T>
+void SerializeT(std::ifstream& s, T& t) {
     std::string linein;
     if (!std::getline(s, linein))
         return;
@@ -54,7 +54,8 @@ template<typename T> void SerializeT(std::ifstream& s, T& t) {
     t = static_cast<T>(value);
 }
 
-template<typename T> void SerializeT(std::ofstream& s, T t) {
+template <typename T>
+void SerializeT(std::ofstream& s, T t) {
     s << std::to_string(static_cast<uint32_t>(t)) << std::endl;
 }
 
@@ -76,4 +77,4 @@ static inline void SerializeT(std::ifstream& data_file, std::set<uint32_t>& s) {
     }
 }
 
-}
+}  // namespace sc2

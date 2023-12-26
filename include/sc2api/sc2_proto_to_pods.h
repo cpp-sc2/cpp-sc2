@@ -1,10 +1,10 @@
 #pragma once
 
 #include "s2clientprotocol/sc2api.pb.h"
+#include "sc2_action.h"
 #include "sc2_map_info.h"
 #include "sc2_score.h"
 #include "sc2_unit.h"
-#include "sc2_action.h"
 
 namespace sc2 {
 
@@ -17,7 +17,8 @@ typedef MessageResponsePtr<SC2APIProtocol::ResponseGameInfo> ResponseGameInfoPtr
 typedef MessageResponsePtr<SC2APIProtocol::ResponseQuery> ResponseQueryPtr;
 
 bool Convert(const ObservationPtr& observation_ptr, Score& score);
-bool Convert(const ObservationRawPtr& observation_ptr, UnitPool& unit_pool, uint32_t game_loop, uint32_t prev_game_loop);
+bool Convert(const ObservationRawPtr& observation_ptr, UnitPool& unit_pool, uint32_t game_loop,
+             uint32_t prev_game_loop);
 bool Convert(const ObservationPtr& observation_ptr, RenderedFrame& render);
 bool Convert(const ResponseGameInfoPtr& response_game_info_ptr, GameInfo& game_info);
 
@@ -31,4 +32,4 @@ PlayerType ConvertPlayerTypeFromProto(SC2APIProtocol::PlayerType type);
 Difficulty ConvertDifficultyFromProto(SC2APIProtocol::Difficulty difficulty);
 AIBuild ConvertAIBuildFromProto(SC2APIProtocol::AIBuild ai_build);
 
-}
+}  // namespace sc2

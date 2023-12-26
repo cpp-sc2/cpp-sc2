@@ -1,10 +1,11 @@
+#include <iostream>
+#include <random>
+#include <string>
+
+#include "feature_layers_shared.h"
+#include "sc2api/sc2_api.h"
 #include "test_framework.h"
 #include "test_movement_combat.h"
-#include "sc2api/sc2_api.h"
-#include <iostream>
-#include <string>
-#include <random>
-#include "feature_layers_shared.h"
 
 namespace sc2 {
 
@@ -25,28 +26,26 @@ public:
         float d = Distance2D(a, b);
         return d < 0.5f;
     }
+
 private:
-    void OnTestsBegin () final {};
-    void OnTestsEnd () final {};
+    void OnTestsBegin() final{};
+    void OnTestsEnd() final{};
 };
 
 class TestSnapshotBase : public TestSequence {
 public:
     SnapshotTestBot* bot_;
 
-    TestSnapshotBase() :
-        bot_(nullptr) {
+    TestSnapshotBase() : bot_(nullptr) {
     }
 
-    TestSnapshotBase(SnapshotTestBot* bot) :
-        bot_(bot) {
+    TestSnapshotBase(SnapshotTestBot* bot) : bot_(bot) {
     }
 
     bool FindSCV(const Unit*& unit) {
         assert(bot_);
-        Units my_scvs = agent_->Observation()->GetUnits(Unit::Self, [](const Unit& unit){
-                return unit.unit_type == UNIT_TYPEID::TERRAN_SCV;
-        });
+        Units my_scvs = agent_->Observation()->GetUnits(
+            Unit::Self, [](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::TERRAN_SCV; });
         if (my_scvs.size() < 1) {
             ReportError("Can't find a friendly TERRAN_SCV!");
             assert(0);
@@ -58,13 +57,9 @@ public:
     }
 };
 
-#define TEST_SNAPSHOT_CLASS(X)      \
-    X() :                           \
-        TestSnapshotBase() {         \
-    }                               \
-    X(SnapshotTestBot* bot) :       \
-        TestSnapshotBase(bot) {      \
-    }
+#define TEST_SNAPSHOT_CLASS(X)  \
+    X() : TestSnapshotBase() {} \
+    X(SnapshotTestBot* bot) : TestSnapshotBase(bot) {}
 
 class TestSnapshot1 : public TestSnapshotBase {
 public:
@@ -81,7 +76,7 @@ public:
 
         // Build a command center and an TERRAN_SCV nearby.
         Point2D base = center;
-        //base.x_ += (playable_max.x_ - center.x_) * 0.5f;
+        // base.x_ += (playable_max.x_ - center.x_) * 0.5f;
         agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER, base, player_id, 1);
         Point2D scv_pt = base;
         scv_pt.y += 4.0f;
@@ -115,9 +110,8 @@ public:
         wait_game_loops_ = 10;
 
         // Get the tag for the mineral patch.
-        Units minerals = agent_->Observation()->GetUnits(Unit::Neutral, [](const Unit& unit){
-                return unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD;
-        });
+        Units minerals = agent_->Observation()->GetUnits(
+            Unit::Neutral, [](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD; });
         if (minerals.size() < 1) {
             ReportError("Can't find the mineral patch!");
             assert(0);
@@ -154,8 +148,10 @@ public:
         bot_->scv_pos_ = unit_scv->pos;
         Point2DI scv_pt = ConvertWorldToCamera(obs->GetGameInfo(), camera_world, bot_->scv_pos_);
         actions->Select(scv_pt, PointSelectionType::PtSelect);
-        std::cout << "Selecting an scv at world pt: " << std::to_string(unit_scv->pos.x) << ", " << std::to_string(unit_scv->pos.y) << std::endl;
-        std::cout << "Selecting an scv at screen pt: " << std::to_string(scv_pt.x) << ", " << std::to_string(scv_pt.y) << std::endl;
+        std::cout << "Selecting an scv at world pt: " << std::to_string(unit_scv->pos.x) << ", "
+                  << std::to_string(unit_scv->pos.y) << std::endl;
+        std::cout << "Selecting an scv at screen pt: " << std::to_string(scv_pt.x) << ", " << std::to_string(scv_pt.y)
+                  << std::endl;
     }
 };
 
@@ -199,7 +195,8 @@ public:
         const ObservationInterface* obs = agent_->Observation();
         ActionFeatureLayerInterface* actions = agent_->ActionsFeatureLayer();
         Point2D camera_world = obs->GetCameraPos();
-        Point2DI mineral_pos = ConvertWorldToCamera(agent_->Observation()->GetGameInfo(), camera_world, bot_->mineral_pos_);
+        Point2DI mineral_pos =
+            ConvertWorldToCamera(agent_->Observation()->GetGameInfo(), camera_world, bot_->mineral_pos_);
 
         actions->UnitCommand(ABILITY_ID::HARVEST_GATHER, mineral_pos);
     }
@@ -227,18 +224,16 @@ public:
     }
 };
 
-
 //
 // SnapshotTestBot implementation.
 //
 
-SnapshotTestBot::SnapshotTestBot() :
-    mineral_(nullptr) {
-    Add(TestSnapshot1(this));    // Spawn TERRAN_SCV, mineral field and command center.
-    Add(TestSnapshot2(this));    // Get the mineral field tag and toggle off vision.
-    Add(TestSnapshot3(this));    // Destroy the mineral field and select the TERRAN_SCV.
-    Add(TestSnapshot4(this));    // Target something other than the mineral field. TERRAN_SCV should not move.
-    Add(TestSnapshot5(this));    // Target the mineral field. TERRAN_SCV should move.
+SnapshotTestBot::SnapshotTestBot() : mineral_(nullptr) {
+    Add(TestSnapshot1(this));  // Spawn TERRAN_SCV, mineral field and command center.
+    Add(TestSnapshot2(this));  // Get the mineral field tag and toggle off vision.
+    Add(TestSnapshot3(this));  // Destroy the mineral field and select the TERRAN_SCV.
+    Add(TestSnapshot4(this));  // Target something other than the mineral field. TERRAN_SCV should not move.
+    Add(TestSnapshot5(this));  // Target the mineral field. TERRAN_SCV should move.
     Add(TestSnapshot6(this));
 }
 
@@ -272,5 +267,4 @@ bool TestSnapshots(int argc, char** argv) {
     return bot.Success();
 }
 
-}
-
+}  // namespace sc2

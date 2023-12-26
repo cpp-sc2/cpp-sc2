@@ -1,13 +1,12 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <unordered_map>
-#include <functional>
 
 namespace sc2 {
 
-class PropertyReader
-{
+class PropertyReader {
 public:
     typedef std::unordered_map<std::string, std::string>::const_iterator ConstMapIterator;
     typedef std::unordered_map<std::string, std::string> PropertiesMap;
@@ -31,4 +30,4 @@ private:
     bool file_read_;
 };
 
-}
+}  // namespace sc2

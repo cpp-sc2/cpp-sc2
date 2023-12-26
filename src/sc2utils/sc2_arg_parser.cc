@@ -1,32 +1,19 @@
 #include "sc2utils/sc2_arg_parser.h"
 
-#include <iostream>
 #include <cstring>
+#include <iostream>
 
 namespace sc2 {
 
-ArgParser::ArgParser() :
-    options_(),
-    usage_(),
-    description_(),
-    example_(),
-    executable_name_() {
+ArgParser::ArgParser() : options_(), usage_(), description_(), example_(), executable_name_() {
 }
 
-ArgParser::ArgParser(const std::string & executable_name) :
-    options_(),
-    usage_(),
-    description_(),
-    example_(),
-    executable_name_(executable_name) {
+ArgParser::ArgParser(const std::string& executable_name)
+    : options_(), usage_(), description_(), example_(), executable_name_(executable_name) {
 }
 
-ArgParser::ArgParser(const std::string& usage, const std::string& description, const std::string& example) :
-    options_(),
-    usage_(usage),
-    description_(description),
-    example_(example),
-    executable_name_() {
+ArgParser::ArgParser(const std::string& usage, const std::string& description, const std::string& example)
+    : options_(), usage_(usage), description_(description), example_(example), executable_name_() {
 }
 
 void ArgParser::AddOptions(const std::vector<Arg>& options) {
@@ -89,8 +76,7 @@ bool ArgParser::Parse(int argc, char* argv[]) {
         if (o.required_) {
             std::string fullname = o.fullname_;
             fullname.erase(0, 2);
-            std::unordered_map<std::string, std::string>::const_iterator f =
-                full_to_value_.find(fullname);
+            std::unordered_map<std::string, std::string>::const_iterator f = full_to_value_.find(fullname);
             if (f == full_to_value_.end()) {
                 // This argument can be supplied in multiple ways.
                 return false;
@@ -119,8 +105,7 @@ bool ArgParser::Get(const std::string& identifier, std::string& value) {
         fullname.erase(0, 2);
     }
 
-    std::unordered_map<std::string, std::string>::const_iterator f =
-        full_to_value_.find(fullname);
+    std::unordered_map<std::string, std::string>::const_iterator f = full_to_value_.find(fullname);
 
     if (f == full_to_value_.end()) {
         return false;
@@ -152,4 +137,4 @@ void ArgParser::PrintUsage() {
     std::cout << std::endl << std::endl;
 }
 
-}
+}  // namespace sc2

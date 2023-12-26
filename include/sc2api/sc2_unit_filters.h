@@ -1,9 +1,9 @@
 #pragma once
 
+#include <vector>
+
 #include "sc2_typeenums.h"
 #include "sc2_unit.h"
-
-#include <vector>
 
 namespace sc2 {
 //! Determines if the unit matches the unit type.
@@ -12,7 +12,7 @@ struct IsUnit {
 
     bool operator()(const Unit& unit_) const;
 
- private:
+private:
     UNIT_TYPEID m_type;
 };
 
@@ -20,9 +20,9 @@ struct IsUnit {
 struct IsUnits {
     explicit IsUnits(const std::vector<UNIT_TYPEID>& types_);
 
-    bool operator()(const Unit& unit_) const ;
+    bool operator()(const Unit& unit_) const;
 
- private:
+private:
     std::vector<UNIT_TYPEID> m_types;
 };
 

@@ -1,10 +1,11 @@
 #include "test_framework.h"
-#include "sc2api/sc2_api.h"
-#include "sc2lib/sc2_utils.h"
 
 #include <iostream>
-#include <string>
 #include <random>
+#include <string>
+
+#include "sc2api/sc2_api.h"
+#include "sc2lib/sc2_utils.h"
 
 namespace sc2 {
 
@@ -12,9 +13,7 @@ namespace sc2 {
 // TestSequence
 //
 
-TestSequence::TestSequence():
-    agent_(nullptr),
-    wait_game_loops_(5) {
+TestSequence::TestSequence() : agent_(nullptr), wait_game_loops_(5) {
 }
 
 bool TestSequence::DidSucceed() const {
@@ -49,7 +48,6 @@ void TestSequence::KillAllUnits() {
     agent_->Debug()->SendDebug();
 }
 
-
 //
 // TestSequence
 //
@@ -63,13 +61,12 @@ void UnitTestBot::OnStep() {
         if (current_sequence_ == std::size_t(-1)) {
             current_sequence_ = 0;
             OnTestsBegin();
-        }
-        else {
+        } else {
             sequences_[current_sequence_]->OnTestFinish();
             if (!sequences_[current_sequence_]->DidSucceed()) {
                 success_ = false;
                 std::cout << "Test: " << sequences_[current_sequence_]->test_name_ << " failed!" << std::endl;
-                 for (const std::string& error : sequences_[current_sequence_]->errors_) {
+                for (const std::string& error : sequences_[current_sequence_]->errors_) {
                     std::cout << "    Error: " << error << std::endl;
                 }
             }

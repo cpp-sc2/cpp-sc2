@@ -1,14 +1,13 @@
 // This example is a proxy example for forwarding messages from a bot to sc2.
 // It requires the coordinator to be in an attach mode instead of launching the game itself.
 
-#include "sc2api/sc2_server.h"
-#include "sc2api/sc2_connection.h"
-#include "sc2api/sc2_args.h"
-
-#include "sc2utils/sc2_manage_process.h"
-#include "s2clientprotocol/sc2api.pb.h"
-
 #include <iostream>
+
+#include "s2clientprotocol/sc2api.pb.h"
+#include "sc2api/sc2_args.h"
+#include "sc2api/sc2_connection.h"
+#include "sc2api/sc2_server.h"
+#include "sc2utils/sc2_manage_process.h"
 
 int main(int argc, char* argv[]) {
     // Setup server that mimicks sc2.
@@ -19,12 +18,8 @@ int main(int argc, char* argv[]) {
     sc2::ProcessSettings process_settings;
     sc2::GameSettings game_settings;
     sc2::ParseSettings(argc, argv, process_settings, game_settings);
-    sc2::StartProcess(process_settings.process_path,
-        { "-listen", "127.0.0.1",
-          "-port", "5679",
-          "-displayMode", "0",
-          "-dataVersion", process_settings.data_version }
-    );
+    sc2::StartProcess(process_settings.process_path, {"-listen", "127.0.0.1", "-port", "5679", "-displayMode", "0",
+                                                      "-dataVersion", process_settings.data_version});
 
     sc2::SleepFor(10000);
 

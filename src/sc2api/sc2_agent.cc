@@ -1,10 +1,10 @@
 #include "sc2api/sc2_agent.h"
-#include "sc2api/sc2_unit.h"
-#include "sc2api/sc2_interfaces.h"
+
 #include "sc2api/sc2_control_interfaces.h"
+#include "sc2api/sc2_interfaces.h"
+#include "sc2api/sc2_unit.h"
 
 namespace sc2 {
-
 
 //-------------------------------------------------------------------------------------------------
 // ActionImp: an implementation of an ActionInterface.
@@ -45,9 +45,7 @@ public:
     Tags commands_;
 };
 
-ActionImp::ActionImp(ProtoInterface& proto, ControlInterface& control) :
-    proto_(proto),
-    control_(control) {
+ActionImp::ActionImp(ProtoInterface& proto, ControlInterface& control) : proto_(proto), control_(control) {
 }
 
 SC2APIProtocol::RequestAction* ActionImp::GetRequestAction() {
@@ -57,7 +55,7 @@ SC2APIProtocol::RequestAction* ActionImp::GetRequestAction() {
     return request_actions_->mutable_action();
 }
 
- const Tags& ActionImp::Commands() const {
+const Tags& ActionImp::Commands() const {
     return commands_;
 }
 
@@ -87,7 +85,7 @@ void ActionImp::SendActions() {
 }
 
 void ActionImp::ToggleAutocast(Tag unit_tag, AbilityID ability) {
-    Tags tags = { unit_tag };
+    Tags tags = {unit_tag};
     ToggleAutocast(tags, ability);
 }
 
@@ -127,17 +125,20 @@ void ActionImp::SendChat(const std::string& message, ChatChannel channel) {
 }
 
 void ActionImp::UnitCommand(const Unit* unit, AbilityID ability, bool queued_command) {
-    if (!unit) return;
+    if (!unit)
+        return;
     UnitCommand(unit->tag, ability, queued_command);
 }
 
 void ActionImp::UnitCommand(const Unit* unit, AbilityID ability, const Point2D& point, bool queued_command) {
-    if (!unit) return;
+    if (!unit)
+        return;
     UnitCommand(unit->tag, ability, point, queued_command);
 }
 
 void ActionImp::UnitCommand(const Unit* unit, AbilityID ability, const Unit* target, bool queued_command) {
-    if (!unit || !target) return;
+    if (!unit || !target)
+        return;
     UnitCommand(unit->tag, ability, target->tag, queued_command);
 }
 
@@ -236,7 +237,6 @@ void ActionImp::UnitCommand(const Tags& tags, AbilityID ability, const Tag targe
         tag_command->add_unit_tags(tag);
 }
 
-
 //-------------------------------------------------------------------------------------------------
 // ActionFeatureLayerImp: an implementation of an ActionFeatureLayerInterface.
 //-------------------------------------------------------------------------------------------------
@@ -260,9 +260,8 @@ public:
     void SendActions() override;
 };
 
-ActionFeatureLayerImp::ActionFeatureLayerImp(ProtoInterface& proto, ControlInterface& control) :
-    proto_(proto),
-    control_(control) {
+ActionFeatureLayerImp::ActionFeatureLayerImp(ProtoInterface& proto, ControlInterface& control)
+    : proto_(proto), control_(control) {
 }
 
 SC2APIProtocol::RequestAction* ActionFeatureLayerImp::GetRequestAction() {
@@ -302,8 +301,7 @@ void ActionFeatureLayerImp::UnitCommand(AbilityID ability, const Point2DI& point
     SC2APIProtocol::PointI* pt;
     if (minimap) {
         pt = unit_command->mutable_target_minimap_coord();
-    }
-    else {
+    } else {
         pt = unit_command->mutable_target_screen_coord();
     }
     pt->set_x(point.x);
@@ -365,10 +363,8 @@ public:
     bool Restart() override;
 };
 
-AgentControlImp::AgentControlImp(Agent* agent, ControlInterface* control_interface) :
-    control_interface_(control_interface),
-    actions_(nullptr),
-    agent_(agent) {
+AgentControlImp::AgentControlImp(Agent* agent, ControlInterface* control_interface)
+    : control_interface_(control_interface), actions_(nullptr), agent_(agent) {
     actions_ = std::make_unique<ActionImp>(control_interface_->Proto(), *control_interface);
     actions_feature_layer_ = std::make_unique<ActionFeatureLayerImp>(control_interface_->Proto(), *control_interface);
 }
@@ -402,13 +398,11 @@ bool AgentControlImp::Restart() {
     return control_interface_->IsInGame();
 }
 
-
 //-------------------------------------------------------------------------------------------------
 // Agent implementation.
 //-------------------------------------------------------------------------------------------------
 
-Agent::Agent() :
-    agent_control_imp_(nullptr) {
+Agent::Agent() : agent_control_imp_(nullptr) {
     agent_control_imp_ = new AgentControlImp(this, Control());
 }
 
@@ -428,4 +422,4 @@ AgentControlInterface* Agent::AgentControl() {
     return agent_control_imp_;
 }
 
-}
+}  // namespace sc2

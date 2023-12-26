@@ -1,12 +1,13 @@
-#include "test_framework.h"
-#include "test_movement_combat.h"
+#include <iostream>
+#include <random>
+#include <string>
+
+#include "feature_layers_shared.h"
 #include "sc2api/sc2_api.h"
 #include "sc2api/sc2_unit_filters.h"
 #include "sc2lib/sc2_lib.h"
-#include <iostream>
-#include <string>
-#include <random>
-#include "feature_layers_shared.h"
+#include "test_framework.h"
+#include "test_movement_combat.h"
 
 namespace sc2 {
 
@@ -35,7 +36,7 @@ public:
 
         ActionFeatureLayerInterface* action = agent_->ActionsFeatureLayer();
         action->CameraMove(center_minimap);
- 
+
         DebugInterface* debug = agent_->Debug();
         debug->DebugCreateUnit(UNIT_TYPEID::TERRAN_MARINE, center, agent_->Observation()->GetPlayerID(), 1);
         debug->SendDebug();
@@ -44,7 +45,6 @@ public:
     }
 
     void OnStep() override {
-
     }
 
     void OnTestFinish() override {
@@ -109,19 +109,16 @@ public:
             Point2D target = obs->GetStartLocation();
             Point2DI target_minimap = ConvertWorldToMinimap(game_info, target);
             act->CameraMove(target_minimap);
-        }
-        else if (loop == 10) {
+        } else if (loop == 10) {
             Point2D target = obs->GetStartLocation() + Point2D(3.0f, 3.0f);
             debug->DebugCreateUnit(UNIT_TYPEID::PROTOSS_PROBE, target, agent_->Observation()->GetPlayerID(), 1);
             debug->DebugIgnoreMineral();
             debug->SendDebug();
-        }
-        else if (loop == 15) {
+        } else if (loop == 15) {
             Point2D target = obs->GetStartLocation() + Point2D(3.0f, 3.0f);
             Point2DI target_camera = ConvertWorldToCamera(game_info, obs->GetCameraPos(), target);
             act->Select(target_camera, PointSelectionType::PtSelect);
-        }
-        else if (loop == 20) {
+        } else if (loop == 20) {
             Point2D target = obs->GetStartLocation() + Point2D(3.0f, 3.0f);
             Point2DI target_camera = ConvertWorldToCamera(game_info, obs->GetCameraPos(), target);
             act->UnitCommand(ABILITY_ID::BUILD_PYLON, target_camera);
@@ -145,12 +142,11 @@ public:
     FeatureLayerMPTestBot();
 
 private:
-    void OnTestsBegin () final;
-    void OnTestsEnd () final;
+    void OnTestsBegin() final;
+    void OnTestsEnd() final;
 };
 
-FeatureLayerMPTestBot::FeatureLayerMPTestBot() :
-    UnitTestBot() {
+FeatureLayerMPTestBot::FeatureLayerMPTestBot() : UnitTestBot() {
     // Sequences.
     Add(TestLayerUpdate());
     Add(TestFLTargetMap());
@@ -160,10 +156,8 @@ void FeatureLayerMPTestBot::OnTestsBegin() {
     Debug()->DebugShowMap();
 };
 
-void FeatureLayerMPTestBot::OnTestsEnd () {
-
+void FeatureLayerMPTestBot::OnTestsEnd() {
 }
-
 
 //
 // TestFeatureLayersMP
@@ -198,5 +192,4 @@ bool TestFeatureLayersMP(int argc, char** argv) {
     return bot1.Success() && bot2.Success();
 }
 
-}
-
+}  // namespace sc2

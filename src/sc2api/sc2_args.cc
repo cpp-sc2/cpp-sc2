@@ -1,12 +1,12 @@
 #include "sc2api/sc2_args.h"
 
-#include "sc2utils/sc2_arg_parser.h"
-#include "sc2utils/sc2_manage_process.h"
-#include "sc2utils/sc2_property_reader.h"
-
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
+
+#include "sc2utils/sc2_arg_parser.h"
+#include "sc2utils/sc2_manage_process.h"
+#include "sc2utils/sc2_property_reader.h"
 
 namespace sc2 {
 
@@ -25,8 +25,7 @@ bool ParseFromFile(ProcessSettings& process_settings, GameSettings& game_setting
     reader.ReadInt("realtime", real_time);
     if (real_time) {
         process_settings.realtime = true;
-    }
-    else {
+    } else {
         process_settings.realtime = false;
     }
     reader.ReadInt("port", process_settings.port_start);
@@ -36,9 +35,9 @@ bool ParseFromFile(ProcessSettings& process_settings, GameSettings& game_setting
 }
 
 #if defined(_WIN32)
-    const char kDirectoryDivider = '\\';
+const char kDirectoryDivider = '\\';
 #else
-    const char kDirectoryDivider = '/';
+const char kDirectoryDivider = '/';
 #endif
 
 std::string ParseExecuteInfo(ProcessSettings& process_settings, GameSettings& game_settings) {
@@ -69,15 +68,14 @@ bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, Ga
     // options should be used instead.
     std::string parse_error = ParseExecuteInfo(process_settings, game_settings);
 
-    arg_parser.AddOptions({
-        { "-e", "--executable", "The path to StarCraft II.", false },
-        { "-s", "--step_size", "How many steps to take per call.", false },
-        { "-p", "--port", "The port to make StarCraft II listen on.", false },
-        { "-r", "--realtime", "Whether to run StarCraft II in real time or not.", false },
-        { "-m", "--map", "Which map to run.", false },
-        { "-t", "--timeout", "Timeout for how long the library will block for a response.", false },
-        { "-d", "--data_version", "Data hash of the game version to run (see versions.json)", false }
-    });
+    arg_parser.AddOptions(
+        {{"-e", "--executable", "The path to StarCraft II.", false},
+         {"-s", "--step_size", "How many steps to take per call.", false},
+         {"-p", "--port", "The port to make StarCraft II listen on.", false},
+         {"-r", "--realtime", "Whether to run StarCraft II in real time or not.", false},
+         {"-m", "--map", "Which map to run.", false},
+         {"-t", "--timeout", "Timeout for how long the library will block for a response.", false},
+         {"-d", "--data_version", "Data hash of the game version to run (see versions.json)", false}});
 
     if (const char* sc2path = std::getenv("SC2PATH"))
         process_settings.process_path = sc2path;
@@ -114,7 +112,7 @@ bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, Ga
     }
 
     std::string data_version;
-    if (arg_parser.Get("data_version", data_version)){
+    if (arg_parser.Get("data_version", data_version)) {
         process_settings.data_version = data_version;
     }
 
@@ -123,4 +121,4 @@ bool ParseSettings(int argc, char* argv[], ProcessSettings& process_settings, Ga
     return true;
 }
 
-}
+}  // namespace sc2

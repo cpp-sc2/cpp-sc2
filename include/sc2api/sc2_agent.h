@@ -43,4 +43,4 @@ private:
     AgentControlImp* agent_control_imp_;
 };
 
-}
+}  // namespace sc2

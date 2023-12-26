@@ -5,9 +5,9 @@
 
 // Avoiding use of "thread_local" as that isn't supported in older versions of Xcode.
 #if defined(__clang__) || defined(__GNUC__)
-#define TLS_OBJECT  __thread
+#define TLS_OBJECT __thread
 #else
-#define TLS_OBJECT  __declspec(thread)
+#define TLS_OBJECT __declspec(thread)
 #endif
 
 namespace sc2 {
@@ -145,23 +145,23 @@ int Rect2DI::Height() const {
 }
 
 bool Rect2DI::Contain(const sc2::Point2DI& point) const {
-    return point.x >= this->from.x && point.x < this->Width() &&
-        point.y >= this->from.y && point.y < this->Height();
+    return point.x >= this->from.x && point.x < this->Width() && point.y >= this->from.y && point.y < this->Height();
 }
 
 struct RandomGenerator {
-    RandomGenerator() : rd(), mt(rd()) {}
+    RandomGenerator() : rd(), mt(rd()) {
+    }
     std::random_device rd;
     std::mt19937 mt;
 };
 
-static std::mt19937& GetGenerator () {
+static std::mt19937& GetGenerator() {
     static TLS_OBJECT RandomGenerator* generator;
     if (!generator)
         generator = new RandomGenerator();
     return generator->mt;
 }
-    
+
 float GetRandomScalar() {
     static std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
     return dist(GetGenerator());
@@ -213,4 +213,4 @@ float Dot3D(const Point3D& a, const Point3D& b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-}
+}  // namespace sc2

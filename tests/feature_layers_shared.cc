@@ -1,10 +1,12 @@
+#include "feature_layers_shared.h"
+
+#include <iostream>
+#include <random>
+#include <string>
+
+#include "sc2api/sc2_api.h"
 #include "test_framework.h"
 #include "test_movement_combat.h"
-#include "sc2api/sc2_api.h"
-#include <iostream>
-#include <string>
-#include <random>
-#include "feature_layers_shared.h"
 
 namespace sc2 {
 
@@ -28,20 +30,19 @@ const char* GetPlayerRelativeLayer(Agent* agent, FeatureLayerType type, FeatureL
         layer.width = map.player_relative().size().x();
         layer.height = map.player_relative().size().y();
         image = &map.player_relative();
-    }
-    else {
+    } else {
         if (!observationFL.has_minimap_renders())
             return "No minimap data";
 
         const SC2APIProtocol::FeatureLayersMinimap& minimap = observationFL.minimap_renders();
         if (!minimap.has_player_relative())
             return "No player_relative layer in minimap";
-        
+
         layer.width = minimap.player_relative().size().x();
         layer.height = minimap.player_relative().size().y();
         image = &minimap.player_relative();
     }
-    
+
     if (image == nullptr)
         return "No image data";
 
@@ -68,7 +69,7 @@ Point2DI ConvertWorldToMinimap(const GameInfo& game_info, const Point2D& world) 
     float pixel_size = std::max(map_width / image_width, map_height / image_height);
 
     // Origin of world space is bottom left. Origin of image space is top left.
-    // Upper left corner of the map corresponds to the upper left corner of the upper 
+    // Upper left corner of the map corresponds to the upper left corner of the upper
     // left pixel of the feature layer.
     float image_origin_x = 0;
     float image_origin_y = map_height;
@@ -105,5 +106,4 @@ Point2DI ConvertWorldToCamera(const GameInfo& game_info, const Point2D camera_wo
     return Point2DI(image_x, image_y);
 }
 
-}
-
+}  // namespace sc2

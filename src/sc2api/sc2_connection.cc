@@ -1,12 +1,11 @@
 #include "sc2api/sc2_connection.h"
 
-#include <iostream>
 #include <cassert>
 #include <chrono>
-
-#include "s2clientprotocol/sc2api.pb.h"
+#include <iostream>
 
 #include "civetweb.h"
+#include "s2clientprotocol/sc2api.pb.h"
 
 namespace {
 bool StartCivetweb() {
@@ -17,16 +16,7 @@ bool StartCivetweb() {
     }
 
     const char* options[] = {
-        "request_timeout_ms",
-        "5000",
-        "websocket_timeout_ms",
-        "1200000",
-        "num_threads",
-        "4",
-        "tcp_nodelay",
-        "1",
-        0
-    };
+        "request_timeout_ms", "5000", "websocket_timeout_ms", "1200000", "num_threads", "4", "tcp_nodelay", "1", 0};
 
     struct mg_callbacks callbacks = {0};
 
@@ -64,16 +54,11 @@ bool GetClientData(const mg_connection* connection, sc2::Connection*& out) {
         return false;
     }
 
-    out = (sc2::Connection*) mg_get_user_data(ctx);
+    out = (sc2::Connection*)mg_get_user_data(ctx);
     return true;
 }
 
-static int DataHandler(
-    mg_connection* conn,
-    int /*flags*/,
-    char* data,
-    size_t data_len,
-    void*) {
+static int DataHandler(mg_connection* conn, int /*flags*/, char* data, size_t data_len, void*) {
     sc2::Connection* sc2_connection;
     if (!GetClientData(conn, sc2_connection)) {
         return 0;
@@ -89,7 +74,7 @@ static int DataHandler(
     return 1;
 }
 
-static void ConnectionClosedHandler(const struct mg_connection* conn, void *) {
+static void ConnectionClosedHandler(const struct mg_connection* conn, void*) {
     sc2::Connection* sc2_connection;
     if (!GetClientData(conn, sc2_connection)) {
         return;
@@ -100,13 +85,9 @@ static void ConnectionClosedHandler(const struct mg_connection* conn, void *) {
     }
 }
 
-Connection::Connection() :
-    connection_(nullptr),
-    verbose_(false),
-    queue_(),
-    mutex_(),
-    condition_(),
-    has_response_(false) {}
+Connection::Connection()
+    : connection_(nullptr), verbose_(false), queue_(), mutex_(), condition_(), has_response_(false) {
+}
 
 bool Connection::Connect(const std::string& address, int port, bool verbose) {
     if (!StartCivetweb()) {
@@ -116,17 +97,8 @@ bool Connection::Connect(const std::string& address, int port, bool verbose) {
 
     char ebuff[256] = {0};
 
-    connection_ = mg_connect_websocket_client(
-        address.c_str(),
-        port,
-        0,
-        ebuff,
-        256,
-        "/sc2api",
-        nullptr,
-        DataHandler,
-        ConnectionClosedHandler,
-        (void*) this);
+    connection_ = mg_connect_websocket_client(address.c_str(), port, 0, ebuff, 256, "/sc2api", nullptr, DataHandler,
+                                              ConnectionClosedHandler, (void*)this);
 
     if (!connection_) {
         std::cerr << "Failed to establish websocket connection: " << ebuff << std::endl;
@@ -156,11 +128,7 @@ void Connection::Send(const SC2APIProtocol::Request* request) {
     size_t size = request->ByteSizeLong();
     void* buffer = malloc(size);
     request->SerializeToArray(buffer, (int)size);
-    mg_websocket_write(
-        connection_,
-        MG_WEBSOCKET_OPCODE_BINARY,
-        (const char*) buffer,
-        size);
+    mg_websocket_write(connection_, MG_WEBSOCKET_OPCODE_BINARY, (const char*)buffer, size);
 
     free(buffer);
 
@@ -169,19 +137,14 @@ void Connection::Send(const SC2APIProtocol::Request* request) {
     }
 }
 
-bool Connection::Receive(
-    SC2APIProtocol::Response*& response,
-    unsigned int timeout_ms) {
+bool Connection::Receive(SC2APIProtocol::Response*& response, unsigned int timeout_ms) {
     std::unique_lock<std::mutex> lock(mutex_);
     // Block until a message is recieved.
     if (verbose_) {
         std::cout << "Waiting for response..." << std::endl;
     }
     auto now = std::chrono::system_clock::now();
-    if (condition_.wait_until(
-        lock,
-        now + std::chrono::milliseconds(timeout_ms),
-        [&] { return queue_.size() != 0; })) {
+    if (condition_.wait_until(lock, now + std::chrono::milliseconds(timeout_ms), [&] { return queue_.size() != 0; })) {
         lock.unlock();
         PopResponse(response);
         return true;
@@ -208,7 +171,8 @@ void Connection::PushResponse(SC2APIProtocol::Response*& response) {
 }
 
 void Connection::PopResponse(SC2APIProtocol::Response*& response) {
-    if (queue_.empty()) return;
+    if (queue_.empty())
+        return;
     std::lock_guard<std::mutex> guard(mutex_);
     response = queue_.front();
     queue_.pop_front();
@@ -238,4 +202,4 @@ bool Connection::PollResponse() {
     return has_response_;
 }
 
-}
+}  // namespace sc2

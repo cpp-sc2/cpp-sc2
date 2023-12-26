@@ -1,8 +1,8 @@
-#include "sc2api/sc2_api.h"
-#include "sc2utils/sc2_manage_process.h"
-#include "sc2renderer/sc2_renderer.h"
-
 #include <iostream>
+
+#include "sc2api/sc2_api.h"
+#include "sc2renderer/sc2_renderer.h"
+#include "sc2utils/sc2_manage_process.h"
 
 #define LINUX_USE_SOFTWARE_RENDER 0
 
@@ -19,10 +19,11 @@ public:
 
     virtual void OnStep() final {
         const SC2APIProtocol::Observation* observation = Observation()->GetRawObservation();
-        const SC2APIProtocol::ObservationRender& render =  observation->render_data();
+        const SC2APIProtocol::ObservationRender& render = observation->render_data();
 
         const SC2APIProtocol::ImageData& minimap = render.minimap();
-        sc2::renderer::ImageRGB(&minimap.data().data()[0], minimap.size().x(), minimap.size().y(), 0, std::max(kMiniMapY, kMapY) - kMiniMapY);
+        sc2::renderer::ImageRGB(&minimap.data().data()[0], minimap.size().x(), minimap.size().y(), 0,
+                                std::max(kMiniMapY, kMapY) - kMiniMapY);
 
         const SC2APIProtocol::ImageData& map = render.map();
         sc2::renderer::ImageRGB(&map.data().data()[0], map.size().x(), map.size().y(), kMiniMapX, 0);
@@ -55,10 +56,7 @@ int main(int argc, char* argv[]) {
 
     RenderAgent bot;
 
-    coordinator.SetParticipants({
-        CreateParticipant(sc2::Race::Terran, &bot),
-        CreateComputer(sc2::Race::Zerg)
-    });
+    coordinator.SetParticipants({CreateParticipant(sc2::Race::Terran, &bot), CreateComputer(sc2::Race::Zerg)});
 
     // Start the game.
     coordinator.LaunchStarcraft();

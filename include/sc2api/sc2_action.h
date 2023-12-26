@@ -1,10 +1,12 @@
 #pragma once
 
-#include "sc2_common.h"
-#include "sc2_typeenums.h"
-#include "sc2_gametypes.h"
-#include <vector>
 #include <stdint.h>
+
+#include <vector>
+
+#include "sc2_common.h"
+#include "sc2_gametypes.h"
+#include "sc2_typeenums.h"
 
 namespace sc2 {
 
@@ -121,4 +123,4 @@ struct SpatialActions {
     std::vector<SpatialSelectRect> select_rects;
 };
 
-}
+}  // namespace sc2
