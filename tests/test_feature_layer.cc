@@ -1,12 +1,12 @@
-#include "test_framework.h"
-#include "test_movement_combat.h"
+#include <iostream>
+#include <random>
+#include <string>
+
+#include "feature_layers_shared.h"
 #include "sc2api/sc2_api.h"
 #include "sc2lib/sc2_lib.h"
-#include "feature_layers_shared.h"
-
-#include <iostream>
-#include <string>
-#include <random>
+#include "test_framework.h"
+#include "test_movement_combat.h"
 
 namespace sc2 {
 
@@ -16,7 +16,6 @@ namespace sc2 {
 
 class TestBasic : public TestSequence {
 public:
-
     void OnTestStart() override {
         const GameInfo& game_info = agent_->Observation()->GetGameInfo();
         Point2D spawn_pt = FindRandomLocation(game_info);
@@ -27,7 +26,6 @@ public:
     }
 
     void OnStep() override {
-
     }
 
     void OnTestFinish() override {
@@ -57,7 +55,6 @@ public:
     }
 };
 
-
 //
 // TestCoordinateSystemMinimap
 //
@@ -68,15 +65,15 @@ public:
 
     void OnTestStart() override {
         const GameInfo& mapInfo = agent_->Observation()->GetGameInfo();
-        spawn_pt_= FindRandomLocation(mapInfo);
-        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::TERRAN_MARINE, spawn_pt_, agent_->Observation()->GetPlayerID(), 1);
+        spawn_pt_ = FindRandomLocation(mapInfo);
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::TERRAN_MARINE, spawn_pt_, agent_->Observation()->GetPlayerID(),
+                                         1);
         agent_->Debug()->SendDebug();
 
         wait_game_loops_ = 5;
     }
 
     void OnStep() override {
-
     }
 
     void OnTestFinish() override {
@@ -104,7 +101,6 @@ public:
     }
 };
 
-
 //
 // TestCoordinateSystemMap
 //
@@ -114,7 +110,7 @@ public:
     Point2D spawn_pt_;
 
     void OnTestStart() override {
-       const GameInfo& game_info = agent_->Observation()->GetGameInfo();
+        const GameInfo& game_info = agent_->Observation()->GetGameInfo();
         float camera_size = game_info.options.feature_layer.camera_width;
         float max_spawn_offset = (camera_size / 2.0f) - 1.0f;
 
@@ -129,7 +125,7 @@ public:
             return;
         }
 
-        Point2D camera_pt_= FindRandomLocation(min, max);
+        Point2D camera_pt_ = FindRandomLocation(min, max);
         spawn_pt_.x = camera_pt_.x + GetRandomScalar() * max_spawn_offset;
         spawn_pt_.y = camera_pt_.y + GetRandomScalar() * max_spawn_offset;
 
@@ -142,7 +138,6 @@ public:
     }
 
     void OnStep() override {
-
     }
 
     void OnTestFinish() override {
@@ -181,7 +176,7 @@ public:
 
     void OnTestStart() override {
         ActionFeatureLayerInterface* action = agent_->ActionsFeatureLayer();
-       
+
         const GameInfo& game_info = agent_->Observation()->GetGameInfo();
 
         const float kRandomOffset = 10.0f;
@@ -197,7 +192,6 @@ public:
     }
 
     void OnStep() override {
-
     }
 
     void OnTestFinish() override {
@@ -224,7 +218,7 @@ public:
         const GameInfo& game_info = agent_->Observation()->GetGameInfo();
         unit_pos_ = FindCenterOfMap(game_info);
         agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::ZERG_LURKERMP, unit_pos_);
-        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::ZERG_LURKERMP, unit_pos_ + Point2D(5,5));
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::ZERG_LURKERMP, unit_pos_ + Point2D(5, 5));
         agent_->Debug()->SendDebug();
 
         wait_game_loops_ = 550;
@@ -240,8 +234,7 @@ public:
         if (obs->GetGameLoop() == starting_gameloop_ + 21) {
             if (obs->GetFeatureLayerActions().camera_moves.empty()) {
                 ReportError("Camera move is not being reported.");
-            }
-            else {
+            } else {
                 Point2DI new_camera_pos = obs->GetFeatureLayerActions().camera_moves.front().center_minimap;
                 if (new_camera_pos != camera_pos_) {
                     ReportError("Camera Move is reporting the incorrect location");
@@ -256,8 +249,7 @@ public:
             action->Select(unit_pos_i_, PointSelectionType::PtToggle);
             if (obs->GetFeatureLayerActions().select_rects.empty()) {
                 ReportError("Rectangle select is not being reported.");
-            }
-            else {
+            } else {
                 if (obs->GetFeatureLayerActions().select_rects.front().select_screen.front().from != Point2DI(0, 0)) {
                     ReportError("Rectangle select is reporting the wrong start location");
                 }
@@ -270,8 +262,7 @@ public:
             action->UnitCommand(ABILITY_ID::GENERAL_MOVE, camera_pos_);
             if (obs->GetFeatureLayerActions().select_points.empty()) {
                 ReportError("Select Point is not being reported.");
-            }
-            else {
+            } else {
                 Point2DI select_pos = obs->GetFeatureLayerActions().select_points.front().select_screen;
                 if (select_pos == unit_pos_i_) {
                     ReportError("Select Point is reporting the incorrect location");
@@ -285,8 +276,7 @@ public:
             action->UnitCommand(ABILITY_ID::BURROWDOWN);
             if (obs->GetFeatureLayerActions().unit_commands.empty()) {
                 ReportError("Unit Command is not being reported.");
-            }
-            else {
+            } else {
                 Point2DI target = obs->GetFeatureLayerActions().unit_commands.front().target;
                 if (obs->GetFeatureLayerActions().unit_commands.front().ability_id != ABILITY_ID::GENERAL_MOVE) {
                     ReportError("Unit Command is reporting an incorrect Ability ID");
@@ -299,8 +289,7 @@ public:
         if (obs->GetGameLoop() == starting_gameloop_ + 28) {
             if (obs->GetFeatureLayerActions().unit_commands.empty()) {
                 ReportError("Unit Command is not being reported.");
-            }
-            else if (obs->GetFeatureLayerActions().unit_commands.front().ability_id != ABILITY_ID::BURROWDOWN) {
+            } else if (obs->GetFeatureLayerActions().unit_commands.front().ability_id != ABILITY_ID::BURROWDOWN) {
                 ReportError("Unit Command is reporting an incorrect Ability ID");
             }
         }
@@ -320,12 +309,11 @@ public:
     FeatureLayerTestBot();
 
 private:
-    void OnTestsBegin () final;
-    void OnTestsEnd () final;
+    void OnTestsBegin() final;
+    void OnTestsEnd() final;
 };
 
-FeatureLayerTestBot::FeatureLayerTestBot() :
-    UnitTestBot() {
+FeatureLayerTestBot::FeatureLayerTestBot() : UnitTestBot() {
     // Sequences.
     for (int i = 0; i < 10; ++i)
         Add(TestCoordinateSystemMinimap());
@@ -341,10 +329,8 @@ void FeatureLayerTestBot::OnTestsBegin() {
     Debug()->DebugShowMap();
 };
 
-void FeatureLayerTestBot::OnTestsEnd () {
-
+void FeatureLayerTestBot::OnTestsEnd() {
 }
-
 
 //
 // TestFeatureLayers
@@ -399,5 +385,4 @@ bool TestFeatureLayers(int argc, char** argv) {
     return success;
 }
 
-}
-
+}  // namespace sc2

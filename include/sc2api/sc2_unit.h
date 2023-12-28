@@ -3,15 +3,17 @@
 */
 #pragma once
 
-#include "sc2_proto_interface.h"
-#include "sc2_gametypes.h"
-#include "sc2_common.h"
-#include "sc2_typeenums.h"
-#include <vector>
+#include <stdint.h>
+
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <string>
-#include <stdint.h>
+#include <vector>
+
+#include "sc2_common.h"
+#include "sc2_gametypes.h"
+#include "sc2_proto_interface.h"
+#include "sc2_typeenums.h"
 
 namespace sc2 {
 
@@ -28,10 +30,7 @@ struct UnitOrder {
     //! Progress of the order.
     float progress;
 
-    UnitOrder() :
-        ability_id(0),
-        target_unit_tag(NullTag),
-        progress(0.0f) {
+    UnitOrder() : ability_id(0), target_unit_tag(NullTag), progress(0.0f) {
     }
 };
 
@@ -54,15 +53,15 @@ struct PassengerUnit {
     //! The type of unit in the transport.
     UnitTypeID unit_type;
 
-    PassengerUnit() :
-        tag(NullTag),
-        health(0.0f),
-        health_max(0.0f),
-        shield(0.0f),
-        shield_max(0.0f),
-        energy(0.0f),
-        energy_max(0.0f),
-        unit_type(0) {
+    PassengerUnit()
+        : tag(NullTag),
+          health(0.0f),
+          health_max(0.0f),
+          shield(0.0f),
+          shield_max(0.0f),
+          energy(0.0f),
+          energy_max(0.0f),
+          unit_type(0) {
     }
 };
 
@@ -239,24 +238,43 @@ public:
     Unit* GetExistingUnit(Tag tag) const;
     void MarkDead(Tag tag);
 
-    //TODO: Change alive -> Exist
+    // TODO: Change alive -> Exist
     void ForEachExistingUnit(const std::function<void(Unit& unit)>& functor) const;
     void ClearExisting();
     bool UnitExists(Tag tag);
 
-    const Units& GetNewUnits() const noexcept { return units_newly_created_; };
-    const Units& GetUnitsEnteringVision() const noexcept { return units_entering_vision_; };
-    const Units& GetCompletedBuildings() const noexcept { return buildings_constructed_; };
-    const UnitsDamaged& GetDamagedUnits() const noexcept { return units_damaged_; };
-    const std::unordered_set<const Unit*>& GetIdledUnits() const noexcept { return units_idled_; };
+    const Units& GetNewUnits() const noexcept {
+        return units_newly_created_;
+    };
+    const Units& GetUnitsEnteringVision() const noexcept {
+        return units_entering_vision_;
+    };
+    const Units& GetCompletedBuildings() const noexcept {
+        return buildings_constructed_;
+    };
+    const UnitsDamaged& GetDamagedUnits() const noexcept {
+        return units_damaged_;
+    };
+    const std::unordered_set<const Unit*>& GetIdledUnits() const noexcept {
+        return units_idled_;
+    };
 
-    void AddNewUnit(const Unit* u) { units_newly_created_.push_back(u); };
-    void AddUnitEnteredVision(const Unit* u) { units_entering_vision_.push_back(u); }
-    void AddCompletedBuilding(const Unit* u) { buildings_constructed_.push_back(u); }
-    void AddUnitIdled(const Unit* u) {
-        if (u->alliance == Unit::Alliance::Self) units_idled_.insert(u);
+    void AddNewUnit(const Unit* u) {
+        units_newly_created_.push_back(u);
+    };
+    void AddUnitEnteredVision(const Unit* u) {
+        units_entering_vision_.push_back(u);
     }
-    void AddUnitDamaged(const Unit* u, float health, float shield) { units_damaged_.push_back({u, health, shield}); }
+    void AddCompletedBuilding(const Unit* u) {
+        buildings_constructed_.push_back(u);
+    }
+    void AddUnitIdled(const Unit* u) {
+        if (u->alliance == Unit::Alliance::Self)
+            units_idled_.insert(u);
+    }
+    void AddUnitDamaged(const Unit* u, float health, float shield) {
+        units_damaged_.push_back({u, health, shield});
+    }
 
 private:
     void IncrementIndex();
@@ -266,8 +284,8 @@ private:
     // std::array<Unit, ENTRY_SIZE>
     std::vector<std::vector<Unit> > unit_pool_;
     PoolIndex available_index_;
-    std::unordered_map<Tag, Unit *> tag_to_unit_;
-    std::unordered_map<Tag, Unit *> tag_to_existing_unit_;
+    std::unordered_map<Tag, Unit*> tag_to_unit_;
+    std::unordered_map<Tag, Unit*> tag_to_existing_unit_;
     Units units_newly_created_;
     Units units_entering_vision_;
     Units buildings_constructed_;
@@ -275,4 +293,4 @@ private:
     std::unordered_set<const Unit*> units_idled_;
 };
 
-}
+}  // namespace sc2

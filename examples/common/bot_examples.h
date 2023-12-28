@@ -1,7 +1,7 @@
 #pragma once
 
-#include "sc2api/sc2_interfaces.h"
 #include "sc2api/sc2_agent.h"
+#include "sc2api/sc2_interfaces.h"
 #include "sc2api/sc2_map_info.h"
 
 namespace sc2 {
@@ -21,7 +21,6 @@ private:
     Point2D backup_target_;
     Point2D backup_start_;
 };
-
 
 // Bot builds supply depots as required.
 // Bot builds 15 SCVs.
@@ -61,11 +60,14 @@ public:
 
     size_t CountUnitType(const ObservationInterface* observation, UnitTypeID unit_type);
 
-    size_t CountUnitTypeBuilding(const ObservationInterface* observation, UNIT_TYPEID production_building, ABILITY_ID ability);
+    size_t CountUnitTypeBuilding(const ObservationInterface* observation, UNIT_TYPEID production_building,
+                                 ABILITY_ID ability);
 
-    size_t CountUnitTypeTotal(const ObservationInterface* observation, UNIT_TYPEID unit_type, UNIT_TYPEID production, ABILITY_ID ability);
+    size_t CountUnitTypeTotal(const ObservationInterface* observation, UNIT_TYPEID unit_type, UNIT_TYPEID production,
+                              ABILITY_ID ability);
 
-    size_t CountUnitTypeTotal(const ObservationInterface* observation, std::vector<UNIT_TYPEID> unit_type, UNIT_TYPEID production, ABILITY_ID ability);
+    size_t CountUnitTypeTotal(const ObservationInterface* observation, std::vector<UNIT_TYPEID> unit_type,
+                              UNIT_TYPEID production, ABILITY_ID ability);
 
     bool GetRandomUnit(const Unit*& unit_out, const ObservationInterface* observation, UnitTypeID unit_type);
 
@@ -89,15 +91,17 @@ public:
 
     void RetreatWithUnit(const Unit* unit, Point2D retreat_position);
 
-    //Try build structure given a location. This is used most of the time
-    bool TryBuildStructure(AbilityID ability_type_for_structure, UnitTypeID unit_type, Point2D location, bool isExpansion);
-    //Try to build a structure based on tag, Used mostly for Vespene, since the pathing check will fail even though the geyser is "Pathable"
+    // Try build structure given a location. This is used most of the time
+    bool TryBuildStructure(AbilityID ability_type_for_structure, UnitTypeID unit_type, Point2D location,
+                           bool isExpansion);
+    // Try to build a structure based on tag, Used mostly for Vespene, since the pathing check will fail even though the
+    // geyser is "Pathable"
 
     bool TryBuildStructure(AbilityID ability_type_for_structure, UnitTypeID unit_type, Tag location_tag);
-    //Expands to nearest location and updates the start location to be between the new location and old bases.
+    // Expands to nearest location and updates the start location to be between the new location and old bases.
 
     bool TryExpand(AbilityID build_ability, UnitTypeID worker_type);
-    //Tries to build a geyser for a base
+    // Tries to build a geyser for a base
 
     bool TryBuildGas(AbilityID build_ability, UnitTypeID worker_type, Point2D base_location);
 
@@ -107,7 +111,7 @@ public:
     // If we don't do this, probes may mine from other patches if they stray too far from the base after building.
     void MineIdleWorkers(const Unit* unit, AbilityID worker_gather_command, UnitTypeID vespene_building_type);
 
-    //An estimate of how many workers we should have based on what buildings we have
+    // An estimate of how many workers we should have based on what buildings we have
     int GetExpectedWorkers(UNIT_TYPEID vespene_building_type);
 
     // To ensure that we do not over or under saturate any base.
@@ -118,7 +122,7 @@ public:
     uint32_t current_game_loop_ = 0;
     int max_worker_count_ = 70;
 
-    //When to start building attacking units
+    // When to start building attacking units
     int target_worker_count_ = 15;
     GameInfo game_info_;
     std::vector<Point3D> expansions_;
@@ -127,9 +131,7 @@ public:
 
 private:
     std::string last_action_text_;
-
 };
-
 
 class ProtossMultiplayerBot : public MultiplayerBot {
 public:
@@ -151,7 +153,7 @@ public:
 
     bool TryBuildPylon();
 
-    //Separated per race due to gas timings
+    // Separated per race due to gas timings
     bool TryBuildAssimilator();
 
     // Same as above with expansion timings
@@ -204,8 +206,8 @@ public:
     virtual void OnUnitIdle(const Unit* unit) override;
 
 private:
-    std::vector<UNIT_TYPEID> hatchery_types = { UNIT_TYPEID::ZERG_HATCHERY, UNIT_TYPEID::ZERG_HIVE, UNIT_TYPEID::ZERG_LAIR };
-
+    std::vector<UNIT_TYPEID> hatchery_types = {UNIT_TYPEID::ZERG_HATCHERY, UNIT_TYPEID::ZERG_HIVE,
+                                               UNIT_TYPEID::ZERG_LAIR};
 };
 
 class TerranMultiplayerBot : public MultiplayerBot {
@@ -239,15 +241,17 @@ public:
     virtual void OnUpgradeCompleted(UpgradeID upgrade) override;
 
 private:
-    std::vector<UNIT_TYPEID> barrack_types = { UNIT_TYPEID::TERRAN_BARRACKSFLYING, UNIT_TYPEID::TERRAN_BARRACKS };
-    std::vector<UNIT_TYPEID> factory_types = { UNIT_TYPEID::TERRAN_FACTORYFLYING, UNIT_TYPEID::TERRAN_FACTORY };
-    std::vector<UNIT_TYPEID> starport_types = { UNIT_TYPEID::TERRAN_STARPORTFLYING, UNIT_TYPEID::TERRAN_STARPORT };
-    std::vector<UNIT_TYPEID> supply_depot_types = { UNIT_TYPEID::TERRAN_SUPPLYDEPOT, UNIT_TYPEID::TERRAN_SUPPLYDEPOTLOWERED };
-    std::vector<UNIT_TYPEID> bio_types = { UNIT_TYPEID::TERRAN_MARINE, UNIT_TYPEID::TERRAN_MARAUDER, UNIT_TYPEID::TERRAN_GHOST, UNIT_TYPEID::TERRAN_REAPER /*reaper*/ };
-    std::vector<UNIT_TYPEID> widow_mine_types = { UNIT_TYPEID::TERRAN_WIDOWMINE, UNIT_TYPEID::TERRAN_WIDOWMINEBURROWED };
-    std::vector<UNIT_TYPEID> siege_tank_types = { UNIT_TYPEID::TERRAN_SIEGETANK, UNIT_TYPEID::TERRAN_SIEGETANKSIEGED };
-    std::vector<UNIT_TYPEID> viking_types = { UNIT_TYPEID::TERRAN_VIKINGASSAULT, UNIT_TYPEID::TERRAN_VIKINGFIGHTER };
-    std::vector<UNIT_TYPEID> hellion_types = { UNIT_TYPEID::TERRAN_HELLION, UNIT_TYPEID::TERRAN_HELLIONTANK };
+    std::vector<UNIT_TYPEID> barrack_types = {UNIT_TYPEID::TERRAN_BARRACKSFLYING, UNIT_TYPEID::TERRAN_BARRACKS};
+    std::vector<UNIT_TYPEID> factory_types = {UNIT_TYPEID::TERRAN_FACTORYFLYING, UNIT_TYPEID::TERRAN_FACTORY};
+    std::vector<UNIT_TYPEID> starport_types = {UNIT_TYPEID::TERRAN_STARPORTFLYING, UNIT_TYPEID::TERRAN_STARPORT};
+    std::vector<UNIT_TYPEID> supply_depot_types = {UNIT_TYPEID::TERRAN_SUPPLYDEPOT,
+                                                   UNIT_TYPEID::TERRAN_SUPPLYDEPOTLOWERED};
+    std::vector<UNIT_TYPEID> bio_types = {UNIT_TYPEID::TERRAN_MARINE, UNIT_TYPEID::TERRAN_MARAUDER,
+                                          UNIT_TYPEID::TERRAN_GHOST, UNIT_TYPEID::TERRAN_REAPER /*reaper*/};
+    std::vector<UNIT_TYPEID> widow_mine_types = {UNIT_TYPEID::TERRAN_WIDOWMINE, UNIT_TYPEID::TERRAN_WIDOWMINEBURROWED};
+    std::vector<UNIT_TYPEID> siege_tank_types = {UNIT_TYPEID::TERRAN_SIEGETANK, UNIT_TYPEID::TERRAN_SIEGETANKSIEGED};
+    std::vector<UNIT_TYPEID> viking_types = {UNIT_TYPEID::TERRAN_VIKINGASSAULT, UNIT_TYPEID::TERRAN_VIKINGFIGHTER};
+    std::vector<UNIT_TYPEID> hellion_types = {UNIT_TYPEID::TERRAN_HELLION, UNIT_TYPEID::TERRAN_HELLIONTANK};
 
     bool nuke_built = false;
     bool stim_researched_ = false;
@@ -255,4 +259,4 @@ private:
     bool banshee_cloak_researched_ = true;
 };
 
-}
+}  // namespace sc2

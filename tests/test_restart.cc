@@ -1,14 +1,14 @@
-#include "test_movement_combat.h"
+#include <iostream>
+#include <random>
+#include <string>
+
 #include "sc2api/sc2_api.h"
 #include "sc2lib/sc2_lib.h"
-#include <iostream>
-#include <string>
-#include <random>
+#include "test_movement_combat.h"
 
 namespace sc2 {
 
 static const int NumRestartsToTest = 10;
-
 
 //
 // DoSomethingBot
@@ -23,9 +23,7 @@ public:
     Point2D battle_pt_;
     bool success_;
 
-    DoSomethingBot() :
-        count_restarts_(0),
-        success_(true) {
+    DoSomethingBot() : count_restarts_(0), success_(true) {
     }
 
     bool IsFinished() const {
@@ -42,7 +40,6 @@ public:
     void OnGameStart() final {
         trigger_on_gameloop_ = Observation()->GetGameLoop() + 10;
         finish_by_gameloop_ = Observation()->GetGameLoop() + 2000;
-
 
         Point2D friendly_rally_pt = FindRandomLocation(game_info_);
         Point2D enemy_rally_pt = FindRandomLocation(game_info_);
@@ -74,8 +71,8 @@ public:
 
     void OnGameEnd() final {
         ++count_restarts_;
-        std::cout << "Restart test: " << std::to_string(count_restarts_) << " of " <<
-            std::to_string(NumRestartsToTest) << " complete." << std::endl;
+        std::cout << "Restart test: " << std::to_string(count_restarts_) << " of " << std::to_string(NumRestartsToTest)
+                  << " complete." << std::endl;
         if (!IsFinished())
             AgentControl()->Restart();
     }
@@ -102,7 +99,6 @@ bool TestFastRestartSinglePlayer(int argc, char** argv) {
     coordinator.LaunchStarcraft();
     coordinator.StartGame(sc2::kMapEmpty);
 
-
     // Step forward the game simulation.
     while (!bot.IsFinished()) {
         coordinator.Update();
@@ -111,5 +107,4 @@ bool TestFastRestartSinglePlayer(int argc, char** argv) {
     return bot.success_;
 }
 
-}
-
+}  // namespace sc2

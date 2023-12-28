@@ -1,23 +1,23 @@
 #include "sc2renderer/sc2_renderer.h"
 
-#include "SDL.h"
-
 #include <cassert>
 #include <iostream>
 
-namespace {
-    SDL_Window* window_;
-    SDL_Renderer* renderer_;
+#include "SDL.h"
 
-    SDL_Rect CreateRect(int x, int y, int w, int h) {
-        SDL_Rect r;
-        r.x = x;
-        r.y = y;
-        r.w = w;
-        r.h = h;
-        return r;
-    }
+namespace {
+SDL_Window* window_;
+SDL_Renderer* renderer_;
+
+SDL_Rect CreateRect(int x, int y, int w, int h) {
+    SDL_Rect r;
+    r.x = x;
+    r.y = y;
+    r.w = w;
+    r.h = h;
+    return r;
 }
+}  // namespace
 
 namespace sc2 {
 
@@ -51,7 +51,7 @@ void Shutdown() {
 void Matrix1BPP(const char* bytes, int w_mat, int h_mat, int off_x, int off_y, int px_w, int px_h) {
     assert(renderer_);
     assert(window_);
-    
+
     SDL_Rect rect = CreateRect(0, 0, px_w, px_h);
     for (size_t y = 0; y < h_mat; ++y) {
         for (size_t x = 0; x < w_mat; ++x) {
@@ -103,29 +103,29 @@ void Matrix8BPPPlayers(const char* bytes, int w_mat, int h_mat, int off_x, int o
 
             size_t index = x + y * w_mat;
             switch (bytes[index]) {
-            case 0:
-                SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
-                break;
-            case 1:
-                // Self.
-                SDL_SetRenderDrawColor(renderer_, 0, 255, 0, 255);
-                break;
-            case 2:
-                // Enemy.
-                SDL_SetRenderDrawColor(renderer_, 255, 0, 0, 255);
-                break;
-            case 3:
-                // Neutral.
-                SDL_SetRenderDrawColor(renderer_, 0, 0, 255, 255);
-                break;
-            case 4:
-                SDL_SetRenderDrawColor(renderer_, 255, 255, 0, 255);
-                break;
-            case 5:
-                SDL_SetRenderDrawColor(renderer_, 0, 255, 255, 255);
-                break;
-            default:
-                SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
+                case 0:
+                    SDL_SetRenderDrawColor(renderer_, 0, 0, 0, 255);
+                    break;
+                case 1:
+                    // Self.
+                    SDL_SetRenderDrawColor(renderer_, 0, 255, 0, 255);
+                    break;
+                case 2:
+                    // Enemy.
+                    SDL_SetRenderDrawColor(renderer_, 255, 0, 0, 255);
+                    break;
+                case 3:
+                    // Neutral.
+                    SDL_SetRenderDrawColor(renderer_, 0, 0, 255, 255);
+                    break;
+                case 4:
+                    SDL_SetRenderDrawColor(renderer_, 255, 255, 0, 255);
+                    break;
+                case 5:
+                    SDL_SetRenderDrawColor(renderer_, 0, 255, 255, 255);
+                    break;
+                default:
+                    SDL_SetRenderDrawColor(renderer_, 255, 255, 255, 255);
             }
             SDL_RenderFillRect(renderer_, &rect);
         }
@@ -136,7 +136,8 @@ void ImageRGB(const char* bytes, int width, int height, int off_x, int off_y) {
     assert(renderer_);
     assert(window_);
 
-    SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom((void*)bytes, width, height, 24, 3 * width, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGB24);
+    SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom((void*)bytes, width, height, 24, 3 * width,
+                                                              SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGB24);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer_, surface);
     SDL_FreeSurface(surface);
 
@@ -161,6 +162,6 @@ void Render() {
     SDL_RenderClear(renderer_);
 }
 
-}
+}  // namespace renderer
 
-}
+}  // namespace sc2

@@ -10,22 +10,17 @@
 namespace sc2 {
 
 //! 3D point.
-//!< \sa Distance3D(const Point3D& a, const Point3D& b) DistanceSquared3D(const Point3D& a, const Point3D& b) Normalize3D(Point3D& a) Dot3D(const Point3D& a, const Point3D& b)
+//!< \sa Distance3D(const Point3D& a, const Point3D& b) DistanceSquared3D(const Point3D& a, const Point3D& b)
+//!< Normalize3D(Point3D& a) Dot3D(const Point3D& a, const Point3D& b)
 struct Point3D {
     float x;
     float y;
     float z;
 
-    constexpr Point3D() :
-        x(0.0f),
-        y(0.0f),
-        z(0.0f) {
+    constexpr Point3D() : x(0.0f), y(0.0f), z(0.0f) {
     }
 
-    constexpr Point3D(float in_x, float in_y, float in_z) :
-        x(in_x),
-        y(in_y),
-        z(in_z) {
+    constexpr Point3D(float in_x, float in_y, float in_z) : x(in_x), y(in_y), z(in_z) {
     }
 
     Point3D& operator+=(const Point3D& rhs);
@@ -46,24 +41,19 @@ Point3D operator/(float lhs, const Point3D& rhs);
 
 //! 2D point.
 // When referring to Point2D, (0, 0) is bottom left.
-//!< \sa Distance2D(const Point2D& a, const Point2D& b) DistanceSquared2D(const Point2D& a, const Point2D& b) Normalize2D(Point2D& a) Dot2D(const Point2D& a, const Point2D& b)
+//!< \sa Distance2D(const Point2D& a, const Point2D& b) DistanceSquared2D(const Point2D& a, const Point2D& b)
+//!< Normalize2D(Point2D& a) Dot2D(const Point2D& a, const Point2D& b)
 struct Point2D {
     float x;
     float y;
 
-    constexpr Point2D() :
-        x(0.0f),
-        y(0.0f) {
+    constexpr Point2D() : x(0.0f), y(0.0f) {
     }
 
-    constexpr Point2D(const Point3D& a) :
-        x(a.x),
-        y(a.y) {
+    constexpr Point2D(const Point3D& a) : x(a.x), y(a.y) {
     }
 
-    constexpr Point2D(float in_x, float in_y) :
-        x(in_x),
-        y(in_y) {
+    constexpr Point2D(float in_x, float in_y) : x(in_x), y(in_y) {
     }
 
     Point2D& operator+=(const Point2D& rhs);
@@ -96,14 +86,10 @@ struct Point2DI {
     int x;
     int y;
 
-    constexpr Point2DI(int in_x = 0, int in_y = 0) :
-        x(in_x),
-        y(in_y) {
+    constexpr Point2DI(int in_x = 0, int in_y = 0) : x(in_x), y(in_y) {
     }
 
-    constexpr Point2DI(const Point2D& point) :
-        x(static_cast<int>(point.x)),
-        y(static_cast<int>(point.y)) {
+    constexpr Point2DI(const Point2D& point) : x(static_cast<int>(point.x)), y(static_cast<int>(point.y)) {
     }
 
     bool operator==(const Point2DI& rhs) const;
@@ -118,9 +104,7 @@ struct Rect2DI {
     Rect2DI() {
     }
 
-    Rect2DI(const Point2DI& in_from, const Point2DI& in_to) :
-        from(in_from),
-        to(in_to) {
+    Rect2DI(const Point2DI& in_from, const Point2DI& in_to) : from(in_from), to(in_to) {
     }
 
     int Width() const;
@@ -136,30 +120,24 @@ struct Color {
     uint8_t g;
     uint8_t b;
 
-    Color() :
-        r(255),
-        g(255),
-        b(255) {
+    Color() : r(255), g(255), b(255) {
     }
 
-    Color(uint8_t in_r, uint8_t in_g, uint8_t in_b) :
-        r(in_r),
-        g(in_g),
-        b(in_b) {
+    Color(uint8_t in_r, uint8_t in_g, uint8_t in_b) : r(in_r), g(in_g), b(in_b) {
     }
 };
 
 namespace Colors {
-    static const Color White = Color(255, 255, 255);
-    static const Color Red = Color(255, 0, 0);
-    static const Color Green = Color(0, 255, 0);
-    static const Color Yellow = Color(255, 255, 0);
-    static const Color Blue = Color(0, 0, 255);
-    static const Color Teal = Color(0, 255, 255);
-    static const Color Purple = Color(255, 0, 255);
-    static const Color Black = Color(0, 0, 0);
-    static const Color Gray = Color(128, 128, 128);
-};
+static const Color White = Color(255, 255, 255);
+static const Color Red = Color(255, 0, 0);
+static const Color Green = Color(0, 255, 0);
+static const Color Yellow = Color(255, 255, 0);
+static const Color Blue = Color(0, 0, 255);
+static const Color Teal = Color(0, 255, 255);
+static const Color Purple = Color(255, 0, 255);
+static const Color Black = Color(0, 0, 0);
+static const Color Gray = Color(128, 128, 128);
+};  // namespace Colors
 
 //! Gets a random floating-point number between -1.0 and 1.0.
 //!< \return Random floating-point number between -1.0 and 1.0.
@@ -221,4 +199,4 @@ void Normalize3D(Point3D& a);
 //!< \return Dot product.
 float Dot3D(const Point3D& a, const Point3D& b);
 
-}
+}  // namespace sc2

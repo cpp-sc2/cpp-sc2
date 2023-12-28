@@ -23,20 +23,26 @@ class DebugInterface;
 class ControlInterface;
 class ControlImp;
 
-/*! Errors that the api can encounter, if the OnError event in ClientEvents is overwritten it will contain a list of errors encountered. */
+/*! Errors that the api can encounter, if the OnError event in ClientEvents is overwritten it will contain a list of
+ * errors encountered. */
 enum class ClientError {
     ErrorSC2,
     InvalidAbilityRemap, /*! An ability was improperly mapped to an ability id that doesn't exist. */
     InvalidResponse,     /*! The response does not contain a field that was expected. */
     NoAbilitiesForTag,   /*! The unit does not have any abilities. */
-    ResponseNotConsumed, /*! A request was made without consuming the response from the previous request, that puts this library in an illegal state. */
+    ResponseNotConsumed, /*! A request was made without consuming the response from the previous request, that puts this
+                            library in an illegal state. */
     ResponseMismatch,    /*! The response received from SC2 does not match the request. */
-    ConnectionClosed,    /*! The websocket connection has prematurely closed, this could mean starcraft crashed or a websocket timeout has occurred. */
+    ConnectionClosed,    /*! The websocket connection has prematurely closed, this could mean starcraft crashed or a
+                            websocket timeout has occurred. */
     SC2UnknownStatus,
-    SC2AppFailure,       /*! SC2 has either crashed or been forcibly terminated by this library because it was not responding to requests. */
-    SC2ProtocolError,    /*! The response from SC2 contains errors, most likely meaning the API was not used in a correct way. */
-    SC2ProtocolTimeout,  /*! A request was made and a response was not received in the amount of time given by the timeout. */
-    WrongGameVersion,    /*! A replay was attempted to be loaded in the wrong game version. */
+    SC2AppFailure, /*! SC2 has either crashed or been forcibly terminated by this library because it was not responding
+                      to requests. */
+    SC2ProtocolError,   /*! The response from SC2 contains errors, most likely meaning the API was not used in a correct
+                           way. */
+    SC2ProtocolTimeout, /*! A request was made and a response was not received in the amount of time given by the
+                           timeout. */
+    WrongGameVersion,   /*! A replay was attempted to be loaded in the wrong game version. */
 };
 
 //! A set of common events a user can override in their derived bot or replay observer class.
@@ -45,64 +51,82 @@ public:
     virtual ~ClientEvents() = default;
 
     //! Called when a game is started after a load. Fast restarting will not call this.
-    virtual void OnGameFullStart() {}
+    virtual void OnGameFullStart() {
+    }
 
     //! Called when a game is started or restarted.
-    virtual void OnGameStart() {}
+    virtual void OnGameStart() {
+    }
 
     //! Called when a game has ended.
-    virtual void OnGameEnd() {}
+    virtual void OnGameEnd() {
+    }
 
     //! In non realtime games this function gets called after each step as indicated by step size.
-    //! In realtime this function gets called as often as possible after request/responses are received from the game gathering observation state.
-    virtual void OnStep() {}
+    //! In realtime this function gets called as often as possible after request/responses are received from the game
+    //! gathering observation state.
+    virtual void OnStep() {
+    }
 
     //! Called whenever one of the player's units has been destroyed.
     //!< \param unit The destroyed unit.
-    virtual void OnUnitDestroyed(const Unit*) {}
+    virtual void OnUnitDestroyed(const Unit*) {
+    }
 
     //!  Called when a neutral unit is created. For example, mineral fields observed for the first time
     //!< \param unit The observed unit.
-    virtual void OnNeutralUnitCreated(const Unit*) {}
+    virtual void OnNeutralUnitCreated(const Unit*) {
+    }
 
     //! Called when a Unit has been created by the player.
     //!< \param unit The created unit.
-    virtual void OnUnitCreated(const Unit*) {}
+    virtual void OnUnitCreated(const Unit*) {
+    }
 
     //! Called when a unit becomes idle, this will only occur as an event so will only be called when the unit becomes
     //! idle and not a second time. Being idle is defined by having orders in the previous step and not currently having
-    //! orders or if it did not exist in the previous step and now does, a unit being created, for instance, will call both
-    //! OnUnitCreated and OnUnitIdle if it does not have a rally set.
+    //! orders or if it did not exist in the previous step and now does, a unit being created, for instance, will call
+    //! both OnUnitCreated and OnUnitIdle if it does not have a rally set.
     //!< \param unit The idle unit.
-    virtual void OnUnitIdle(const Unit*) {}
+    virtual void OnUnitIdle(const Unit*) {
+    }
 
     //! Called when an upgrade is finished, warp gate, ground weapons, baneling speed, etc.
     //!< \param upgrade The completed upgrade.
-    virtual void OnUpgradeCompleted(UpgradeID) {}
+    virtual void OnUpgradeCompleted(UpgradeID) {
+    }
 
-    //! Called when the unit in the previous step had a build progress less than 1.0 but is greater than or equal to 1.0 in
+    //! Called when the unit in the previous step had a build progress less than 1.0 but is greater than or equal to 1.0
+    //! in
     // !the current step.
     //!< \param unit The constructed unit.
-    virtual void OnBuildingConstructionComplete(const Unit*) {}
+    virtual void OnBuildingConstructionComplete(const Unit*) {
+    }
 
     //! Called when the unit in the current observation has lower health or shields than in the previous observation.
     //!< \param unit The damaged unit.
     //!< \param health The change in health (damage is positive)
     //!< \param shields The change in shields (damage is positive)
-    virtual void OnUnitDamaged(const Unit*, float /*health*/, float /*shields*/) {}
+    virtual void OnUnitDamaged(const Unit*, float /*health*/, float /*shields*/) {
+    }
 
     //! Called when a nydus is placed.
-    virtual void OnNydusDetected() {}
+    virtual void OnNydusDetected() {
+    }
 
     //! Called when a nuclear launch is detected.
-    virtual void OnNuclearLaunchDetected() {}
+    virtual void OnNuclearLaunchDetected() {
+    }
 
     //! Called when an enemy unit enters vision from out of fog of war.
     //!< \param unit The unit entering vision.
-    virtual void OnUnitEnterVision(const Unit*) {}
+    virtual void OnUnitEnterVision(const Unit*) {
+    }
 
     //! Called for various errors the library can encounter. See ClientError enum for possible errors.
-    virtual void OnError(const std::vector<ClientError>& /*client_errors*/, const std::vector<std::string>& /*protocol_errors*/ = {}) {}
+    virtual void OnError(const std::vector<ClientError>& /*client_errors*/,
+                         const std::vector<std::string>& /*protocol_errors*/ = {}) {
+    }
 };
 
 //! The base class for Agent and ReplayObserver.
@@ -132,4 +156,4 @@ private:
     ControlImp* control_imp_;
 };
 
-}
+}  // namespace sc2

@@ -3,9 +3,9 @@
 */
 #pragma once
 
-#include "sc2_client.h"
-
 #include <string>
+
+#include "sc2_client.h"
 
 namespace sc2 {
 
@@ -42,4 +42,4 @@ private:
     ObserverActionImp* observer_action_imp_;
 };
 
-}
+}  // namespace sc2

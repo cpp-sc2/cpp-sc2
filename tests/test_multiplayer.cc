@@ -1,13 +1,13 @@
-#include "test_movement_combat.h"
+#include <fstream>
+#include <iostream>
+#include <random>
+#include <string>
+
 #include "sc2api/sc2_api.h"
 #include "sc2utils/sc2_manage_process.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <random>
+#include "test_movement_combat.h"
 
 namespace sc2 {
-
 
 //
 // MultiplayerTestBot
@@ -18,12 +18,11 @@ public:
     MultiplayerTestBot();
 
 private:
-    void OnTestsBegin () final;
-    void OnTestsEnd () final;
+    void OnTestsBegin() final;
+    void OnTestsEnd() final;
 };
 
-MultiplayerTestBot::MultiplayerTestBot() :
-    UnitTestBot() {
+MultiplayerTestBot::MultiplayerTestBot() : UnitTestBot() {
     Add(WaitT<500>());
 }
 
@@ -51,7 +50,6 @@ bool RemoteSaveMap(sc2::Coordinator& coordinator, std::string source_map, std::s
 
     return coordinator.RemoteSaveMap(&buffer[0], data_size, remote_path);
 }
-
 
 //
 // TestMovementCombat
@@ -91,5 +89,4 @@ bool TestMultiplayer(int argc, char** argv) {
     return true;
 }
 
-}
-
+}  // namespace sc2

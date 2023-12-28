@@ -1,5 +1,6 @@
-#include "sc2api/sc2_api.h"
 #include "sc2lib/sc2_utils.h"
+
+#include "sc2api/sc2_api.h"
 
 namespace sc2 {
 
@@ -23,4 +24,4 @@ Point2D FindCenterOfMap(const GameInfo& game_info) {
     return target_pos;
 }
 
-}
+}  // namespace sc2

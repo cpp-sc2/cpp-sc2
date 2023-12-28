@@ -1,12 +1,13 @@
-#include "test_framework.h"
-#include "test_movement_combat.h"
+#include <iostream>
+#include <random>
+#include <string>
+
+#include "feature_layers_shared.h"
 #include "sc2api/sc2_api.h"
 #include "sc2api/sc2_unit_filters.h"
 #include "sc2utils/sc2_manage_process.h"
-#include <iostream>
-#include <string>
-#include <random>
-#include "feature_layers_shared.h"
+#include "test_framework.h"
+#include "test_movement_combat.h"
 
 namespace sc2 {
 
@@ -18,8 +19,7 @@ class TestRemap : public TestSequence {
 public:
     Point2DI command_center_pt_;
 
-    TestRemap() :
-        command_center_pt_(24, 24) {
+    TestRemap() : command_center_pt_(24, 24) {
     }
 
     const Unit* GetCommandCenter() {
@@ -161,7 +161,6 @@ public:
     }
 };
 
-
 //
 // RemapAbilitiesTestBot
 //
@@ -171,12 +170,11 @@ public:
     RemapAbilitiesTestBot();
 
 private:
-    void OnTestsBegin () final;
-    void OnTestsEnd () final;
+    void OnTestsBegin() final;
+    void OnTestsEnd() final;
 };
 
-RemapAbilitiesTestBot::RemapAbilitiesTestBot() :
-    UnitTestBot() {
+RemapAbilitiesTestBot::RemapAbilitiesTestBot() : UnitTestBot() {
     // Sequences.
     Add(TestRemapStart());
     Add(TestRemapSelectSCV());
@@ -195,10 +193,8 @@ void RemapAbilitiesTestBot::OnTestsBegin() {
     Debug()->DebugShowMap();
 };
 
-void RemapAbilitiesTestBot::OnTestsEnd () {
-
+void RemapAbilitiesTestBot::OnTestsEnd() {
 }
-
 
 //
 // TestFeatureLayers
@@ -232,5 +228,4 @@ bool TestAbilityRemap(int argc, char** argv) {
     return bot.Success();
 }
 
-}
-
+}  // namespace sc2

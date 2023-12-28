@@ -1,16 +1,14 @@
+#include <iostream>
+
 #include "sc2api/sc2_api.h"
 #include "sc2lib/sc2_lib.h"
-
 #include "sc2utils/sc2_manage_process.h"
-
-#include <iostream>
 
 class FooBot : public sc2::Agent {
 public:
     uint32_t restarts_;
 
-    FooBot() :
-        restarts_(0) {
+    FooBot() : restarts_(0) {
     }
 
     virtual void OnGameStart() final {
@@ -47,10 +45,7 @@ int main(int argc, char* argv[]) {
     // Add the custom bot, it will control the players.
     FooBot bot;
 
-    coordinator.SetParticipants({
-        CreateParticipant(sc2::Race::Terran, &bot),
-        CreateComputer(sc2::Race::Terran)
-    });
+    coordinator.SetParticipants({CreateParticipant(sc2::Race::Terran, &bot), CreateComputer(sc2::Race::Terran)});
 
     // Start the game.
     coordinator.LaunchStarcraft();

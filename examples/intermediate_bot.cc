@@ -1,9 +1,8 @@
-#include "sc2api/sc2_api.h"
-#include "sc2utils/sc2_manage_process.h"
+#include <iostream>
 
 #include "bot_examples.h"
-
-#include <iostream>
+#include "sc2api/sc2_api.h"
+#include "sc2utils/sc2_manage_process.h"
 
 int main(int argc, char* argv[]) {
     sc2::Coordinator coordinator;
@@ -17,10 +16,8 @@ int main(int argc, char* argv[]) {
     sc2::ZergMultiplayerBot bot2;
     sc2::TerranMultiplayerBot bot3;
 
-    coordinator.SetParticipants({
-        CreateParticipant(sc2::Race::Protoss, &bot1),
-        CreateComputer(sc2::Race::Terran,sc2::Difficulty::Hard)
-    });
+    coordinator.SetParticipants(
+        {CreateParticipant(sc2::Race::Protoss, &bot1), CreateComputer(sc2::Race::Terran, sc2::Difficulty::Hard)});
 
     // Start the game.
     coordinator.LaunchStarcraft();
@@ -28,7 +25,7 @@ int main(int argc, char* argv[]) {
 
     for (; !do_break;) {
         coordinator.StartGame(sc2::kMapBelShirVestigeLE);
-        //bot1.air_build_ = !bot1.air_build_;
+        // bot1.air_build_ = !bot1.air_build_;
         bot1.air_build_ = false;
         bot2.mutalisk_build_ = false;
 

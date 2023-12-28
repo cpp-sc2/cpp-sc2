@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace sc2 {
 
@@ -17,8 +17,7 @@ class ArgParser {
 public:
     ArgParser();
     ArgParser(const std::string& executable_name);
-    ArgParser(const std::string& usage, const std::string& description, const std::string& example="");
-    
+    ArgParser(const std::string& usage, const std::string& description, const std::string& example = "");
 
     void AddOptions(const std::vector<Arg>& options);
     bool Parse(int argc, char* argv[]);
@@ -39,4 +38,4 @@ private:
     std::string executable_name_;
 };
 
-}
+}  // namespace sc2

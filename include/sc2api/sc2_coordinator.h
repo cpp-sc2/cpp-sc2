@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
+
 #include "sc2api/sc2_game_settings.h"
 #include "sc2api/sc2_proto_interface.h"
 
@@ -28,7 +29,8 @@ public:
     // Initialization and setup.
 
     //! Used to load settings. Settings will be discovered in the following order:
-    //!     1. If command line arguments are provided it will use them. Invoke binary with --help to see expected arguments.
+    //!     1. If command line arguments are provided it will use them. Invoke binary with --help to see expected
+    //!     arguments.
     //!     2. (Recommended) If the StarCraft II binary has been run the function will auto discover its location.
     //! \param argc Provided in main signature.
     //! \param argv Provided in main signature.
@@ -36,14 +38,13 @@ public:
     //! \return True if settings were found or discovered, false otherwise.
     bool LoadSettings(int argc, char** argv);
 
-    //! Specifies whether bots or replays OnStep function should be run in parallel. If set to true make sure your bots are thread-safe
-    //! if they reach into shared code.
-    //! \param value True to multithread, false otherwise.
+    //! Specifies whether bots or replays OnStep function should be run in parallel. If set to true make sure your bots
+    //! are thread-safe if they reach into shared code. \param value True to multithread, false otherwise.
     void SetMultithreaded(bool value);
 
-    //! Specifies whether the game should run in realtime or not. If the game is running in real time that means the coordinator is
-    //! not stepping it forward. The game is running and your bot reaches into it asynchronously to read state.
-    //! \param value True to be realtime, false otherwise.
+    //! Specifies whether the game should run in realtime or not. If the game is running in real time that means the
+    //! coordinator is not stepping it forward. The game is running and your bot reaches into it asynchronously to read
+    //! state. \param value True to be realtime, false otherwise.
     void SetRealtime(bool value);
 
     //! Sets the number of game loops to run for each step.
@@ -54,9 +55,11 @@ public:
     //! \param path Absolute file path.
     void SetProcessPath(const std::string& path);
 
-    //! Set the correct data version of a replay to allow faster replay loading. Saves a few seconds if replay is not up to date.
+    //! Set the correct data version of a replay to allow faster replay loading. Saves a few seconds if replay is not up
+    //! to date.
     //!  Works only in combination with correct process path set by "SetProcessPath".
-    //! \param version Look in "protocol/buildinfo/versions.json" for the property "data-hash". Or read it from "ReplayInfo.data_version".
+    //! \param version Look in "protocol/buildinfo/versions.json" for the property "data-hash". Or read it from
+    //! "ReplayInfo.data_version".
     void SetDataVersion(const std::string& version);
 
     //! Sets the timeout for network operations.
@@ -86,8 +89,8 @@ public:
     //! \param y y position of game window.
     void SetWindowLocation(int x, int y);
 
-    //! Uses generalized abilities where possible. Example: BUILD_TECHLAB_BARRACKS, BUILD_TECHLAB_FACTORY, BUILD_TECHLAB_STARPORT 
-    //! ability ids are generalized to BUILD_TECHLAB ability id in the observation.
+    //! Uses generalized abilities where possible. Example: BUILD_TECHLAB_BARRACKS, BUILD_TECHLAB_FACTORY,
+    //! BUILD_TECHLAB_STARPORT ability ids are generalized to BUILD_TECHLAB ability id in the observation.
     void SetUseGeneralizedAbilityId(bool value);
 
     //! Sets the replay perspective. Use 0 to observe all players.
@@ -133,7 +136,8 @@ public:
     //! Relative path: Any .SC2Map file relative to either the library or installation maps folder.
     //! Map name: Any BattleNet published map that has been locally cached.
     //! \param map_path Path to the map to run.
-    //! \return True if the game started, false if there was errors or the game didn't start, override OnError callback to see the exact errors.
+    //! \return True if the game started, false if there was errors or the game didn't start, override OnError callback
+    //! to see the exact errors.
     bool StartGame(const std::string& map_path = std::string());
 
     //! Creates a game but does not join the agents to the game
@@ -154,11 +158,15 @@ public:
     // Run.
 
     //! Helper function used to actually run a bot. This function will behave differently in real-time compared to
-    //! non real-time. In real-time there is no step sent over the wire but instead will request and read observations as the game runs.
+    //! non real-time. In real-time there is no step sent over the wire but instead will request and read observations
+    //! as the game runs.
     //! * For non-real time Update will perform the following:
-    //!     1. Step the simulation forward by a certain amount of game steps, this essentially moves the game loops forward.
-    //!     2. Wait for the step to complete, the step is completed when a response is received and read from the StarCraft II binary.
-    //!         * When the step is completed an Observation has been received. It is parsed and various client events are dispatched.
+    //!     1. Step the simulation forward by a certain amount of game steps, this essentially moves the game loops
+    //!     forward.
+    //!     2. Wait for the step to complete, the step is completed when a response is received and read from the
+    //!     StarCraft II binary.
+    //!         * When the step is completed an Observation has been received. It is parsed and various client events
+    //!         are dispatched.
     //!     3. Call the user's OnStep function.
     //! * Real time applications will perform the following:
     //!     1. The Observation is directly requested. The process will block while waiting for it.
@@ -207,4 +215,4 @@ private:
     CoordinatorImp* imp_;
 };
 
-}
+}  // namespace sc2

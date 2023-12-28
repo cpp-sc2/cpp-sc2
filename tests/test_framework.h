@@ -1,15 +1,15 @@
 #pragma once
 
-#include "sc2api/sc2_coordinator.h"
+#include <memory>
+#include <vector>
+
 #include "sc2api/sc2_agent.h"
 #include "sc2api/sc2_args.h"
-
-#include <vector>
-#include <memory>
+#include "sc2api/sc2_coordinator.h"
 
 namespace sc2 {
 
-struct TestSequence: ClientEvents {
+struct TestSequence : ClientEvents {
     Agent* agent_;
     uint32_t wait_game_loops_;
     std::vector<std::string> errors_;
@@ -20,13 +20,15 @@ struct TestSequence: ClientEvents {
     virtual bool DidSucceed() const;
 
     // Override.
-    virtual void OnTestStart() {}
-    virtual void OnTestFinish() {}
+    virtual void OnTestStart() {
+    }
+    virtual void OnTestFinish() {
+    }
 
     // Pushing errors will mark this test as failing.
     virtual void ReportError(const char* error = "Error");
 
-   // Mark test as failed and cleanup environment.
+    // Mark test as failed and cleanup environment.
     virtual void ReportErrorAndCleanup(const char* error);
 
     Point2D GetMapCenter() const;
@@ -34,33 +36,37 @@ struct TestSequence: ClientEvents {
     void KillAllUnits();
 };
 
-struct UnitTestBot: Agent {
-    UnitTestBot():
-        success_(true),
-        current_sequence_(-1),
-        game_loop_done_(2) {
+struct UnitTestBot : Agent {
+    UnitTestBot() : success_(true), current_sequence_(-1), game_loop_done_(2) {
     }
 
     bool IsFinished() const {
         return (current_sequence_ >= sequences_.size() && current_sequence_ != std::size_t(-1));
     }
 
-    bool Success() { return success_; }
+    bool Success() {
+        return success_;
+    }
 
- protected:
-    template<class T> void Add(const T& test) {
+protected:
+    template <class T>
+    void Add(const T& test) {
         std::unique_ptr<TestSequence> t = std::make_unique<T>(test);
         t->agent_ = this;
         sequences_.push_back(std::move(t));
     }
 
-    virtual void OnTestsBegin () = 0;
-    virtual void OnTestsEnd () = 0;
-    virtual void OnPostStep () {}
+    virtual void OnTestsBegin() = 0;
+    virtual void OnTestsEnd() = 0;
+    virtual void OnPostStep() {
+    }
 
-    void OnError(const std::vector<ClientError>& /*client_errors*/, const std::vector<std::string>& /*protocol_errors*/ = {}) override { success_ = false; }
+    void OnError(const std::vector<ClientError>& /*client_errors*/,
+                 const std::vector<std::string>& /*protocol_errors*/ = {}) override {
+        success_ = false;
+    }
 
- private:
+private:
     void OnGameStart() final;
     void OnStep() final;
     void OnGameEnd() final;
@@ -85,7 +91,8 @@ struct UnitTestBot: Agent {
 //
 // Some common sequences.
 //
-template <int Loops> struct WaitT: TestSequence {
+template <int Loops>
+struct WaitT : TestSequence {
     void OnTestStart() override {
         wait_game_loops_ = Loops;
     }

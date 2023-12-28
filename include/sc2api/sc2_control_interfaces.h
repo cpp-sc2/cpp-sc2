@@ -1,12 +1,12 @@
 #pragma once
 
-#include "sc2api/sc2_data.h"
-#include "sc2api/sc2_proto_interface.h"
-#include "sc2api/sc2_client.h"
-#include "sc2api/sc2_game_settings.h"
-
-#include <vector>
 #include <string>
+#include <vector>
+
+#include "sc2api/sc2_client.h"
+#include "sc2api/sc2_data.h"
+#include "sc2api/sc2_game_settings.h"
+#include "sc2api/sc2_proto_interface.h"
 
 namespace sc2 {
 
@@ -22,7 +22,8 @@ public:
     virtual bool RemoteSaveMap(const void* data, int data_size, std::string remote_path) = 0;
     virtual bool CreateGame(const std::string& map_path, const std::vector<PlayerSetup>& players, bool realtime) = 0;
 
-    virtual bool RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports = Ports(), bool raw_affects_selection = false) = 0;
+    virtual bool RequestJoinGame(PlayerSetup setup, const InterfaceSettings& settings, const Ports& ports = Ports(),
+                                 bool raw_affects_selection = false) = 0;
     virtual bool WaitJoinGame() = 0;
 
     virtual bool RequestLeaveGame() = 0;
@@ -58,8 +59,8 @@ public:
     // Diagnostic.
     virtual void DumpProtoUsage() = 0;
 
-    virtual void Error(ClientError error, const std::vector<std::string>& errors={}) = 0;
-    virtual void ErrorIf(bool condition, ClientError error, const std::vector<std::string>& errors={}) = 0;
+    virtual void Error(ClientError error, const std::vector<std::string>& errors = {}) = 0;
+    virtual void ErrorIf(bool condition, ClientError error, const std::vector<std::string>& errors = {}) = 0;
 
     virtual const std::vector<ClientError>& GetClientErrors() const = 0;
     virtual const std::vector<std::string>& GetProtocolErrors() const = 0;
@@ -86,11 +87,12 @@ public:
     virtual ~ReplayControlInterface() = default;
 
     virtual bool GatherReplayInfo(const std::string& path, bool download_data = false) = 0;
-    virtual bool LoadReplay(const std::string& replay_path, const InterfaceSettings& settings, uint32_t player_id, bool realtime=false) = 0;
+    virtual bool LoadReplay(const std::string& replay_path, const InterfaceSettings& settings, uint32_t player_id,
+                            bool realtime = false) = 0;
     virtual bool WaitForReplay() = 0;
     virtual void UseGeneralizedAbility(bool value) = 0;
 
     virtual const ReplayInfo& GetReplayInfo() const = 0;
 };
 
-}
+}  // namespace sc2

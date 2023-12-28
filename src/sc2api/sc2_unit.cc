@@ -1,7 +1,7 @@
 #include "sc2api/sc2_unit.h"
 
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
 #include "s2clientprotocol/sc2api.pb.h"
 
@@ -16,10 +16,8 @@ bool Unit::IsBuildFinished() const {
 
 Tags ConvertToTags(const Units& units) {
     Tags tags;
-    std::transform(std::begin(units),
-        std::end(units),
-        std::back_inserter(tags),
-        [](const Unit* unit) {return unit->tag; });
+    std::transform(std::begin(units), std::end(units), std::back_inserter(tags),
+                   [](const Unit* unit) { return unit->tag; });
 
     return tags;
 }
@@ -37,7 +35,7 @@ Unit* UnitPool::CreateUnit(Tag tag) {
 
     std::vector<Unit>& pool = unit_pool_[available_index_.first];
     Unit* unit = &pool[available_index_.second];
-    unit->last_seen_game_loop = 0; // initialization required for OnUnitEnterVision
+    unit->last_seen_game_loop = 0;  // initialization required for OnUnitEnterVision
     tag_to_unit_[tag] = unit;
     tag_to_existing_unit_[tag] = unit;
     AddNewUnit(unit);
@@ -93,4 +91,4 @@ bool UnitPool::UnitExists(Tag tag) {
     return tag_to_existing_unit_.find(tag) != tag_to_existing_unit_.end();
 }
 
-}
+}  // namespace sc2

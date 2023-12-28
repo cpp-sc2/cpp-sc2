@@ -1,11 +1,10 @@
-#include "sc2api/sc2_api.h"
-
-#include "sc2utils/sc2_manage_process.h"
-
-#include <iostream>
-#include <string>
-#include <random>
 #include <cmath>
+#include <iostream>
+#include <random>
+#include <string>
+
+#include "sc2api/sc2_api.h"
+#include "sc2utils/sc2_manage_process.h"
 
 static uint32_t c_text_size = 8;
 
@@ -44,7 +43,8 @@ public:
                 break;
 
             case sc2::ActionRaw::TargetPosition:
-                last_action_text_ += "\nTargeting Pos: " + std::to_string(action.target_point.x) + ", " + std::to_string(action.target_point.y);
+                last_action_text_ += "\nTargeting Pos: " + std::to_string(action.target_point.x) + ", " +
+                                     std::to_string(action.target_point.y);
                 break;
 
             case sc2::ActionRaw::TargetNone:
@@ -108,8 +108,7 @@ public:
         sc2::AvailableAbilities available_abilities = query->GetAbilitiesForUnit(unit);
         if (available_abilities.abilities.size() < 1) {
             std::cout << "No abilities available for this unit" << std::endl;
-        }
-        else {
+        } else {
             for (const sc2::AvailableAbility& available_ability : available_abilities.abilities) {
                 assert(uint32_t(available_ability.ability_id) < abilities.size());
                 const sc2::AbilityData& ability = abilities[available_ability.ability_id];
@@ -121,11 +120,11 @@ public:
         debug->DebugTextOut(debug_txt, unit->pos, sc2::Colors::Green, c_text_size);
 
         // Show the direction of the unit.
-        sc2::Point3D p1; // Use this to show target distance.
+        sc2::Point3D p1;  // Use this to show target distance.
         {
             const float length = 5.0f;
             sc2::Point3D p0 = unit->pos;
-            p0.z += 0.1f; // Raise the line off the ground a bit so it renders more clearly.
+            p0.z += 0.1f;  // Raise the line off the ground a bit so it renders more clearly.
             p1 = unit->pos;
             assert(unit->facing >= 0.0f && unit->facing < 6.29f);
             p1.x += length * std::cos(unit->facing);
@@ -149,7 +148,7 @@ public:
         // Sphere around the unit.
         {
             sc2::Point3D p = unit->pos;
-            p.z += 0.1f; // Raise the line off the ground a bit so it renders more clearly.
+            p.z += 0.1f;  // Raise the line off the ground a bit so it renders more clearly.
             debug->DebugSphereOut(p, 1.25f, sc2::Colors::Purple);
         }
 
@@ -157,8 +156,7 @@ public:
         bool has_target = false;
         sc2::Point3D target;
         std::string target_info;
-        for (const sc2::UnitOrder& unit_order : unit->orders)
-        {
+        for (const sc2::UnitOrder& unit_order : unit->orders) {
             // TODO: Need to determine if there is a target point, no target point, or the target is a unit/snapshot.
             target.x = unit_order.target_pos.x;
             target.y = unit_order.target_pos.y;
@@ -182,10 +180,9 @@ public:
             break;
         }
 
-        if (has_target)
-        {
+        if (has_target) {
             sc2::Point3D p = target;
-            p.z += 0.1f; // Raise the line off the ground a bit so it renders more clearly.
+            p.z += 0.1f;  // Raise the line off the ground a bit so it renders more clearly.
             debug->DebugSphereOut(target, 1.25f, sc2::Colors::Blue);
             debug->DebugTextOut(target_info, p1, sc2::Colors::Yellow, c_text_size);
         }
@@ -210,10 +207,7 @@ int main(int argc, char* argv[]) {
     // Add the custom bot, it will control the players.
     EchoActionsBot bot;
 
-    coordinator.SetParticipants({
-        CreateParticipant(sc2::Race::Terran, &bot),
-        CreateComputer(sc2::Race::Zerg)
-    });
+    coordinator.SetParticipants({CreateParticipant(sc2::Race::Terran, &bot), CreateComputer(sc2::Race::Zerg)});
 
     // Start the game.
     coordinator.LaunchStarcraft();

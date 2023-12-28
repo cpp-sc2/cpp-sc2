@@ -1,6 +1,5 @@
 #include "sc2api/sc2_api.h"
 #include "sc2lib/sc2_lib.h"
-
 #include "sc2utils/sc2_manage_process.h"
 
 // A helper bot that actually just moves a random unit every 5 seconds
@@ -54,10 +53,7 @@ int main(int argc, char* argv[]) {
     // Add the helper, it will annoy the players.
     AnnoyingHelper bot;
 
-    coordinator.SetParticipants({
-        CreateParticipant(sc2::Race::Terran, &bot),
-        CreateComputer(sc2::Race::Zerg)
-    });
+    coordinator.SetParticipants({CreateParticipant(sc2::Race::Terran, &bot), CreateComputer(sc2::Race::Zerg)});
 
     // Start the game.
     coordinator.LaunchStarcraft();

@@ -1,10 +1,8 @@
-#include "sc2api/sc2_api.h"
-#include "sc2utils/sc2_manage_process.h"
-
-#include "bot_examples.h"
-
 #include <iostream>
 
+#include "bot_examples.h"
+#include "sc2api/sc2_api.h"
+#include "sc2utils/sc2_manage_process.h"
 
 // Set this flag to true if you want to play against your bot.
 static bool PlayerOneIsHuman = false;
@@ -56,7 +54,7 @@ int main(int argc, char* argv[]) {
             }
         }
     }
-    
+
     bot1.Control()->DumpProtoUsage();
     bot2.Control()->DumpProtoUsage();
 

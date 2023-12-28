@@ -1,8 +1,8 @@
+#include <iostream>
+
+#include "feature_layers_shared.h"
 #include "sc2api/sc2_api.h"
 #include "test_framework.h"
-#include "feature_layers_shared.h"
-
-#include <iostream>
 
 namespace sc2 {
 
@@ -23,10 +23,7 @@ public:
         ActionInterface* act = agent_->Actions();
 
         for (const auto& unit : obs->GetUnits()) {
-            sc2::Point2D target(
-               (unit->pos.x < 35.0f) ? 40.0f : 30.0f,
-                unit->pos.y
-            );
+            sc2::Point2D target((unit->pos.x < 35.0f) ? 40.0f : 30.0f, unit->pos.y);
 
             act->UnitCommand(unit, ABILITY_ID::GENERAL_PATROL, target);
         }
@@ -81,12 +78,11 @@ public:
     ActionTestBot();
 
 private:
-    void OnTestsBegin () final;
-    void OnTestsEnd () final;
+    void OnTestsBegin() final;
+    void OnTestsEnd() final;
 };
 
-ActionTestBot::ActionTestBot() :
-    UnitTestBot() {
+ActionTestBot::ActionTestBot() : UnitTestBot() {
     // Sequences.
     Add(SpawnZerglings());
     Add(PatrolZerglings());
@@ -94,14 +90,12 @@ ActionTestBot::ActionTestBot() :
         Add(SelectZergling());
 }
 
-void ActionTestBot::OnTestsBegin() {
+void ActionTestBot::OnTestsBegin(){
 
 };
 
-void ActionTestBot::OnTestsEnd () {
-
+void ActionTestBot::OnTestsEnd() {
 }
-
 
 //
 // TestObservationActions
@@ -134,5 +128,4 @@ bool TestObservationActions(int argc, char** argv) {
     return bot.Success();
 }
 
-}
-
+}  // namespace sc2

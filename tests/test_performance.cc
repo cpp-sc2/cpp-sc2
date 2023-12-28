@@ -1,14 +1,13 @@
 #include "test_performance.h"
 
-#include <iostream>
-#include <iomanip>
-#include <ctime>
 #include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
 
-#include "sc2api/sc2_api.h"
-
-#include "test_framework.h"
 #include "bot_examples.h"
+#include "sc2api/sc2_api.h"
+#include "test_framework.h"
 
 using namespace std::chrono;
 
@@ -81,9 +80,9 @@ private:
 void PingBot::OnStep() {
     duration<double> time = TimedPing(agent_->Control(), PING_COUNT);
     double ping_avg = (time.count() / PING_COUNT) * 1000;
-    //if (ping_avg > 5) {
-    //    ReportError("Ping after step took longer than 5 milliseconds.");
-    //}
+    // if (ping_avg > 5) {
+    //     ReportError("Ping after step took longer than 5 milliseconds.");
+    // }
 
     sum_ping_time_ += ping_avg;
     ++step_count_;
@@ -101,8 +100,10 @@ void PingBot::OnTestStart() {
 
     if (!stats.reset_) {
         debug->DebugShowMap();
-        debug->DebugCreateUnit(UNIT_TYPEID::TERRAN_MARINE, Point2D(), agent_->Observation()->GetPlayerID(), MARINE_COUNT);
-        debug->DebugCreateUnit(UNIT_TYPEID::PROTOSS_NEXUS, Point2D(), agent_->Observation()->GetPlayerID(), NEXUS_COUNT);
+        debug->DebugCreateUnit(UNIT_TYPEID::TERRAN_MARINE, Point2D(), agent_->Observation()->GetPlayerID(),
+                               MARINE_COUNT);
+        debug->DebugCreateUnit(UNIT_TYPEID::PROTOSS_NEXUS, Point2D(), agent_->Observation()->GetPlayerID(),
+                               NEXUS_COUNT);
         debug->SendDebug();
     }
 
@@ -110,15 +111,13 @@ void PingBot::OnTestStart() {
 
     if (stats.unit_count_.empty()) {
         stats.unit_count_.push_back(0);
-    }
-    else {
+    } else {
         stats.unit_count_.push_back(stats.unit_count_.back() + MARINE_COUNT);
     }
 
     if (stats.structure_count_.empty()) {
         stats.structure_count_.push_back(0);
-    }
-    else {
+    } else {
         stats.structure_count_.push_back(stats.structure_count_.back() + NEXUS_COUNT);
     }
 };
@@ -126,8 +125,8 @@ void PingBot::OnTestStart() {
 void PingBot::OnTestFinish() {
     double avg_ping = sum_ping_time_ / step_count_;
 
-    //if (avg_ping > 5) {
-        //ReportError("In-Game ping test took longer than 5 milliseconds.");
+    // if (avg_ping > 5) {
+    // ReportError("In-Game ping test took longer than 5 milliseconds.");
     //}
 
     GetStats().avg_ping_.push_back(avg_ping);
@@ -136,9 +135,9 @@ void PingBot::OnTestFinish() {
 void FeatureLayerBot::OnStep() {
     duration<double> time = TimedObservation(agent_->Control(), 1);
     double obs_time = time.count() * 1000;
-    //if (obs_time > 30) {
-    //    ReportError("Observation with feature layers should take not take longer than 20 milliseconds.");
-    //}
+    // if (obs_time > 30) {
+    //     ReportError("Observation with feature layers should take not take longer than 20 milliseconds.");
+    // }
 
     sum_observation_time_ += obs_time;
     ++step_count_;
@@ -151,8 +150,8 @@ void FeatureLayerBot::OnTestStart() {
 void FeatureLayerBot::OnTestFinish() {
     double avg_obs = sum_observation_time_ / step_count_;
 
-    //if (avg_obs > 30) {
-        //ReportError("In-Game ping test took longer than 5 milliseconds.");
+    // if (avg_obs > 30) {
+    // ReportError("In-Game ping test took longer than 5 milliseconds.");
     //}
 
     GetStats().avg_observation_.push_back(avg_obs);
@@ -174,11 +173,8 @@ private:
     int feature_layer_height_;
 };
 
-PerformanceTests::PerformanceTests(int feature_layer_width, int feature_layer_height) :
-    UnitTestBot(),
-    feature_layer_width_(feature_layer_width),
-    feature_layer_height_(feature_layer_height) {
-
+PerformanceTests::PerformanceTests(int feature_layer_width, int feature_layer_height)
+    : UnitTestBot(), feature_layer_width_(feature_layer_width), feature_layer_height_(feature_layer_height) {
     GetStats().Reset();
 
     static const int TEST_COUNT = 7;
@@ -193,7 +189,6 @@ void PerformanceTests::PreGamePing() {
 }
 
 void PerformanceTests::OnTestsBegin() {
-
 }
 
 void PerformanceTests::OnTestsEnd() {
@@ -204,9 +199,14 @@ void PerformanceTests::OnTestsEnd() {
     std::cout << feature_layer_width_ << "x" << feature_layer_height_ << " Feature Layers" << std::endl;
     std::cout << "-------------------------------------------------------" << std::endl;
 
-    std::cout << "|" << std::setw(10) << std::left << "Marines" << std::right << "|" << std::setw(10) << std::left << "Buildings" << std::right << "|" << std::setw(10) << std::left << "Ping (ms)" << std::right << "|" << std::setw(20) << std::left << "Observation (ms)" << std::right << "|" << std::endl;
+    std::cout << "|" << std::setw(10) << std::left << "Marines" << std::right << "|" << std::setw(10) << std::left
+              << "Buildings" << std::right << "|" << std::setw(10) << std::left << "Ping (ms)" << std::right << "|"
+              << std::setw(20) << std::left << "Observation (ms)" << std::right << "|" << std::endl;
     for (size_t i = 0; i < stats.avg_observation_.size(); ++i) {
-        std::cout << "|" << std::setw(10) << std::left << stats.unit_count_[i] << std::right << "|" << std::setw(10) << std::left << stats.structure_count_[i] << std::right << "|" << std::setw(10) << std::left << stats.avg_ping_[i] << std::right << "|" << std::setw(20) << std::left << stats.avg_observation_[i] << std::right << "|" << std::endl;
+        std::cout << "|" << std::setw(10) << std::left << stats.unit_count_[i] << std::right << "|" << std::setw(10)
+                  << std::left << stats.structure_count_[i] << std::right << "|" << std::setw(10) << std::left
+                  << stats.avg_ping_[i] << std::right << "|" << std::setw(20) << std::left << stats.avg_observation_[i]
+                  << std::right << "|" << std::endl;
     }
     std::cout << "-------------------------------------------------------" << std::endl;
 
@@ -214,7 +214,6 @@ void PerformanceTests::OnTestsEnd() {
 }
 
 void TestPerformance(int argc, char** argv, int feature_layer_width, int feature_layer_height) {
-
     sc2::Coordinator coordinator;
     if (!coordinator.LoadSettings(argc, argv)) {
         return;
@@ -229,10 +228,7 @@ void TestPerformance(int argc, char** argv, int feature_layer_width, int feature
     settings.minimap_x = feature_layer_width;
     coordinator.SetFeatureLayers(settings);
 
-    coordinator.SetParticipants({
-        CreateParticipant(Race::Protoss, &performance_tests),
-        CreateComputer(Race::Zerg)
-    });
+    coordinator.SetParticipants({CreateParticipant(Race::Protoss, &performance_tests), CreateComputer(Race::Zerg)});
 
     coordinator.LaunchStarcraft();
 
@@ -254,4 +250,4 @@ bool TestPerformance(int argc, char** argv) {
     return true;
 }
 
-}
+}  // namespace sc2
