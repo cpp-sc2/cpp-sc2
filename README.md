@@ -4,6 +4,7 @@ cpp-sc2
 [![GitHub](https://img.shields.io/github/license/cpp-sc2/cpp-sc2)](https://github.com/cpp-sc2/cpp-sc2/blob/master/LICENSE)
 [![C++17](https://img.shields.io/badge/C%2B%2B-17-green.svg)](https://isocpp.org/std/the-standard)
 [![Build Status](https://github.com/cpp-sc2/cpp-sc2/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/cpp-sc2/cpp-sc2/actions/workflows/ci.yml)
+[![Join the chat in Discord: https://discordapp.com/invite/Emm5Ztz](https://img.shields.io/badge/Discord-Chat!-brightgreen.svg)](https://discordapp.com/invite/Emm5Ztz)
 
 The StarCraft II API provides access to in-game state observation and unit control. The API is a wrapper around protobuf defined protocol over a websocket connection.  
 While it's possible to write directly to the protocol, this library provides a C++ and class-based abstraction.
