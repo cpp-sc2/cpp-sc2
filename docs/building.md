@@ -6,7 +6,7 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
 1. Download and install [CMake](https://cmake.org/download/).
 
-2. A compiler with C++14 support.
+2. A compiler with C++17 support.
 
 3. Windows: Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
 

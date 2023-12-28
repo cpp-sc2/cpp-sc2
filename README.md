@@ -1,6 +1,8 @@
 cpp-sc2
 =======
 
+[![GitHub](https://img.shields.io/github/license/cpp-sc2/cpp-sc2)](https://github.com/cpp-sc2/cpp-sc2/blob/master/LICENSE)
+[![C++17](https://img.shields.io/badge/C%2B%2B-17-green.svg)](https://isocpp.org/std/the-standard)
 [![Build Status](https://github.com/cpp-sc2/cpp-sc2/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/cpp-sc2/cpp-sc2/actions/workflows/ci.yml)
 
 The StarCraft II API provides access to in-game state observation and unit control. The API is a wrapper around protobuf defined protocol over a websocket connection.  
@@ -53,8 +55,7 @@ It can save you a lot of time.
 
 
 ## Coding Standard
-[Coding Standard](https://google.github.io/styleguide/cppguide.html)
-We use the Google C++ Style Guide with some tweaks and [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) to format the code.
+We use the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html) with some tweaks and [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) to format the code.
 
 
 ## Additional Downloads
