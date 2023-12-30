@@ -21,6 +21,17 @@ set(civetweb_patches
 )
 set(patch_executor git apply --ignore-whitespace ${civetweb_patches})
 
+if (APPLE)
+    add_compile_options(
+        -Wno-expansion-to-defined
+        -Wno-extra-semi
+        -Wno-macro-redefined
+        -Wno-nullability-completeness
+        -Wno-nullability-extension
+        -Wno-used-but-marked-unused
+    )
+endif ()
+
 FetchContent_Declare(
     civetweb
     GIT_REPOSITORY https://github.com/civetweb/civetweb.git
