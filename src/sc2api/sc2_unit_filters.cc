@@ -1,4 +1,4 @@
-#include "sc2api/sc2_unit_filters.h"
+#include "sc2_unit_filters.h"
 
 namespace sc2 {
 

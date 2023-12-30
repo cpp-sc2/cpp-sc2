@@ -10,10 +10,10 @@ be of little concern to the consumer.
 
 #include <vector>
 
-#include "sc2api/sc2_action.h"
-#include "sc2api/sc2_common.h"
-#include "sc2api/sc2_data.h"
-#include "sc2api/sc2_unit.h"
+#include "sc2_action.h"
+#include "sc2_common.h"
+#include "sc2_data.h"
+#include "sc2_unit.h"
 
 // Forward declarations to avoid including proto headers everywhere.
 namespace SC2APIProtocol {

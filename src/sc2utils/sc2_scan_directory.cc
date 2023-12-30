@@ -1,4 +1,4 @@
-#include "sc2utils/sc2_scan_directory.h"
+#include "sc2_scan_directory.h"
 
 #include <cassert>
 #include <cstring>

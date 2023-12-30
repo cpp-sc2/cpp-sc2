@@ -1,4 +1,4 @@
-#include "sc2utils/sc2_arg_parser.h"
+#include "sc2_arg_parser.h"
 
 #include <cstring>
 #include <iostream>

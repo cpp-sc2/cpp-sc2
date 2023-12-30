@@ -1,6 +1,4 @@
-#include "sc2lib/sc2_utils.h"
-
-#include "sc2api/sc2_api.h"
+#include "sc2_utils.h"
 
 namespace sc2 {
 

@@ -1,11 +1,11 @@
-#include "sc2api/sc2_replay_observer.h"
+#include "sc2_replay_observer.h"
 
 #include <iostream>
 
-#include "sc2api/sc2_control_interfaces.h"
-#include "sc2api/sc2_game_settings.h"
-#include "sc2api/sc2_interfaces.h"
-#include "sc2api/sc2_proto_to_pods.h"
+#include "sc2_control_interfaces.h"
+#include "sc2_game_settings.h"
+#include "sc2_interfaces.h"
+#include "sc2_proto_to_pods.h"
 
 namespace sc2 {
 

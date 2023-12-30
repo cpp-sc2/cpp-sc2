@@ -1,4 +1,4 @@
-#include "sc2renderer/sc2_renderer.h"
+#include "sc2_renderer.h"
 
 #include <cassert>
 #include <iostream>

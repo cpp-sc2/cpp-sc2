@@ -9,7 +9,7 @@ and override library provided events in ClientEvents.
 
 #pragma once
 
-#include "sc2api/sc2_client.h"
+#include "sc2_client.h"
 
 namespace sc2 {
 

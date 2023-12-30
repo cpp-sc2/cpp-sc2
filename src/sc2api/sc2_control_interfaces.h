@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "sc2api/sc2_client.h"
-#include "sc2api/sc2_data.h"
-#include "sc2api/sc2_game_settings.h"
-#include "sc2api/sc2_proto_interface.h"
+#include "sc2_client.h"
+#include "sc2_data.h"
+#include "sc2_game_settings.h"
+#include "sc2_proto_interface.h"
 
 namespace sc2 {
 

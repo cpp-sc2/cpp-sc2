@@ -1,4 +1,4 @@
-#include "sc2utils/sc2_manage_process.h"
+#include "sc2_manage_process.h"
 
 #include <stdio.h>
 
@@ -9,7 +9,7 @@
 #include <iostream>
 #include <thread>
 
-#include "sc2utils/sc2_scan_directory.h"
+#include "sc2_scan_directory.h"
 
 #if defined(_WIN32)
 

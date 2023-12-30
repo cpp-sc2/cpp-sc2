@@ -1,4 +1,4 @@
-#include "sc2api/sc2_action.h"
+#include "sc2_action.h"
 
 #include <cassert>
 #include <iostream>

@@ -8,7 +8,7 @@ utility located at https://github.com/cpp-sc2/codegen
 
 #pragma once
 
-#include "sc2api/sc2_types.h"
+#include "sc2_types.h"
 
 namespace sc2 {
 enum class UNIT_TYPEID;

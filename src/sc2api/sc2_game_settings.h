@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "sc2api/sc2_gametypes.h"
+#include "sc2_gametypes.h"
 
 namespace sc2 {
 

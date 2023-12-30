@@ -1,4 +1,4 @@
-#include "sc2api/sc2_map_info.h"
+#include "sc2_map_info.h"
 
 #include <fstream>
 
