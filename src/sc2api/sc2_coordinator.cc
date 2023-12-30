@@ -1,4 +1,4 @@
-#include "sc2api/sc2_coordinator.h"
+#include "sc2_coordinator.h"
 
 #include <algorithm>
 #include <cassert>
@@ -7,12 +7,12 @@
 #include <thread>
 
 #include "s2clientprotocol/sc2api.pb.h"
-#include "sc2api/sc2_agent.h"
-#include "sc2api/sc2_args.h"
-#include "sc2api/sc2_control_interfaces.h"
-#include "sc2api/sc2_errors.h"
-#include "sc2api/sc2_interfaces.h"
-#include "sc2api/sc2_replay_observer.h"
+#include "sc2_agent.h"
+#include "sc2_args.h"
+#include "sc2_control_interfaces.h"
+#include "sc2_errors.h"
+#include "sc2_interfaces.h"
+#include "sc2_replay_observer.h"
 #include "sc2utils/sc2_manage_process.h"
 #include "sc2utils/sc2_scan_directory.h"
 

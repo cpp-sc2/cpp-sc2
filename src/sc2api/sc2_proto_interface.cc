@@ -1,9 +1,9 @@
-#include "sc2api/sc2_proto_interface.h"
+#include "sc2_proto_interface.h"
 
 #include <cassert>
 #include <iostream>
 
-#include "sc2api/sc2_control_interfaces.h"
+#include "sc2_control_interfaces.h"
 
 // This assert reflects a guarantee that each request is matched by the correct response.
 static_assert(

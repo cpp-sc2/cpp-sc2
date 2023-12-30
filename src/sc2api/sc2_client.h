@@ -11,7 +11,7 @@ both inherit from Client.
 #include <string>
 #include <vector>
 
-#include "sc2api/sc2_typeenums.h"
+#include "sc2_typeenums.h"
 
 namespace sc2 {
 

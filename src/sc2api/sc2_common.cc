@@ -1,4 +1,4 @@
-#include "sc2api/sc2_common.h"
+#include "sc2_common.h"
 
 #include <random>
 #include <thread>

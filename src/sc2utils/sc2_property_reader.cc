@@ -1,4 +1,4 @@
-#include "sc2utils/sc2_property_reader.h"
+#include "sc2_property_reader.h"
 
 #include <fstream>
 #include <iostream>

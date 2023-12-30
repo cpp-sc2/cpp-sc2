@@ -1,9 +1,9 @@
-#include "sc2api/sc2_proto_to_pods.h"
+#include "sc2_proto_to_pods.h"
 
 #include <cassert>
 #include <iostream>
 
-#include "sc2api/sc2_unit_filters.h"
+#include "sc2_unit_filters.h"
 
 namespace sc2 {
 

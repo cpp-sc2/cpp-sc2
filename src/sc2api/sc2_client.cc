@@ -1,4 +1,4 @@
-#include "sc2api/sc2_client.h"
+#include "sc2_client.h"
 
 #include <algorithm>
 #include <cassert>
@@ -8,12 +8,12 @@
 #include <unordered_map>
 
 #include "s2clientprotocol/sc2api.pb.h"
-#include "sc2api/sc2_common.h"
-#include "sc2api/sc2_control_interfaces.h"
-#include "sc2api/sc2_game_settings.h"
-#include "sc2api/sc2_interfaces.h"
-#include "sc2api/sc2_proto_interface.h"
-#include "sc2api/sc2_proto_to_pods.h"
+#include "sc2_common.h"
+#include "sc2_control_interfaces.h"
+#include "sc2_game_settings.h"
+#include "sc2_interfaces.h"
+#include "sc2_proto_interface.h"
+#include "sc2_proto_to_pods.h"
 #include "sc2utils/sc2_manage_process.h"
 
 namespace {

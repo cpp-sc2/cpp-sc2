@@ -1,4 +1,4 @@
-#include "sc2api/sc2_args.h"
+#include "sc2_args.h"
 
 #include <cassert>
 #include <cstdlib>

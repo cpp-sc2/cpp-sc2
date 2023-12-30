@@ -1,8 +1,8 @@
-#include "sc2api/sc2_agent.h"
+#include "sc2_agent.h"
 
-#include "sc2api/sc2_control_interfaces.h"
-#include "sc2api/sc2_interfaces.h"
-#include "sc2api/sc2_unit.h"
+#include "sc2_control_interfaces.h"
+#include "sc2_interfaces.h"
+#include "sc2_unit.h"
 
 namespace sc2 {
 

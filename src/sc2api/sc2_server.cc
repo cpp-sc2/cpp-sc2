@@ -1,4 +1,4 @@
-#include "sc2api/sc2_server.h"
+#include "sc2_server.h"
 
 #include <cstring>
 #include <iostream>

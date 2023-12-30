@@ -1,4 +1,4 @@
-#include "sc2api/sc2_score.h"
+#include "sc2_score.h"
 
 #include <cassert>
 #include <iostream>

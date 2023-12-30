@@ -1,4 +1,4 @@
-#include "sc2api/sc2_connection.h"
+#include "sc2_connection.h"
 
 #include <cassert>
 #include <chrono>

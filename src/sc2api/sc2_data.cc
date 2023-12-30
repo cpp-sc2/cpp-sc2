@@ -1,11 +1,11 @@
-#include "sc2api/sc2_data.h"
+#include "sc2_data.h"
 
 #include <cassert>
 #include <iostream>
 
 #include "s2clientprotocol/sc2api.pb.h"
-#include "sc2api/sc2_interfaces.h"
-#include "sc2api/sc2_proto_to_pods.h"
+#include "sc2_interfaces.h"
+#include "sc2_proto_to_pods.h"
 
 // TODO: Fill out the log functions
 

@@ -1,4 +1,4 @@
-#include "sc2api/sc2_game_settings.h"
+#include "sc2_game_settings.h"
 
 namespace sc2 {
 
