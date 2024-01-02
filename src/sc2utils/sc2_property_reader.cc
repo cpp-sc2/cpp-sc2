@@ -5,10 +5,7 @@
 
 namespace sc2 {
 
-PropertyReader::PropertyReader() : file_read_(false) {
-}
-
-PropertyReader::PropertyReader(const std::string& file_name) : file_read_(false) {
+PropertyReader::PropertyReader(const std::string& file_name) {
     LoadFile(file_name);
 }
 
@@ -30,27 +27,30 @@ bool PropertyReader::LoadFile(const std::string& file_name) {
     while (std::getline(file, line)) {
         // If first character on line is # assume comment, if it's blank assume malformed/incorrect/empty line and skip
         // it
-        if (line[0] == '#' || line[0] == ' ' || line.empty() || line.length() < 2)
+        if (line[0] == '#' || line[0] == ' ' || line.empty() || line.length() < 2) {
             continue;
+        }
 
         std::string key;
         std::string value;
         unsigned int index = 0;
-        size_t equal_index = line.find_first_of('=');
+        const size_t equal_index = line.find_first_of('=');
         // Extract key
         for (; index < equal_index; ++index) {
             // Spaces are allowed in key except in the last character
-            if (index == equal_index - 1 && line[index] == ' ')
+            if (index == equal_index - 1 && line[index] == ' ') {
                 continue;
+            }
 
             key += line[index];
         }
 
         // Extract value
-        for (index = (unsigned int)equal_index + 1; index < line.size(); ++index) {
+        for (index = static_cast<unsigned int>(equal_index) + 1; index < line.size(); ++index) {
             // Spaces are allowed in value except in the first character
-            if (index == equal_index + 1 && line[index] == ' ')
+            if (index == equal_index + 1 && line[index] == ' ') {
                 continue;
+            }
 
             value += line[index];
         }
@@ -65,13 +65,13 @@ void PropertyReader::Free() {
     properties_.clear();
 }
 
-bool PropertyReader::Read(const std::string& key, std::function<void(const std::string& v)> convert) {
+bool PropertyReader::Read(const std::string& key, const std::function<void(const std::string& v)>& convert) {
     if (properties_.empty()) {
         std::cerr << "No properties file loaded" << std::endl;
         return false;
     }
 
-    ConstMapIterator it = properties_.find(key);
+    auto it = properties_.find(key);
     if (it != properties_.end()) {
         convert(it->second);
         return true;

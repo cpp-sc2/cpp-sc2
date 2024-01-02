@@ -19,13 +19,10 @@ SDL_Rect CreateRect(int x, int y, int w, int h) {
 }
 }  // namespace
 
-namespace sc2 {
-
-namespace renderer {
+namespace sc2::renderer {
 
 void Initialize(const char* title, int x, int y, int w, int h, unsigned int flags) {
-    int init_result = SDL_Init(SDL_INIT_VIDEO);
-    if (init_result) {
+    if (SDL_Init(SDL_INIT_VIDEO)) {
         const char* error = SDL_GetError();
         std::cerr << "SDL_Init failed with error: " << error << std::endl;
         exit(1);
@@ -142,7 +139,7 @@ void ImageRGB(const char* bytes, int width, int height, int off_x, int off_y) {
     SDL_FreeSurface(surface);
 
     SDL_Rect dstRect = CreateRect(off_x, off_y, width, height);
-    SDL_RenderCopy(renderer_, texture, NULL, &dstRect);
+    SDL_RenderCopy(renderer_, texture, nullptr, &dstRect);
 
     SDL_DestroyTexture(texture);
 }
@@ -162,6 +159,4 @@ void Render() {
     SDL_RenderClear(renderer_);
 }
 
-}  // namespace renderer
-
-}  // namespace sc2
+}  // namespace sc2::renderer

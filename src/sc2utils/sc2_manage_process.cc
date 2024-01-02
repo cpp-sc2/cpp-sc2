@@ -74,8 +74,9 @@ bool DoesFileExist(const std::string& path) {
 }
 
 bool HasExtension(const std::string& map_name, const std::string& extention) {
-    if (map_name.size() < extention.size())
+    if (map_name.size() < extention.size()) {
         return false;
+    }
 
     return std::equal(map_name.end() - extention.size(), map_name.end(), extention.begin(), extention.end(),
                       [](char a, char b) { return tolower(a) == tolower(b); });
@@ -382,7 +383,7 @@ uint64_t StartProcess(const std::string& process_path, const std::vector<std::st
     std::vector<char*> char_list;
     // execve expects the process path to be the first argument in the list.
     char_list.push_back(const_cast<char*>(process_path.c_str()));
-    for (auto& s : command_line) {
+    for (const auto& s : command_line) {
         char_list.push_back(const_cast<char*>(s.c_str()));
     }
 
@@ -390,7 +391,7 @@ uint64_t StartProcess(const std::string& process_path, const std::vector<std::st
     char_list.push_back(nullptr);
 
     // Start the process.
-    pid_t p = fork();
+    const pid_t p = fork();
     if (p == 0) {
         if (execve(char_list[0], &char_list[0], nullptr) == -1) {
             std::cerr << "Failed to execute process " << char_list[0] << " error: " << strerror(errno) << std::endl;
@@ -404,9 +405,9 @@ uint64_t StartProcess(const std::string& process_path, const std::vector<std::st
     memset(&action, 0, sizeof(struct sigaction));
     // Kill process started by this process of SIGTERM and SIGSEGV.
     action.sa_handler = KillRunningProcesses;
-    sigaction(SIGTERM, &action, NULL);
-    sigaction(SIGSEGV, &action, NULL);
-    sigaction(SIGINT, &action, NULL);
+    sigaction(SIGTERM, &action, nullptr);
+    sigaction(SIGSEGV, &action, nullptr);
+    sigaction(SIGINT, &action, nullptr);
 
     AddPid(p);
 
@@ -424,8 +425,9 @@ bool IsProcessRunning(uint64_t process_id) {
     }
     return true;
 #else
-    if (process_id == 0)
+    if (process_id == 0) {
         return false;
+    }
 
     return kill(process_id, 0) != -1;
 #endif
@@ -446,15 +448,14 @@ bool IsInDebugger() {
 #endif
 
 bool PollKeyPress() {
-    if (_kbhit())
-        return true;
-    // TODO: Consume the character.
-    return false;
+    // TODO (?): Consume the character.
+    return _kbhit();
 }
 
 bool FindLatestExe(std::string& path) {
-    if (path.length() < 4)
+    if (path.length() < 4) {
         return false;
+    }
 
     static const char VersionsFolder[] = "Versions\\";
     static std::size_t BaseFolderNameLen = 10;  // "Base00000\"
@@ -474,7 +475,7 @@ bool FindLatestExe(std::string& path) {
     // Get a list of all subfolders.
     std::vector<std::string> subfolders;
     scan_directory(versions_path.c_str(), subfolders, true, true);
-    if (subfolders.size() < 1) {
+    if (subfolders.empty()) {
         return DoesFileExist(path);
     }
 
@@ -482,7 +483,7 @@ bool FindLatestExe(std::string& path) {
     std::sort(subfolders.begin(), subfolders.end());
 
     for (int folder_index = static_cast<int>(subfolders.size()) - 1; folder_index >= 0; --folder_index) {
-        std::string test_path = subfolders[folder_index] + "\\" + exe_name;
+        const std::string test_path = subfolders[folder_index] + "\\" + exe_name;
         if (DoesFileExist(test_path)) {
             path = test_path;
             return true;
@@ -499,17 +500,20 @@ bool FindBaseExe(std::string& path, uint32_t base_build) {
     std::string new_num = std::to_string(base_build);
 
     auto folder_start = new_path.find(base_folder);
-    if (folder_start == std::string::npos)
+    if (folder_start == std::string::npos) {
         return false;
+    }
 
     auto num_start = folder_start + base_folder.size();
     auto num_end = num_start + new_num.size();
-    if (num_end > new_path.size())
+    if (num_end > new_path.size()) {
         return false;
+    }
 
     new_path.replace(new_path.begin() + num_start, new_path.begin() + num_end, new_num.begin(), new_num.end());
-    if (!DoesFileExist(new_path))
+    if (!DoesFileExist(new_path)) {
         return false;
+    }
 
     path = new_path;
     return true;

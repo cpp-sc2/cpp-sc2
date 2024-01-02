@@ -49,15 +49,15 @@ bool Point3D::operator!=(const Point3D& rhs) const {
 }
 
 Point3D operator+(const Point3D& lhs, const Point3D& rhs) {
-    return Point3D(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+    return {lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z};
 }
 
 Point3D operator-(const Point3D& lhs, const Point3D& rhs) {
-    return Point3D(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+    return {lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z};
 }
 
 Point3D operator*(const Point3D& lhs, float rhs) {
-    return Point3D(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs);
+    return {lhs.x * rhs, lhs.y * rhs, lhs.z * rhs};
 }
 
 Point3D operator*(float lhs, const Point3D& rhs) {
@@ -65,7 +65,7 @@ Point3D operator*(float lhs, const Point3D& rhs) {
 }
 
 Point3D operator/(const Point3D& lhs, float rhs) {
-    return Point3D(lhs.x / rhs, lhs.y / rhs, lhs.z / rhs);
+    return {lhs.x / rhs, lhs.y / rhs, lhs.z / rhs};
 }
 
 Point3D operator/(float lhs, const Point3D& rhs) {
@@ -105,15 +105,15 @@ bool Point2D::operator!=(const Point2D& rhs) const {
 }
 
 Point2D operator+(const Point2D& lhs, const Point2D& rhs) {
-    return Point2D(lhs.x + rhs.x, lhs.y + rhs.y);
+    return {lhs.x + rhs.x, lhs.y + rhs.y};
 }
 
 Point2D operator-(const Point2D& lhs, const Point2D& rhs) {
-    return Point2D(lhs.x - rhs.x, lhs.y - rhs.y);
+    return {lhs.x - rhs.x, lhs.y - rhs.y};
 }
 
 Point2D operator*(const Point2D& lhs, float rhs) {
-    return Point2D(lhs.x * rhs, lhs.y * rhs);
+    return {lhs.x * rhs, lhs.y * rhs};
 }
 
 Point2D operator*(float lhs, const Point2D& rhs) {
@@ -121,7 +121,7 @@ Point2D operator*(float lhs, const Point2D& rhs) {
 }
 
 Point2D operator/(const Point2D& lhs, float rhs) {
-    return Point2D(lhs.x / rhs, lhs.y / rhs);
+    return {lhs.x / rhs, lhs.y / rhs};
 }
 
 Point2D operator/(float lhs, const Point2D& rhs) {
@@ -149,7 +149,7 @@ bool Rect2DI::Contain(const sc2::Point2DI& point) const {
 }
 
 struct RandomGenerator {
-    RandomGenerator() : rd(), mt(rd()) {
+    RandomGenerator() : mt(rd()) {
     }
     std::random_device rd;
     std::mt19937 mt;
@@ -163,12 +163,12 @@ static std::mt19937& GetGenerator() {
 }
 
 float GetRandomScalar() {
-    static std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+    static std::uniform_real_distribution<float> dist(-1.0F, 1.0F);
     return dist(GetGenerator());
 }
 
 float GetRandomFraction() {
-    static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    static std::uniform_real_distribution<float> dist(0.0F, 1.0F);
     return dist(GetGenerator());
 }
 
@@ -178,12 +178,12 @@ int GetRandomInteger(int min, int max) {
 }
 
 float Distance2D(const Point2D& a, const Point2D& b) {
-    Point2D diff = a - b;
+    const Point2D diff = a - b;
     return std::sqrt(Dot2D(diff, diff));
 }
 
 float DistanceSquared2D(const Point2D& a, const Point2D& b) {
-    Point2D diff = a - b;
+    const Point2D diff = a - b;
     return Dot2D(diff, diff);
 }
 
@@ -196,12 +196,12 @@ float Dot2D(const Point2D& a, const Point2D& b) {
 }
 
 float Distance3D(const Point3D& a, const Point3D& b) {
-    Point3D diff = a - b;
+    const Point3D diff = a - b;
     return std::sqrt(Dot3D(diff, diff));
 }
 
 float DistanceSquared3D(const Point3D& a, const Point3D& b) {
-    Point3D diff = a - b;
+    const Point3D diff = a - b;
     return Dot3D(diff, diff);
 }
 

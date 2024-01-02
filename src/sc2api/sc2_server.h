@@ -19,12 +19,11 @@ class Response;
 
 namespace sc2 {
 
-typedef std::pair<struct mg_connection*, SC2APIProtocol::Request*> RequestData;
-typedef std::pair<struct mg_connection*, SC2APIProtocol::Response*> ResponseData;
+using RequestData = std::pair<struct mg_connection*, SC2APIProtocol::Request*>;
+using ResponseData = std::pair<struct mg_connection*, SC2APIProtocol::Response*>;
 
 class Server {
 public:
-    Server();
     ~Server();
 
     bool Listen(const char* listeningPorts, const char* requestTimeoutMs, const char* websocketTimeoutMs,

@@ -20,8 +20,7 @@ template <class T>
 class SC2Type {
 public:
     //! Default constructor.
-    SC2Type() : type_id_(0) {
-    }
+    SC2Type() = default;
     //! Construct from an integer, corresponds to the enum value.
     SC2Type(uint32_t type_id) : type_id_(type_id) {
     }
@@ -75,13 +74,13 @@ public:
 
     //! Determines if the value contained is valid.
     //!< \return 'true' if the value is valid.
-    bool IsValid() const {
+    [[nodiscard]] bool IsValid() const {
         return type_id_ != 0;
     }
 
     //! String of the integer value.
     //!< \return The string of the value.
-    std::string to_string() const {
+    [[nodiscard]] std::string to_string() const {
         return std::to_string(type_id_);
     }
 
@@ -92,7 +91,7 @@ public:
     }
 
 private:
-    uint32_t type_id_;
+    uint32_t type_id_ = 0;
 };
 
 }  // namespace sc2

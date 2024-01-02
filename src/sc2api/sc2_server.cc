@@ -92,9 +92,6 @@ static void SendMessage(mg_connection* conn, std::queue<T>& message_queue) {
     delete message;
 }
 
-Server::Server() {
-}
-
 Server::~Server() {
     mg_stop(mg_context_);
 }
@@ -153,14 +150,14 @@ void Server::SendResponse(struct mg_connection* conn) {
 
 bool Server::HasRequest() {
     request_mutex_.lock();
-    bool empty = requests_.empty();
+    const bool empty = requests_.empty();
     request_mutex_.unlock();
     return !empty;
 }
 
 bool Server::HasResponse() {
     response_mutex_.lock();
-    bool empty = responses_.empty();
+    const bool empty = responses_.empty();
     response_mutex_.unlock();
     return !empty;
 }

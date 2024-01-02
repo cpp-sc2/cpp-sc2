@@ -15,8 +15,8 @@ struct Arg {
 
 class ArgParser {
 public:
-    ArgParser();
-    ArgParser(const std::string& executable_name);
+    ArgParser() = default;
+    explicit ArgParser(const std::string& executable_name);
     ArgParser(const std::string& usage, const std::string& description, const std::string& example = "");
 
     void AddOptions(const std::vector<Arg>& options);

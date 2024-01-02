@@ -7,7 +7,6 @@ file(WRITE "sc2_typeenums.h"
 )
 
 set(sc2api_sources
-    sc2_action.cc
     sc2_action.h
     sc2_agent.cc
     sc2_agent.h

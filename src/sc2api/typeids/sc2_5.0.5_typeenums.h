@@ -17,11 +17,11 @@ enum class UPGRADE_ID;
 enum class BUFF_ID;
 enum class EFFECT_ID;
 
-typedef SC2Type<UNIT_TYPEID> UnitTypeID;
-typedef SC2Type<ABILITY_ID> AbilityID;
-typedef SC2Type<UPGRADE_ID> UpgradeID;
-typedef SC2Type<BUFF_ID> BuffID;
-typedef SC2Type<EFFECT_ID> EffectID;
+using UnitTypeID = SC2Type<UNIT_TYPEID>;
+using AbilityID = SC2Type<ABILITY_ID>;
+using UpgradeID = SC2Type<UPGRADE_ID>;
+using BuffID = SC2Type<BUFF_ID>;
+using EffectID = SC2Type<EFFECT_ID>;
 
 enum class UNIT_TYPEID {
     ABANDONEDBUILDING = 1720,

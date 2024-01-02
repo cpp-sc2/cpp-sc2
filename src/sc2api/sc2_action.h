@@ -23,18 +23,15 @@ struct ActionRaw {
     };
 
     //! The ID of the ability to invoke.
-    AbilityID ability_id;
+    AbilityID ability_id = 0;
     //! Units this action applies to. In normal use, this would be the currently selected units.
     std::vector<Tag> unit_tags;
     //! Which target fields are valid.
-    TargetType target_type;
+    TargetType target_type = TargetNone;
     //! The target of this action. Valid only when target_type == TargetUnitTag.
-    Tag target_tag;
+    Tag target_tag = NullTag;
     //! The target point for this action. Valid only when target_type == TargetPosition.
     Point2D target_point;
-
-    //! Constructor.
-    ActionRaw();
 
     //! Comparison overload.
 
@@ -58,7 +55,7 @@ struct ActionRaw {
     }
 };
 
-typedef std::vector<ActionRaw> RawActions;
+using RawActions = std::vector<ActionRaw>;
 
 //! An action (command or ability) applied to selected units when using feature layers or the rendered interface.
 struct SpatialUnitCommand {

@@ -7,8 +7,8 @@
 
 namespace sc2 {
 
-typedef MessageResponsePtr<SC2APIProtocol::Score> ScorePtr;
-typedef MessageResponsePtr<SC2APIProtocol::ScoreDetails> ScoreDestailsPtr;
+using ScorePtr = MessageResponsePtr<SC2APIProtocol::Score>;
+using ScoreDestailsPtr = MessageResponsePtr<SC2APIProtocol::ScoreDetails>;
 
 bool Convert(const SC2APIProtocol::VitalScoreDetails& details_proto, VitalScoreDetails& vital_score_details) {
     vital_score_details.life = details_proto.life();
@@ -121,8 +121,7 @@ bool Convert(const ObservationPtr& observation_ptr, Score& score) {
     }
 
     score.score_type = score_ptr->has_score_type() ? ScoreType(score_ptr->score_type()) : ScoreType::Melee;
-    int32_t score_i = score_ptr->score();
-    score.score = float(score_i);
+    score.score = static_cast<float>(score_ptr->score());
 
     Convert(score_ptr, score.score_details);
 
@@ -333,7 +332,7 @@ bool Convert(const SC2APIProtocol::ImageData& image, ImageData& data) {
     data.bits_per_pixel = image.bits_per_pixel();
     data.data = image.data();
 
-    int expectedSizeBits = data.width * data.height * data.bits_per_pixel;
+    const int expectedSizeBits = data.width * data.height * data.bits_per_pixel;
     return expectedSizeBits > 0 && data.data.size() * 8 == expectedSizeBits;
 }
 
@@ -391,10 +390,11 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
             action.target_point.y = action_raw_command.target_world_space_pos().y();
         }
 
-        for (int j = 0; j < action_raw_command.unit_tags_size(); ++j)
+        for (int j = 0; j < action_raw_command.unit_tags_size(); ++j) {
             action.unit_tags.push_back(action_raw_command.unit_tags(j));
+        }
 
-        // TODO: Add optional target positions.
+        // TODO (?): Add optional target positions.
         // optional Point target_world_space_pos = 2;
 
         actions.push_back(action);
@@ -451,8 +451,9 @@ static void ConvertSpatialAction(const SC2APIProtocol::ActionSpatial& action_pro
         SpatialSelectPoint select;
         select.select_screen.x = action_select.selection_screen_coord().x();
         select.select_screen.y = action_select.selection_screen_coord().y();
-        if (!Convert(action_select.type(), select.type))
+        if (!Convert(action_select.type(), select.type)) {
             return;
+        }
 
         actions.select_points.push_back(select);
     } else if (action_proto.has_unit_selection_rect()) {
