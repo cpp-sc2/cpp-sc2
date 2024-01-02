@@ -7,11 +7,8 @@
 
 namespace sc2 {
 
-Unit::Unit() {
-}
-
 bool Unit::IsBuildFinished() const {
-    return build_progress >= 1.0f;
+    return build_progress >= 1.0F;
 }
 
 Tags ConvertToTags(const Units& units) {
@@ -72,7 +69,7 @@ void UnitPool::MarkDead(Tag tag) {
 }
 
 void UnitPool::ForEachExistingUnit(const std::function<void(Unit& unit)>& functor) const {
-    for (auto& u : tag_to_existing_unit_) {
+    for (const auto& u : tag_to_existing_unit_) {
         assert(u.second);
         functor(*u.second);
     }

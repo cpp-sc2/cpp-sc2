@@ -464,7 +464,7 @@ const Buffs& ObservationImp::GetBuffData(bool force_refresh) const {
 }
 
 const Effects& ObservationImp::GetEffectData(bool force_refresh) const {
-    if (force_refresh || effect_ids_.size() < 1) {
+    if (force_refresh || effect_ids_.empty()) {
         effects_cached_ = false;
     }
 
@@ -482,7 +482,7 @@ const Effects& ObservationImp::GetEffectData(bool force_refresh) const {
         return effect_ids_;
     }
 
-    GameResponsePtr response = control_.WaitForResponse();
+    const GameResponsePtr response = control_.WaitForResponse();
     ResponseDataPtr response_data;
     SET_MESSAGE_RESPONSE(response_data, response, data);
     if (response_data.HasErrors()) {
@@ -514,7 +514,7 @@ const GameInfo& ObservationImp::GetGameInfo() const {
         return game_info_;
     }
 
-    GameResponsePtr response = control_.WaitForResponse();
+    const GameResponsePtr response = control_.WaitForResponse();
     ResponseGameInfoPtr response_game_info;
     SET_MESSAGE_RESPONSE(response_game_info, response, game_info);
     if (response_game_info.HasErrors()) {
@@ -613,7 +613,7 @@ bool ObservationImp::UpdateObservation() {
     }
 
     chat_.clear();
-    for (auto& message : response_->chat()) {
+    for (const auto& message : response_->chat()) {
         chat_.push_back({message.player_id(), message.message()});
     }
 
@@ -713,8 +713,8 @@ AvailableAbilities QueryImp::GetAbilitiesForUnit(const Unit* unit, bool ignore_r
     std::vector<AvailableAbilities> available_abilities =
         GetAbilitiesForUnits({unit}, ignore_resource_requirements, use_generalized_ability_id);
     control_.ErrorIf(available_abilities.empty(), ClientError::NoAbilitiesForTag);
-    if (available_abilities.size() < 1) {
-        return AvailableAbilities();
+    if (available_abilities.empty()) {
+        return {};
     }
     return available_abilities[0];
 }
@@ -743,7 +743,7 @@ std::vector<AvailableAbilities> QueryImp::GetAbilitiesForUnits(const Units& unit
     }
 
     // Process the response.
-    GameResponsePtr response = control_.WaitForResponse();
+    const GameResponsePtr response = control_.WaitForResponse();
     if (!response.get()) {
         return available_abilities_out;
     }
@@ -824,18 +824,18 @@ std::vector<float> QueryImp::PathingDistance(const std::vector<PathingQuery>& qu
     }
 
     if (!proto_.SendRequest(request)) {
-        return std::vector<float>(queries.size(), 0.0f);
+        return std::vector<float>(queries.size(), 0.0F);
     }
 
-    GameResponsePtr response = control_.WaitForResponse();
+    const GameResponsePtr response = control_.WaitForResponse();
     ResponseQueryPtr response_query;
     SET_MESSAGE_RESPONSE(response_query, response, query);
     if (response_query.HasErrors()) {
-        return std::vector<float>(queries.size(), 0.0f);
+        return std::vector<float>(queries.size(), 0.0F);
     }
 
     if (response_query->pathing_size() != queries.size()) {
-        return std::vector<float>(queries.size(), 0.0f);
+        return std::vector<float>(queries.size(), 0.0F);
     }
 
     std::vector<float> distances;
@@ -843,8 +843,7 @@ std::vector<float> QueryImp::PathingDistance(const std::vector<PathingQuery>& qu
 
     for (int i = 0; i < response_query->pathing_size(); ++i) {
         const SC2APIProtocol::ResponseQueryPathing& result = response_query->pathing(i);
-        float distance = result.distance();
-        distances.push_back(distance);
+        distances.push_back(result.distance());
     }
 
     return distances;
@@ -882,7 +881,7 @@ std::vector<bool> QueryImp::Placement(const std::vector<PlacementQuery>& queries
         return std::vector<bool>(queries.size(), false);
     }
 
-    GameResponsePtr response = control_.WaitForResponse();
+    const GameResponsePtr response = control_.WaitForResponse();
     ResponseQueryPtr response_query;
     SET_MESSAGE_RESPONSE(response_query, response, query);
     if (response_query.HasErrors()) {
@@ -1020,7 +1019,7 @@ DebugImp::DebugImp(ProtoInterface& proto, ObservationInterface& observation, Con
       endgame_surrender_(false),
       endgame_victory_(false),
       set_score_(false),
-      score_(0.0f) {
+      score_(0.0F) {
 }
 
 void DebugImp::DebugTextOut(const std::string& out, Color color) {
@@ -1144,8 +1143,9 @@ void DebugImp::DebugEndGame(bool victory) {
 }
 
 void DebugImp::DebugSetEnergy(float value, const Unit* unit) {
-    if (!unit)
+    if (!unit) {
         return;
+    }
     DebugSetUnitValue unit_value;
     unit_value.unit_value = DebugSetUnitValue::UnitValue::Energy;
     unit_value.value = value;
@@ -1154,8 +1154,9 @@ void DebugImp::DebugSetEnergy(float value, const Unit* unit) {
 }
 
 void DebugImp::DebugSetLife(float value, const Unit* unit) {
-    if (!unit)
+    if (!unit) {
         return;
+    }
     DebugSetUnitValue unit_value;
     unit_value.unit_value = DebugSetUnitValue::UnitValue::Life;
     unit_value.value = value;
@@ -1164,8 +1165,9 @@ void DebugImp::DebugSetLife(float value, const Unit* unit) {
 }
 
 void DebugImp::DebugSetShields(float value, const Unit* unit) {
-    if (!unit)
+    if (!unit) {
         return;
+    }
     DebugSetUnitValue unit_value;
     unit_value.unit_value = DebugSetUnitValue::UnitValue::Shields;
     unit_value.value = value;
@@ -1183,8 +1185,9 @@ void DebugImp::DebugCreateUnit(UnitTypeID unit_type, const Point2D& p, uint32_t 
 }
 
 void DebugImp::DebugKillUnit(const Unit* unit) {
-    if (!unit)
+    if (!unit) {
         return;
+    }
     debug_kill_tag_.push_back(unit->tag);
 }
 
@@ -1322,11 +1325,11 @@ void DebugImp::SendDebug() {
         create_unit->set_quantity(unit.count);
     }
 
-    if (debug_kill_tag_.size() > 0) {
+    if (!debug_kill_tag_.empty()) {
         SC2APIProtocol::DebugCommand* command = request_debug->add_debug();
         SC2APIProtocol::DebugKillUnit* debug_kill_unit = command->mutable_kill_unit();
-        for (std::size_t i = 0; i < debug_kill_tag_.size(); ++i) {
-            debug_kill_unit->add_tag(debug_kill_tag_[i]);
+        for (auto tag : debug_kill_tag_) {
+            debug_kill_unit->add_tag(tag);
         }
     }
 
@@ -1343,7 +1346,7 @@ void DebugImp::SendDebug() {
         set_score->set_score(score_);
     }
     set_score_ = false;
-    score_ = 0.0f;
+    score_ = 0.0F;
 
     if (endgame_surrender_) {
         SC2APIProtocol::DebugCommand* command = request_debug->add_debug();
@@ -1397,7 +1400,7 @@ void DebugImp::SendDebug() {
 class ControlImp : public ControlInterface {
 public:
     explicit ControlImp(sc2::Client& client);
-    ~ControlImp();
+    ~ControlImp() override;
 
     sc2::Client& client_;
     AppState app_state_;
@@ -1561,7 +1564,7 @@ bool ControlImp::RemoteSaveMap(const void* data, int data_size, std::string remo
     }
 
     // Response.
-    GameResponsePtr response = WaitForResponse();
+    const GameResponsePtr response = WaitForResponse();
     if (!response.get()) {
         return false;
     }
@@ -1605,7 +1608,7 @@ void ControlImp::ResolveMap(const std::string& map_name, SC2APIProtocol::Request
     }
 
     // Relative path - Game maps directory
-    std::string game_relative = GetGameMapsDirectory(pi_.process_path) + map_name;
+    const std::string game_relative = GetGameMapsDirectory(pi_.process_path) + map_name;
     if (DoesFileExist(game_relative)) {
         local_map->set_map_path(map_name);
         return;
@@ -1641,7 +1644,7 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
         return false;
     }
 
-    GameResponsePtr response = WaitForResponse();
+    const GameResponsePtr response = WaitForResponse();
     if (!response.get()) {
         return false;
     }
@@ -1763,11 +1766,7 @@ bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& set
         minimap_resolution->set_y(settings.render_settings.minimap_y);
     }
 
-    if (!proto_.SendRequest(request)) {
-        return false;
-    }
-
-    return true;
+    return proto_.SendRequest(request);
 }
 
 bool ControlImp::RequestLeaveGame() {
@@ -1777,11 +1776,7 @@ bool ControlImp::RequestLeaveGame() {
 
     GameRequestPtr request = proto_.MakeRequest();
     request->mutable_leave_game();
-    if (!proto_.SendRequest(request)) {
-        return false;
-    }
-
-    return true;
+    return proto_.SendRequest(request);
 }
 
 bool ControlImp::PollLeaveGame() {
@@ -1801,27 +1796,24 @@ bool ControlImp::PollLeaveGame() {
     }
 
     // Wait for the end response to be received before proceeding.
-    // TODO: Add error handling.
+    // TODO (?): Add error handling.
     WaitForResponse();
     return true;
 }
 
 bool ControlImp::Step(int count) {
-    if (app_state_ != AppState::normal)
+    if (app_state_ != AppState::normal) {
         return false;
+    }
 
     GameRequestPtr request = proto_.MakeRequest();
     SC2APIProtocol::RequestStep* step = request->mutable_step();
     step->set_count(count);
-    if (!proto_.SendRequest(request)) {
-        return false;
-    }
-
-    return true;
+    return proto_.SendRequest(request);
 }
 
 bool ControlImp::WaitStep() {
-    GameResponsePtr response = WaitForResponse();
+    const GameResponsePtr response = WaitForResponse();
     if (!response.get() || !response->has_step() || response->error_size() > 0) {
         return false;
     }
@@ -1836,14 +1828,14 @@ bool ControlImp::SaveReplay(const std::string& path) {
         return false;
     }
 
-    GameResponsePtr response = WaitForResponse();
+    const GameResponsePtr response = WaitForResponse();
     if (!response.get() || !response->has_save_replay() || response->error_size() > 0) {
         return false;
     }
 
     const SC2APIProtocol::ResponseSaveReplay& response_replay = response->save_replay();
 
-    if (response_replay.data().size() == 0) {
+    if (response_replay.data().empty()) {
         return false;
     }
 
@@ -1905,8 +1897,8 @@ GameResponsePtr ControlImp::WaitForResponse() {
             Error(ClientError::SC2ProtocolTimeout);
         } else {
             // Wait for a ping response. If this fails, the game is unresponsive.
-            // TODO: Implement a timeout parameter for this wait.
-            GameResponsePtr response_ping = proto_.WaitForResponseInternal();
+            // TODO (?): Implement a timeout parameter for this wait.
+            const GameResponsePtr response_ping = proto_.WaitForResponseInternal();
             if (response_ping) {
                 if (proto_.GetLastStatus() == SC2APIProtocol::Status::unknown) {
                     Error(ClientError::SC2UnknownStatus);
@@ -1957,15 +1949,17 @@ AppState ControlImp::GetAppState() const {
 }
 
 bool ControlImp::IsInGame() const {
-    if (app_state_ != AppState::normal)
+    if (app_state_ != AppState::normal) {
         return false;
+    }
 
     return GetLastStatus() == SC2APIProtocol::Status::in_game || GetLastStatus() == SC2APIProtocol::Status::in_replay;
 }
 
 bool ControlImp::IsFinishedGame() const {
-    if (app_state_ != AppState::normal)
+    if (app_state_ != AppState::normal) {
         return true;
+    }
 
     if (IsInGame()) {
         return false;
@@ -1979,16 +1973,17 @@ bool ControlImp::IsFinishedGame() const {
 }
 
 bool ControlImp::IsReadyForCreateGame() const {
-    if (app_state_ != AppState::normal)
+    if (app_state_ != AppState::normal) {
         return false;
+    }
 
     // Make sure the pipes are clear first.
     if (HasResponsePending()) {
         return false;
     }
 
-    // TODO: For multiplayer, it may be possible to be in the ended state but not yet left the game. Must leave the game
-    // before create game can be ready again.
+    // TODO (?): For multiplayer, it may be possible to be in the ended state but not yet left the game. Must leave the
+    // game before create game can be ready again.
     return GetLastStatus() == SC2APIProtocol::Status::launched || GetLastStatus() == SC2APIProtocol::Status::ended;
 }
 
@@ -1997,8 +1992,9 @@ bool ControlImp::HasResponsePending() const {
 }
 
 bool ControlImp::GetObservation() {
-    if (app_state_ != AppState::normal)
+    if (app_state_ != AppState::normal) {
         return false;
+    }
 
     GameRequestPtr request = proto_.MakeRequest();
     request->mutable_observation();
@@ -2006,7 +2002,7 @@ bool ControlImp::GetObservation() {
         return false;
     }
 
-    GameResponsePtr response = WaitForResponse();
+    const GameResponsePtr response = WaitForResponse();
     ResponseObservationPtr response_observation;
     SET_MESSAGE_RESPONSE(response_observation, response, observation);
     if (response_observation.HasErrors()) {
@@ -2016,8 +2012,9 @@ bool ControlImp::GetObservation() {
             std::cerr << "There is no ResponseObservation/message!" << std::endl;
         }
         if (response->error_size() > 0) {
-            for (int i = 0; i < response->error_size(); ++i)
+            for (int i = 0; i < response->error_size(); ++i) {
                 std::cerr << "Error string: " << response->error(i) << std::endl;
+            }
         } else {
             std::cerr << "No error strings in result." << std::endl;
         }
@@ -2041,7 +2038,7 @@ bool ControlImp::GetObservation() {
 
 bool ControlImp::WaitJoinGame() {
     std::cout << "Waiting for the JoinGame response." << std::endl;
-    GameResponsePtr response = WaitForResponse();
+    const GameResponsePtr response = WaitForResponse();
     if (!response.get()) {
         std::cout << "Did not get a JoinGame response." << std::endl;
         return false;
@@ -2068,12 +2065,8 @@ bool ControlImp::PollResponse() {
 }
 
 bool ControlImp::ConsumeResponse() {
-    GameResponsePtr response = WaitForResponse();
-    if (!response.get()) {
-        return false;
-    }
-
-    return true;
+    const GameResponsePtr response = WaitForResponse();
+    return response.get();
 }
 
 void ControlImp::IssueUnitDestroyedEvents() {
@@ -2106,10 +2099,11 @@ void ControlImp::IssueUnitAddedEvents() {
         }
     }
 
-    for (auto unit : observation_imp_->unit_pool_.GetUnitsEnteringVision())
+    for (auto unit : observation_imp_->unit_pool_.GetUnitsEnteringVision()) {
         if (unit->alliance == Unit::Alliance::Enemy && unit->display_type == Unit::DisplayType::Visible) {
             client_.OnUnitEnterVision(unit);
         }
+    }
 }
 
 void ControlImp::IssueUnitDamagedEvents() {
@@ -2124,26 +2118,30 @@ void ControlImp::IssueIdleEvents(const Tags& commands) {
     // executed instantly)
     for (auto t : commands) {
         const auto* unit = unit_pool.GetExistingUnit(t);
-        if (unit && unit->orders.empty())
+        if (unit && unit->orders.empty()) {
             unit_pool.AddUnitIdled(unit);
+        }
     }
 
     // add newly created units (if they are completed)
     for (auto const* u : unit_pool.GetNewUnits()) {
-        if (u->build_progress >= 1.0f && u->orders.empty())
+        if (u->build_progress >= 1.0F && u->orders.empty()) {
             unit_pool.AddUnitIdled(u);
+        }
     }
 
     // send only one idle event for any unit in any frame
-    for (auto const* u : unit_pool.GetIdledUnits())
+    for (auto const* u : unit_pool.GetIdledUnits()) {
         client_.OnUnitIdle(u);
+    }
 }
 
 void ControlImp::IssueBuildingCompletedEvents() {
-    for (auto unit : observation_imp_->unit_pool_.GetCompletedBuildings())
+    for (auto unit : observation_imp_->unit_pool_.GetCompletedBuildings()) {
         if (unit->alliance == Unit::Alliance::Self) {
             client_.OnBuildingConstructionComplete(unit);
         }
+    }
 }
 
 void ControlImp::IssueAlertEvents() {
@@ -2217,7 +2215,7 @@ void ControlImp::OnGameStart() {
 
 void ControlImp::Error(ClientError error, const std::vector<std::string>& errors) {
     // An ConnectionClosed error can come off a civetweb worker thread.
-    std::lock_guard<std::mutex> guard(error_mutex_);
+    const std::lock_guard<std::mutex> guard(error_mutex_);
 
     // Cache all the errors that happen
     client_errors_.push_back(error);
@@ -2241,8 +2239,9 @@ void ControlImp::DumpProtoUsage() {
     std::cout << "******************************************************" << std::endl;
     std::cout << "Protocol use by message type:" << std::endl;
     for (std::size_t i = 0; i < stats.size(); ++i) {
-        if (stats[i] == 0)
+        if (stats[i] == 0) {
             continue;
+        }
 
         std::cout << std::to_string(i) << ": " << std::to_string(stats[i]) << std::endl;
     }
@@ -2281,12 +2280,12 @@ Client::~Client() {
 }
 
 const ObservationInterface* Client::Observation() const {
-    // TODO: Should this return a nullptr if the interface is not valid (e.g., before a game is started)?
+    // TODO (?): Should this return a nullptr if the interface is not valid (e.g., before a game is started)?
     return control_imp_->observation_imp_.get();
 }
 
 QueryInterface* Client::Query() {
-    // TODO: Should this return a nullptr if the interface is not valid (e.g., before a game is started)?
+    // TODO (?): Should this return a nullptr if the interface is not valid (e.g., before a game is started)?
     return control_imp_->query_imp_.get();
 }
 

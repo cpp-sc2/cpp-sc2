@@ -23,12 +23,9 @@ enum class ScoreType {
 
 struct ScoreEntry {
     std::string name;
-    int offset;
-    bool use;
-    bool nonzero;
-
-    ScoreEntry() : offset(0), use(true), nonzero(false) {
-    }
+    int offset = 0;
+    bool use = true;
+    bool nonzero = false;
 };
 
 #define SET_ENTRY_BASE(STRUCTNAME, ENTRYNAME)                             \

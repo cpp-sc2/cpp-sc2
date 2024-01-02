@@ -12,7 +12,7 @@
 namespace sc2 {
 
 template <class Stream>
-bool IsReading(const Stream&) {
+bool IsReading(const Stream& /*stream*/) {
     return typeid(Stream) == typeid(std::ifstream);
 }
 
@@ -28,11 +28,11 @@ static inline void SerializeT(std::ofstream& s, const std::string& t) {
 // Bools.
 static inline void SerializeT(std::ifstream& s, bool& t) {
     std::string linein;
-    if (!std::getline(s, linein))
+    if (!std::getline(s, linein)) {
         return;
+    }
 
-    uint32_t value = std::stoi(linein);
-    t = value == 1;
+    t = std::stoi(linein) == 1;
 }
 
 void inline SerializeT(std::ofstream& s, bool t) {
@@ -47,11 +47,11 @@ void inline SerializeT(std::ofstream& s, bool t) {
 template <typename T>
 void SerializeT(std::ifstream& s, T& t) {
     std::string linein;
-    if (!std::getline(s, linein))
+    if (!std::getline(s, linein)) {
         return;
+    }
 
-    uint32_t value = std::stoi(linein);
-    t = static_cast<T>(value);
+    t = static_cast<T>(std::stoi(linein));
 }
 
 template <typename T>
@@ -61,9 +61,8 @@ void SerializeT(std::ofstream& s, T t) {
 
 static inline void SerializeT(std::ofstream& data_file, const std::set<uint32_t>& s) {
     data_file << std::to_string(s.size()) << std::endl;
-    for (std::set<uint32_t>::const_iterator it = s.begin(); it != s.end(); ++it) {
-        uint32_t value = *it;
-        data_file << std::to_string(value) << std::endl;
+    for (auto it : s) {
+        data_file << std::to_string(it) << std::endl;
     }
 }
 

@@ -22,47 +22,33 @@ class ObservationInterface;
 //! An order that is active on a unit.
 struct UnitOrder {
     //! Ability ID that triggered the order.
-    AbilityID ability_id;
+    AbilityID ability_id = ABILITY_ID::INVALID;
     //! Target unit of the order, if there is one.
-    Tag target_unit_tag;
+    Tag target_unit_tag = NullTag;
     //! Target position of the order, if there is one.
     Point2D target_pos;
     //! Progress of the order.
-    float progress;
-
-    UnitOrder() : ability_id(0), target_unit_tag(NullTag), progress(0.0f) {
-    }
+    float progress = 0.0F;
 };
 
 //! A passenger on a transport.
 struct PassengerUnit {
     //! The tag of the unit in the transport.
-    Tag tag;
+    Tag tag = NullTag;
     //! The health of the unit in the transport.
-    float health;
+    float health = 0.0F;
     //! The max possible health of the unit in the transport.
-    float health_max;
+    float health_max = 0.0F;
     //! The shield of the unit in the transport.
-    float shield;
+    float shield = 0.0F;
     //! The max possible shield of the unit in the transport.
-    float shield_max;
+    float shield_max = 0.0F;
     //! The energy of the unit in the transport.
-    float energy;
+    float energy = 0.0F;
     //! The max possible energy of the unit in the transport.
-    float energy_max;
+    float energy_max = 0.0F;
     //! The type of unit in the transport.
-    UnitTypeID unit_type;
-
-    PassengerUnit()
-        : tag(NullTag),
-          health(0.0f),
-          health_max(0.0f),
-          shield(0.0f),
-          shield_max(0.0f),
-          energy(0.0f),
-          energy_max(0.0f),
-          unit_type(0) {
-    }
+    UnitTypeID unit_type = UNIT_TYPEID::INVALID;
 };
 
 //! A unit. Could be a structure, a worker or a military unit.
@@ -211,15 +197,13 @@ public:
     //! Whether the unit is building or not.
     bool is_building;
 
-    Unit();
-
     //! Whether the unit construction/training completed.
-    bool IsBuildFinished() const;
+    [[nodiscard]] bool IsBuildFinished() const;
 };
 
-typedef std::vector<const Unit*> Units;
-typedef std::vector<Tag> Tags;
-typedef std::unordered_map<Tag, size_t> UnitIdxMap;
+using Units = std::vector<const Unit*>;
+using Tags = std::vector<Tag>;
+using UnitIdxMap = std::unordered_map<Tag, size_t>;
 
 Tags ConvertToTags(const Units& units);
 
@@ -229,33 +213,33 @@ struct UnitDamage {
     float shields;
 };
 
-typedef std::vector<UnitDamage> UnitsDamaged;
+using UnitsDamaged = std::vector<UnitDamage>;
 
 class UnitPool {
 public:
     Unit* CreateUnit(Tag tag);
-    Unit* GetUnit(Tag tag) const;
-    Unit* GetExistingUnit(Tag tag) const;
+    [[nodiscard]] Unit* GetUnit(Tag tag) const;
+    [[nodiscard]] Unit* GetExistingUnit(Tag tag) const;
     void MarkDead(Tag tag);
 
-    // TODO: Change alive -> Exist
+    // TODO(?): Change alive -> Exist
     void ForEachExistingUnit(const std::function<void(Unit& unit)>& functor) const;
     void ClearExisting();
     bool UnitExists(Tag tag);
 
-    const Units& GetNewUnits() const noexcept {
+    [[nodiscard]] const Units& GetNewUnits() const noexcept {
         return units_newly_created_;
     };
-    const Units& GetUnitsEnteringVision() const noexcept {
+    [[nodiscard]] const Units& GetUnitsEnteringVision() const noexcept {
         return units_entering_vision_;
     };
-    const Units& GetCompletedBuildings() const noexcept {
+    [[nodiscard]] const Units& GetCompletedBuildings() const noexcept {
         return buildings_constructed_;
     };
-    const UnitsDamaged& GetDamagedUnits() const noexcept {
+    [[nodiscard]] const UnitsDamaged& GetDamagedUnits() const noexcept {
         return units_damaged_;
     };
-    const std::unordered_set<const Unit*>& GetIdledUnits() const noexcept {
+    [[nodiscard]] const std::unordered_set<const Unit*>& GetIdledUnits() const noexcept {
         return units_idled_;
     };
 
@@ -269,8 +253,9 @@ public:
         buildings_constructed_.push_back(u);
     }
     void AddUnitIdled(const Unit* u) {
-        if (u->alliance == Unit::Alliance::Self)
+        if (u->alliance == Unit::Alliance::Self) {
             units_idled_.insert(u);
+        }
     }
     void AddUnitDamaged(const Unit* u, float health, float shield) {
         units_damaged_.push_back({u, health, shield});
@@ -280,10 +265,9 @@ private:
     void IncrementIndex();
 
     static const size_t ENTRY_SIZE = 1000;
-    typedef std::pair<size_t, size_t> PoolIndex;
     // std::array<Unit, ENTRY_SIZE>
     std::vector<std::vector<Unit> > unit_pool_;
-    PoolIndex available_index_;
+    std::pair<size_t, size_t> available_index_;
     std::unordered_map<Tag, Unit*> tag_to_unit_;
     std::unordered_map<Tag, Unit*> tag_to_existing_unit_;
     Units units_newly_created_;

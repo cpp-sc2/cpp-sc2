@@ -5,15 +5,11 @@
 
 namespace sc2 {
 
-ArgParser::ArgParser() : options_(), usage_(), description_(), example_(), executable_name_() {
-}
-
-ArgParser::ArgParser(const std::string& executable_name)
-    : options_(), usage_(), description_(), example_(), executable_name_(executable_name) {
+ArgParser::ArgParser(const std::string& executable_name) : executable_name_(executable_name) {
 }
 
 ArgParser::ArgParser(const std::string& usage, const std::string& description, const std::string& example)
-    : options_(), usage_(usage), description_(description), example_(example), executable_name_() {
+    : usage_(usage), description_(description), example_(example) {
 }
 
 void ArgParser::AddOptions(const std::vector<Arg>& options) {
@@ -76,8 +72,8 @@ bool ArgParser::Parse(int argc, char* argv[]) {
         if (o.required_) {
             std::string fullname = o.fullname_;
             fullname.erase(0, 2);
-            std::unordered_map<std::string, std::string>::const_iterator f = full_to_value_.find(fullname);
-            if (f == full_to_value_.end()) {
+            auto it = full_to_value_.find(fullname);
+            if (it == full_to_value_.end()) {
                 // This argument can be supplied in multiple ways.
                 return false;
             }
@@ -91,27 +87,26 @@ bool ArgParser::Get(const std::string& identifier, std::string& value) {
     std::string fullname = identifier;
     // If the identifier is the abbrevation turn it into the fullname
     if (fullname.size() == 1) {
-        std::unordered_map<std::string, std::string>::const_iterator f =
-            abbv_to_full_.find(std::string("-") + identifier);
+        auto it = abbv_to_full_.find(std::string("-") + identifier);
 
-        if (f == abbv_to_full_.end()) {
+        if (it == abbv_to_full_.end()) {
             return false;
         }
 
-        fullname = f->second;
+        fullname = it->second;
     }
 
     if (fullname[0] == '-') {
         fullname.erase(0, 2);
     }
 
-    std::unordered_map<std::string, std::string>::const_iterator f = full_to_value_.find(fullname);
+    auto it = full_to_value_.find(fullname);
 
-    if (f == full_to_value_.end()) {
+    if (it == full_to_value_.end()) {
         return false;
     }
 
-    value = f->second;
+    value = it->second;
 
     return true;
 }

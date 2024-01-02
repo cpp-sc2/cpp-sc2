@@ -233,8 +233,9 @@ void ActionImp::UnitCommand(const Tags& tags, AbilityID ability, const Tag targe
     tag_command->set_target_unit_tag(target_tag);
     tag_command->set_queue_command(queued_command);
 
-    for (auto tag : tags)
+    for (auto tag : tags) {
         tag_command->add_unit_tags(tag);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -402,8 +403,7 @@ bool AgentControlImp::Restart() {
 // Agent implementation.
 //-------------------------------------------------------------------------------------------------
 
-Agent::Agent() : agent_control_imp_(nullptr) {
-    agent_control_imp_ = new AgentControlImp(this, Control());
+Agent::Agent() : agent_control_imp_(new AgentControlImp(this, Control())) {
 }
 
 Agent::~Agent() {

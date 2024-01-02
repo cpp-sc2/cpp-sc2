@@ -14,17 +14,19 @@
 namespace sc2 {
 
 int scan_directory(const char* directory_path, std::vector<std::string>& files, bool full_path, bool list_directories) {
-    if (!directory_path || !*directory_path)
+    if (!directory_path || !*directory_path) {
         return 0;
+    }
 
     DIR* dir;
     dir = opendir(directory_path);
-    if (!dir)
+    if (!dir) {
         return 0;
+    }
 
     struct dirent* ent;
 
-    while ((ent = readdir(dir)) != NULL) {
+    while ((ent = readdir(dir)) != nullptr) {
         switch (ent->d_type) {
             case DT_REG: {
                 if (list_directories) {

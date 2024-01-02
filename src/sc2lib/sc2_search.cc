@@ -2,23 +2,24 @@
 
 #include <cmath>
 
-namespace sc2 {
+namespace {
+const float PI = 3.1415927F;
+}
 
-namespace search {
-
-static const float PI = 3.1415927f;
+namespace sc2::search {
 
 size_t CalculateQueries(float radius, float step_size, const Point2D& center,
                         std::vector<QueryInterface::PlacementQuery>& queries) {
-    Point2D current_grid, previous_grid(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
+    Point2D current_grid;
+    Point2D previous_grid(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
     size_t valid_queries = 0;
     // Find a buildable location on the circumference of the sphere
-    float loc = 0.0f;
-    while (loc < 360.0f) {
-        Point2D point = Point2D((radius * std::cos((loc * PI) / 180.0f)) + center.x,
-                                (radius * std::sin((loc * PI) / 180.0f)) + center.y);
+    float loc = 0.0F;
+    while (loc < 360.0F) {
+        const Point2D point = Point2D((radius * std::cos((loc * PI) / 180.0F)) + center.x,
+                                      (radius * std::sin((loc * PI) / 180.0F)) + center.y);
 
-        QueryInterface::PlacementQuery query(ABILITY_ID::BUILD_COMMANDCENTER, point);
+        const QueryInterface::PlacementQuery query(ABILITY_ID::BUILD_COMMANDCENTER, point);
 
         current_grid = Point2D(std::floor(point.x), std::floor(point.y));
 
@@ -35,16 +36,16 @@ size_t CalculateQueries(float radius, float step_size, const Point2D& center,
 }
 
 std::vector<std::pair<Point3D, std::vector<Unit> > > Cluster(const Units& units, float distance_apart) {
-    float squared_distance_apart = distance_apart * distance_apart;
+    const float squared_distance_apart = distance_apart * distance_apart;
     std::vector<std::pair<Point3D, std::vector<Unit> > > clusters;
-    for (size_t i = 0, e = units.size(); i < e; ++i) {
-        const Unit& u = *units[i];
+    for (const auto* unit : units) {
+        const Unit& u = *unit;
 
         float distance = std::numeric_limits<float>::max();
         std::pair<Point3D, std::vector<Unit> >* target_cluster = nullptr;
         // Find the cluster this mineral patch is closest to.
         for (auto& cluster : clusters) {
-            float d = DistanceSquared3D(u.pos, cluster.first);
+            const float d = DistanceSquared3D(u.pos, cluster.first);
             if (d < distance) {
                 distance = d;
                 target_cluster = &cluster;
@@ -59,8 +60,8 @@ std::vector<std::pair<Point3D, std::vector<Unit> > > Cluster(const Units& units,
 
         // Otherwise append to that cluster and update it's center of mass.
         target_cluster->second.push_back(u);
-        size_t size = target_cluster->second.size();
-        target_cluster->first = ((target_cluster->first * (float(size) - 1)) + u.pos) / float(size);
+        auto size = static_cast<float>(target_cluster->second.size());
+        target_cluster->first = ((target_cluster->first * (size - 1)) + u.pos) / size;
     }
 
     return clusters;
@@ -68,7 +69,7 @@ std::vector<std::pair<Point3D, std::vector<Unit> > > Cluster(const Units& units,
 
 std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* observation, QueryInterface* query,
                                                  ExpansionParameters parameters) {
-    Units resources = observation->GetUnits([](const Unit& unit) {
+    const Units resources = observation->GetUnits([](const Unit& unit) {
         return unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD ||
                unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD750 ||
                unit.unit_type == UNIT_TYPEID::NEUTRAL_RICHMINERALFIELD ||
@@ -94,8 +95,7 @@ std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* obs
 
     std::vector<size_t> query_size;
     std::vector<QueryInterface::PlacementQuery> queries;
-    for (size_t i = 0; i < clusters.size(); ++i) {
-        std::pair<Point3D, std::vector<Unit> >& cluster = clusters[i];
+    for (const auto& cluster : clusters) {
         if (parameters.debug_) {
             for (auto r : parameters.radiuses_) {
                 parameters.debug_->DebugSphereOut(cluster.first, r, Colors::Green);
@@ -114,7 +114,7 @@ std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* obs
     std::vector<bool> results = query->Placement(queries);
     size_t start_index = 0;
     for (int i = 0; i < clusters.size(); ++i) {
-        std::pair<Point3D, std::vector<Unit> >& cluster = clusters[i];
+        auto& cluster = clusters[i];
         float distance = std::numeric_limits<float>::max();
         Point2D closest;
 
@@ -124,19 +124,19 @@ std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* obs
                 continue;
             }
 
-            Point2D& p = queries[j].target_pos;
+            const Point2D& p = queries[j].target_pos;
 
-            float d = Distance2D(p, cluster.first);
+            const float d = Distance2D(p, cluster.first);
             if (d < distance) {
                 distance = d;
                 closest = p;
             }
         }
 
-        Point3D expansion(closest.x, closest.y, cluster.second.begin()->pos.z);
+        const Point3D expansion(closest.x, closest.y, cluster.second.begin()->pos.z);
 
         if (parameters.debug_) {
-            parameters.debug_->DebugSphereOut(expansion, 0.35f, Colors::Red);
+            parameters.debug_->DebugSphereOut(expansion, 0.35F, Colors::Red);
         }
 
         expansion_locations.push_back(expansion);
@@ -146,6 +146,4 @@ std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* obs
     return expansion_locations;
 }
 
-}  // namespace search
-
-}  // namespace sc2
+}  // namespace sc2::search
