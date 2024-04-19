@@ -76,7 +76,9 @@ $ cd cpp-sc2
 $ cmake -B build
 
 # Build the project.
-$ cmake --build build --parallel
+$ cmake --build build --parallel $(nproc --ignore=0)
+
+# If building freezes in above step, increase number: --ignore=1, ignore=2 ...
 ```
 
 ## Linux (cmdline)
@@ -91,7 +93,9 @@ $ cd cpp-sc2
 $ cmake -B build
 
 # Build the project.
-$ cmake --build build --parallel
+$ cmake --build build --parallel $(nproc --ignore=0)
+
+# If building freezes in above step, increase number: --ignore=1, ignore=2 ...
 ```
 
 ## Compilation options
