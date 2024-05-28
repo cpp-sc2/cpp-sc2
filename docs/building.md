@@ -76,7 +76,10 @@ $ cd cpp-sc2
 $ cmake -B build
 
 # Build the project.
-$ cmake --build build --parallel
+$ cmake --build build --parallel $(nproc)
+
+# If building freezes in above step, decrease nproc to 1 or more, e.g.:
+cmake --build build --parallel $(nproc --ignore=1)
 ```
 
 ## Linux (cmdline)
@@ -91,7 +94,10 @@ $ cd cpp-sc2
 $ cmake -B build
 
 # Build the project.
-$ cmake --build build --parallel
+$ cmake --build build --parallel $(nproc)
+
+# If building freezes in above step, decrease nproc to 1 or more, e.g.:
+cmake --build build --parallel $(nproc --ignore=1)
 ```
 
 ## Compilation options
