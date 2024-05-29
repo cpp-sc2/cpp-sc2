@@ -1,108 +1,126 @@
 # Build instructions
 
-## Prerequisites
+> :construction: This project requires a compiler with C++17 support.
+
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Build instructions](#build-instructions)
+    - [Windows](#windows)
+    - [macOS](#macos)
+    - [Linux](#linux)
+    - [Compilation options](#compilation-options)
+        - [Game client version](#game-client-version)
+    - [Troubleshooting](#troubleshooting)
+        - [Build freezes (Linux or macOS)](#build-freezes-linux-or-macos)
+    - [WSL2 Support](#wsl2-support)
+        - [Requirements](#requirements)
+        - [Building](#building)
+        - [Downstream Projects](#downstream-projects)
+
+<!-- markdown-toc end -->
+
+## Windows
 
 For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
-1. Download and install [CMake](https://cmake.org/download/).
+1. Install [CMake](https://cmake.org/download/).
 
-2. A compiler with C++17 support.
+1. Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
 
-3. Windows: Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
+1. Clone the project.
 
-4. Linux: Install 'gcc-c++'.
+   ```bat
+   git clone git@github.com:cpp-sc2/cpp-sc2.git
+   ```
 
-5. Linux: Install the 'make' utility.
+1. Enter the working directory.
 
-6. OS X: Install XCode.
+   ```bat
+   cd cpp-sc2
+   ```
 
-7. OS X: Install XCode command-line tools.
+1. Create Visual Studio project files.
+   E.g. for Visual Studio 2022:
 
-## Windows (Visual Studio)
-```bat
-:: Clone the project.
-$ git clone git@github.com:cpp-sc2/cpp-sc2.git
+   ```bat
+   cmake -B build -G "Visual Studio 17 2022"
+   ```
 
-:: Enter the working directory.
-$ cd cpp-sc2
+1. Build the project using Visual Studio.
 
-:: Create Visual Studio project files.
-:: E.g. for Visual Studio 2022:
-$ cmake -B build -G "Visual Studio 17 2022"
+   ```bat
+   start build\cpp-sc2.sln
+   ```
 
-:: Build the project using Visual Studio.
-$ start build\cpp-sc2.sln
-```
+## macOS
 
-## Windows (cmdline)
-```bat
-:: Clone the project.
-$ git clone git@github.com:cpp-sc2/cpp-sc2.git
+1. Install [CMake](https://cmake.org/download/).
 
-:: Enter the working directory.
-$ cd cpp-sc2
+1. Install XCode.
 
-:: Configure the project.
-$ cmake -B build
+1. Install XCode command-line tools.
 
-:: Build the project.
-$ cmake --build build --parallel
-```
+1. Clone the project.
 
-## Mac (Xcode)
-```bash
-# Clone the project.
-$ git clone git@github.com:cpp-sc2/cpp-sc2.git
+   ```bash
+   git clone git@github.com:cpp-sc2/cpp-sc2.git
+   ```
 
-# Enter the working directory.
-$ cd cpp-sc2
+1. Enter the working directory.
 
-# Create Xcode project files.
-$ cmake -B build -G Xcode
+   ```bash
+   cd cpp-sc2
+   ```
 
-# Build the project using Xcode.
-$ open build/cpp-sc2.xcodeproj
-```
+1. Create makefiles.
 
-## Mac (cmdline)
-```bash
-# Clone the project.
-$ git clone git@github.com:cpp-sc2/cpp-sc2.git
+   ```bash
+   cmake -B build
+   ```
 
-# Enter the working directory.
-$ cd cpp-sc2
+1. Build the project.
 
-# Create makefiles.
-$ cmake -B build
+   ```bash
+   cmake --build build --parallel $(nproc)
+   ```
 
-# Build the project.
-$ cmake --build build --parallel $(nproc)
+## Linux
 
-# If building freezes in above step, decrease nproc to 1 or more, e.g.:
-cmake --build build --parallel $(nproc --ignore=1)
-```
+1. Install [CMake](https://cmake.org/download/).
 
-## Linux (cmdline)
-```bash
-# Clone the project.
-$ git clone git@github.com:cpp-sc2/cpp-sc2.git
+1. Install `gcc-c++`.
 
-# Enter the working directory.
-$ cd cpp-sc2
+1. Install the `make` utility.
 
-# Create makefiles.
-$ cmake -B build
+1. Clone the project.
 
-# Build the project.
-$ cmake --build build --parallel $(nproc)
+   ```bash
+   git clone git@github.com:cpp-sc2/cpp-sc2.git
+   ```
 
-# If building freezes in above step, decrease nproc to 1 or more, e.g.:
-cmake --build build --parallel $(nproc --ignore=1)
-```
+1. Enter the working directory.
+
+   ```bash
+   cd cpp-sc2
+   ```
+
+1. Create makefiles.
+
+   ```bash
+   cmake -B build
+   ```
+
+1. Build the project.
+
+   ``` bash
+   cmake --build build --parallel $(nproc)
+   ```
 
 ## Compilation options
 
 ### Game client version
+
 By default, the API assumes the latest version of the game client. The assumed version can be found in cmake's output, e.g.:
 ```bash
 $ cmake ../ | grep 'SC2 version'
@@ -114,6 +132,16 @@ However, sometimes one may need to compile with an older version of the game, e.
 always behind the Windows version. It is possible by specifying the game version manually, e.g.:
 ```bash
 $ cmake -DSC2_VERSION=4.10.0 ../
+```
+
+## Troubleshooting
+
+### Build freezes (Linux or macOS)
+
+If project compilation freezes, decrease nproc to 1 or more, e.g.:
+
+``` bash
+$ cmake --build build --parallel $(nproc --ignore=1)
 ```
 
 ## WSL2 Support
@@ -175,7 +203,6 @@ When including `cpp-sc2` as a dependency (whether as a git submodule, or using C
 2. Set `CMAKE_TOOLCHAIN_FILE` as the path to the toolchain file, and the `WSL2_CROSS_COMPILE` option to `ON` when cross compiling:
 
 ```bash
-# From the command line
 $ cmake -B build \
     -DCMAKE_TOOLCHAIN_FILE=/path/to/toolchain/file \
     -DWSL2_CROSS_COMPILE=ON
