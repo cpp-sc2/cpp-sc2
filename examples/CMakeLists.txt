@@ -30,6 +30,7 @@ example_project(intermediate_bot intermediate_bot.cc)
 example_project(annoying_helper annoying_helper.cc)
 example_project(proxy proxy.cc)
 example_project(save_load save_load.cc)
+example_project(bot_wsl bot_wsl.cc)
 
 if (BUILD_SC2_RENDERER)
     example_project_extra(feature_layers feature_layers.cc sc2renderer)

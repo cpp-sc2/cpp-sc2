@@ -14,12 +14,12 @@ set(proto_files
 set(proto_generation_dir "${PROJECT_BINARY_DIR}/generated/s2clientprotocol")
 file(MAKE_DIRECTORY "${proto_generation_dir}")
 
-foreach(proto ${proto_files})
+foreach (proto ${proto_files})
     get_filename_component(proto_name ${proto} NAME_WE)
     list(APPEND proto_src
             "${proto_generation_dir}/${proto_name}.pb.cc"
             "${proto_generation_dir}/${proto_name}.pb.h")
-endforeach()
+endforeach ()
 
 add_library(sc2protocol STATIC ${proto_src})
 
@@ -31,24 +31,24 @@ if (MSVC)
     target_compile_options(sc2protocol PRIVATE /W0)
 endif (MSVC)
 
-# Copy precompiled protos to the generated directory
-if (WSL2_CROSS_COMPILE)
-    foreach (proto ${proto_files})
-        get_filename_component(proto_name ${proto} NAME_WE)
-        file(
-            COPY
-                "${protos_SOURCE_DIR}/${proto_name}.pb.h"
-                "${protos_SOURCE_DIR}/${proto_name}.pb.cc"
-            DESTINATION
-                "${proto_generation_dir}")
-    endforeach ()
-# Compile protos with protoc
-else ()
-    foreach (proto ${proto_files})
-        get_filename_component(proto_name_we ${proto} NAME_WE)
-        set(protoc_out_cc "${proto_generation_dir}/${proto_name_we}.pb.cc")
-        set(protoc_out_h "${proto_generation_dir}/${proto_name_we}.pb.h")
-
+# Compile the proto files
+foreach (proto ${proto_files})
+    get_filename_component(proto_name_we ${proto} NAME_WE)
+    set(protoc_out_cc "${proto_generation_dir}/${proto_name_we}.pb.cc")
+    set(protoc_out_h "${proto_generation_dir}/${proto_name_we}.pb.h")
+    if (WSL2_CROSS_COMPILE) 
+        add_custom_command(
+            OUTPUT
+                "${protoc_out_cc}"
+                "${protoc_out_h}"
+            COMMAND
+                "${PROJECT_BINARY_DIR}/_deps/protos-src/bin/protoc"
+                "-I=${sc2protocol_SOURCE_DIR}"
+                "--cpp_out=${PROJECT_BINARY_DIR}/generated"
+                "${proto}"
+            VERBATIM
+            )
+    else ()
         add_custom_command(
             OUTPUT
                 "${protoc_out_cc}"
@@ -61,5 +61,5 @@ else ()
             DEPENDS protoc
             VERBATIM
         )
-    endforeach()
-endif ()
+    endif ()
+endforeach ()

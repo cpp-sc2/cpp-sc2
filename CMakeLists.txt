@@ -51,8 +51,7 @@ set(CMAKE_DEBUG_POSTFIX ${LIBRARY_DEBUG_POSTFIX})
 # External subprojects
 list(APPEND CMAKE_MODULE_PATH
     "${PROJECT_SOURCE_DIR}/thirdparty/cmake"
-    "${PROJECT_SOURCE_DIR}/thirdparty/civetweb"
-    "${PROJECT_SOURCE_DIR}/cmake/assets")
+    "${PROJECT_SOURCE_DIR}/thirdparty/civetweb")
 
 # Build with c++17 support.
 set(CMAKE_CXX_STANDARD 17)
@@ -75,10 +74,6 @@ endif ()
 
 if (BUILD_API_TESTS)
     add_subdirectory(tests)
-endif ()
-
-if (WSL2_CROSS_COMPILE)
-    include(protos)
 endif ()
 
 # External subproject depedencies
