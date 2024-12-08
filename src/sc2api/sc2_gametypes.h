@@ -56,7 +56,7 @@ struct PlayerSetup {
     //! Build type, used by computer opponent.
     AIBuild ai_build;
 
-    PlayerSetup() : type(Participant), agent(nullptr), race(Terran), difficulty(Easy), ai_build(RandomBuild){};
+    PlayerSetup() : type(Participant), agent(nullptr), race(Terran), difficulty(Easy), ai_build(RandomBuild) {};
 
     PlayerSetup(PlayerType in_type, Race in_race, Agent* in_agent = nullptr, const std::string& in_player_name = "",
                 Difficulty in_difficulty = Easy, AIBuild in_ai_build = RandomBuild)
@@ -172,7 +172,7 @@ struct ReplayInfo {
 };
 
 struct PlayerResult {
-    PlayerResult(uint32_t player_id, GameResult result) : player_id(player_id), result(result){};
+    PlayerResult(uint32_t player_id, GameResult result) : player_id(player_id), result(result) {};
 
     uint32_t player_id;
     GameResult result;

@@ -28,8 +28,8 @@ public:
     }
 
 private:
-    void OnTestsBegin() final{};
-    void OnTestsEnd() final{};
+    void OnTestsBegin() final {};
+    void OnTestsEnd() final {};
 };
 
 class TestSnapshotBase : public TestSequence {
@@ -57,9 +57,11 @@ public:
     }
 };
 
-#define TEST_SNAPSHOT_CLASS(X)  \
-    X() : TestSnapshotBase() {} \
-    X(SnapshotTestBot* bot) : TestSnapshotBase(bot) {}
+#define TEST_SNAPSHOT_CLASS(X)                        \
+    X() : TestSnapshotBase() {                        \
+    }                                                 \
+    X(SnapshotTestBot* bot) : TestSnapshotBase(bot) { \
+    }
 
 class TestSnapshot1 : public TestSnapshotBase {
 public:

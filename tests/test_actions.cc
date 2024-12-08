@@ -90,7 +90,7 @@ ActionTestBot::ActionTestBot() : UnitTestBot() {
         Add(SelectZergling());
 }
 
-void ActionTestBot::OnTestsBegin(){
+void ActionTestBot::OnTestsBegin() {
 
 };
 

@@ -288,7 +288,7 @@ public:
 
     struct PlacementQuery {
         PlacementQuery() = default;
-        PlacementQuery(AbilityID ability_id, Point2D target) : ability(ability_id), target_pos(target){};
+        PlacementQuery(AbilityID ability_id, Point2D target) : ability(ability_id), target_pos(target) {};
 
         AbilityID ability;
         Point2D target_pos;
