@@ -35,7 +35,7 @@ endif ()
 FetchContent_Declare(
     civetweb
     GIT_REPOSITORY https://github.com/civetweb/civetweb.git
-    GIT_TAG 1fb204ecc630515d53291f58955c799785cb90c7
+    GIT_TAG v1.15
     PATCH_COMMAND ${patch_executor}
 )
 FetchContent_MakeAvailable(civetweb)
