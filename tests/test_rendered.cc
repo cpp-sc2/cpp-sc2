@@ -91,7 +91,7 @@ RenderedTestBot::RenderedTestBot() : UnitTestBot() {
     Add(TestRenderBasic());
 }
 
-void RenderedTestBot::OnTestsBegin(){};
+void RenderedTestBot::OnTestsBegin() {};
 
 void RenderedTestBot::OnTestsEnd() {
 }

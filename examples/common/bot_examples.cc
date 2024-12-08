@@ -78,7 +78,7 @@ struct IsArmy {
 };
 
 struct IsStructure {
-    IsStructure(const ObservationInterface* obs) : observation_(obs){};
+    IsStructure(const ObservationInterface* obs) : observation_(obs) {};
 
     bool operator()(const Unit& unit) {
         auto& attributes = observation_->GetUnitTypeData().at(unit.unit_type).attributes;

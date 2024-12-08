@@ -69,7 +69,7 @@ struct PlayerInfo {
           race_actual(race_actual),
           difficulty(difficulty),
           ai_build(ai_build),
-          player_name(player_name){};
+          player_name(player_name) {};
 };
 
 //! Initial data for a game and map.

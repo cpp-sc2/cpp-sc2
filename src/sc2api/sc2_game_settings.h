@@ -10,7 +10,7 @@ namespace sc2 {
 //! Information about a running process.
 struct ProcessInfo {
     ProcessInfo() = default;
-    ProcessInfo(const std::string& path, uint64_t id, int port) : process_path(path), process_id(id), port(port){};
+    ProcessInfo(const std::string& path, uint64_t id, int port) : process_path(path), process_id(id), port(port) {};
 
     std::string process_path;
     uint64_t process_id;

@@ -19,7 +19,7 @@ typedef MessageResponsePtr<SC2APIProtocol::ResponseData> ResponseDataPtr;
 struct AvailableAbility {
     AvailableAbility() = default;
     AvailableAbility(AbilityID ability_id, bool requires_point)
-        : ability_id(ability_id), requires_point(requires_point){};
+        : ability_id(ability_id), requires_point(requires_point) {};
 
     //! Ability that is available.
     AbilityID ability_id = 0;
@@ -264,7 +264,7 @@ typedef std::vector<EffectData> Effects;
 //! Power source information for Protoss.
 struct PowerSource {
     PowerSource(const Point2D in_position, float in_radius, Tag in_tag)
-        : position(in_position), radius(in_radius), tag(in_tag){};
+        : position(in_position), radius(in_radius), tag(in_tag) {};
 
     //! Power source position.
     Point2D position;
