@@ -37,6 +37,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/civetweb/civetweb.git
     GIT_TAG v1.15
     PATCH_COMMAND ${patch_executor}
+    UPDATE_DISCONNECTED TRUE
 )
 FetchContent_MakeAvailable(civetweb)
 
