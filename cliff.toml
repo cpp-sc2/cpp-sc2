@@ -15,7 +15,7 @@ header = """
 # https://keats.github.io/tera/docs/#introduction
 body = """
   {% if version %}\
-  ## {{ version | trim_start_matches(pat="v") }} - {{ timestamp | date(format="%Y-%m-%d") }}
+  ## {{ version }} - {{ timestamp | date(format="%Y-%m-%d") }}
   {% else %}\
   ## Unreleased
   {% endif %}\
@@ -28,7 +28,7 @@ body = """
   {% for group, commits in commits | group_by(attribute="group") %}
   ### {{ group | upper_first }}
   {% for commit in commits %}
-  - {{ commit.message | split(pat="\n") | first | upper_first | trim }} ([{{ commit.id | truncate(length=7, end="") }}]({{ commit.id }}))\
+  - {{ commit.message | split(pat="\n") | first | upper_first | trim }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/cpp-sc2/cpp-sc2/commit/{{ commit.id }}))\
     {% if commit.remote.username and commit.remote.username != "alkurbatov" %} by @{{ commit.remote.username }}{%- endif -%}
   {% endfor %}
   {% endfor %}\n
