@@ -3,7 +3,7 @@
 [![GitHub](https://img.shields.io/github/license/cpp-sc2/cpp-sc2)](https://github.com/cpp-sc2/cpp-sc2/blob/master/LICENSE)
 [![C++17](https://img.shields.io/badge/C%2B%2B-17-green.svg)](https://isocpp.org/std/the-standard)
 [![Build Status](https://github.com/cpp-sc2/cpp-sc2/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/cpp-sc2/cpp-sc2/actions/workflows/ci.yml)
-[![Join the chat in Discord: https://discord.gg/YurYAgHRSw](https://img.shields.io/badge/Discord-Chat!-brightgreen.svg)](https://discordapp.com/invite/Emm5Ztz)
+[![Join the chat in Discord: https://discord.gg/YurYAgHRSw](https://img.shields.io/badge/Discord-Chat!-brightgreen.svg)](https://discord.gg/YurYAgHRSw)
 
 The StarCraft II API provides access to in-game state observation and unit
 control. The API is a wrapper around protobuf defined protocol over a websocket
@@ -55,41 +55,14 @@ contrib packages:
 Follow the instructions for submodules and building in
 [docs/building.md](docs/building.md).
 
-## Work with documentation
-
-To edit and generate the documentation yourself:
-
-1. Download and install [Doxygen][doxygen].
-1. Fork the repository and clone it locally.
-1. Checkout the master branch
-   `git checkout origin/master -b my-documentation-update`.
-1. Make changes to the code documentation or docs/ files.
-1. From the root of the project run: doxygen Doxyfile.
-1. Review your documentation changes by opening docs/html/index.html in your
-   browser.
-1. Push your changes to your fork and send us a pull request.
-
-## Contributing
-
-This project follows a [Code of Conduct](CODE_OF_CONDUCT.md) in order to ensure
-an open and welcoming environment.
-
-Please, read the detailed [contributing guide][contributing-guide] before
-creating pull-requests to the project. It can save you a lot of time.
-
-## Coding Standard
-
-We use the [Google C++ Style Guide][google-c++-style-guide] with some tweaks and
-[`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) to format
-the code.
-
-## Additional Downloads
-
-### Maps
+## Additional Maps
 
 This repository only comes with a few maps for testing.
 Additional maps can be found [here](https://aiarena.net/wiki/maps/).
 
-[doxygen]: http://www.stack.nl/~dimitri/doxygen/download.html#srcbin
+## Contributing
+
+Please, read the detailed [contributing guide][contributing-guide] before
+creating pull-requests to the project. It can save you a lot of time.
+
 [contributing-guide]: https://github.com/cpp-sc2/cpp-sc2/issues/9
-[google-c++-style-guide]: https://google.github.io/styleguide/cppguide.html
