@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - v2.1.0
     paths-ignore:
       - '.github/ISSUE_TEMPLATE/**'
       - 'docs/**'
