@@ -17,6 +17,7 @@ FetchContent_Declare(
     sdl
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
     GIT_TAG release-2.28.5
+    GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(sdl)
 
