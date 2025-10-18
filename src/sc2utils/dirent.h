@@ -241,14 +241,14 @@ struct _WDIR {
     HANDLE handle;
 
     /* Initial directory name */
-    wchar_t *patt;
+    wchar_t* patt;
 };
 typedef struct _WDIR _WDIR;
 
-static _WDIR *_wopendir(const wchar_t *dirname);
-static struct _wdirent *_wreaddir(_WDIR *dirp);
-static int _wclosedir(_WDIR *dirp);
-static void _wrewinddir(_WDIR *dirp);
+static _WDIR* _wopendir(const wchar_t* dirname);
+static struct _wdirent* _wreaddir(_WDIR* dirp);
+static int _wclosedir(_WDIR* dirp);
+static void _wrewinddir(_WDIR* dirp);
 
 /* For compatibility with Symbian */
 #define wdirent _wdirent
@@ -279,22 +279,22 @@ typedef struct dirent dirent;
 
 struct DIR {
     struct dirent ent;
-    struct _WDIR *wdirp;
+    struct _WDIR* wdirp;
 };
 typedef struct DIR DIR;
 
-static DIR *opendir(const char *dirname);
-static struct dirent *readdir(DIR *dirp);
-static int closedir(DIR *dirp);
-static void rewinddir(DIR *dirp);
+static DIR* opendir(const char* dirname);
+static struct dirent* readdir(DIR* dirp);
+static int closedir(DIR* dirp);
+static void rewinddir(DIR* dirp);
 
 /* Internal utility functions */
-static WIN32_FIND_DATAW *dirent_first(_WDIR *dirp);
-static WIN32_FIND_DATAW *dirent_next(_WDIR *dirp);
+static WIN32_FIND_DATAW* dirent_first(_WDIR* dirp);
+static WIN32_FIND_DATAW* dirent_next(_WDIR* dirp);
 
-static int dirent_mbstowcs_s(size_t *pReturnValue, wchar_t *wcstr, size_t sizeInWords, const char *mbstr, size_t count);
+static int dirent_mbstowcs_s(size_t* pReturnValue, wchar_t* wcstr, size_t sizeInWords, const char* mbstr, size_t count);
 
-static int dirent_wcstombs_s(size_t *pReturnValue, char *mbstr, size_t sizeInBytes, const wchar_t *wcstr, size_t count);
+static int dirent_wcstombs_s(size_t* pReturnValue, char* mbstr, size_t sizeInBytes, const wchar_t* wcstr, size_t count);
 
 static void dirent_set_errno(int error);
 
@@ -303,8 +303,8 @@ static void dirent_set_errno(int error);
  * internal working area that is used to retrieve individual directory
  * entries.
  */
-static _WDIR *_wopendir(const wchar_t *dirname) {
-    _WDIR *dirp = NULL;
+static _WDIR* _wopendir(const wchar_t* dirname) {
+    _WDIR* dirp = NULL;
     int error;
 
     /* Must have directory name */
@@ -314,7 +314,7 @@ static _WDIR *_wopendir(const wchar_t *dirname) {
     }
 
     /* Allocate new _WDIR structure */
-    dirp = (_WDIR *)malloc(sizeof(struct _WDIR));
+    dirp = (_WDIR*)malloc(sizeof(struct _WDIR));
     if (dirp != NULL) {
         DWORD n;
 
@@ -335,7 +335,7 @@ static _WDIR *_wopendir(const wchar_t *dirname) {
 #endif
 
         /* Allocate room for absolute directory name and search pattern */
-        dirp->patt = (wchar_t *)malloc(sizeof(wchar_t) * n + 16);
+        dirp->patt = (wchar_t*)malloc(sizeof(wchar_t) * n + 16);
         if (dirp->patt) {
             /*
              * Convert relative directory name to an absolute one.  This
@@ -351,7 +351,7 @@ static _WDIR *_wopendir(const wchar_t *dirname) {
             n = GetFullPathNameW(dirname, n, dirp->patt, NULL);
 #endif
             if (n > 0) {
-                wchar_t *p;
+                wchar_t* p;
 
                 /* Append search pattern \* to the directory name */
                 p = dirp->patt + n;
@@ -413,9 +413,9 @@ static _WDIR *_wopendir(const wchar_t *dirname) {
  * this function include regular files, sub-directories, pseudo-directories
  * "." and ".." as well as volume labels, hidden files and system files.
  */
-static struct _wdirent *_wreaddir(_WDIR *dirp) {
-    WIN32_FIND_DATAW *datap;
-    struct _wdirent *entp;
+static struct _wdirent* _wreaddir(_WDIR* dirp) {
+    WIN32_FIND_DATAW* datap;
+    struct _wdirent* entp;
 
     /* Read next directory entry */
     datap = dirent_next(dirp);
@@ -468,7 +468,7 @@ static struct _wdirent *_wreaddir(_WDIR *dirp) {
  * DIR structure as well as any directory entry read previously by
  * _wreaddir().
  */
-static int _wclosedir(_WDIR *dirp) {
+static int _wclosedir(_WDIR* dirp) {
     int ok;
     if (dirp) {
         /* Release search handle */
@@ -499,7 +499,7 @@ static int _wclosedir(_WDIR *dirp) {
  * Rewind directory stream such that _wreaddir() returns the very first
  * file name again.
  */
-static void _wrewinddir(_WDIR *dirp) {
+static void _wrewinddir(_WDIR* dirp) {
     if (dirp) {
         /* Release existing search handle */
         if (dirp->handle != INVALID_HANDLE_VALUE) {
@@ -512,8 +512,8 @@ static void _wrewinddir(_WDIR *dirp) {
 }
 
 /* Get first directory entry (internal) */
-static WIN32_FIND_DATAW *dirent_first(_WDIR *dirp) {
-    WIN32_FIND_DATAW *datap;
+static WIN32_FIND_DATAW* dirent_first(_WDIR* dirp) {
+    WIN32_FIND_DATAW* datap;
 
     /* Open directory and retrieve the first entry */
     dirp->handle = FindFirstFileExW(dirp->patt, FindExInfoStandard, &dirp->data, FindExSearchNameMatch, NULL, 0);
@@ -531,8 +531,8 @@ static WIN32_FIND_DATAW *dirent_first(_WDIR *dirp) {
 }
 
 /* Get next directory entry (internal) */
-static WIN32_FIND_DATAW *dirent_next(_WDIR *dirp) {
-    WIN32_FIND_DATAW *p;
+static WIN32_FIND_DATAW* dirent_next(_WDIR* dirp) {
+    WIN32_FIND_DATAW* p;
 
     /* Get next directory entry */
     if (dirp->cached != 0) {
@@ -563,8 +563,8 @@ static WIN32_FIND_DATAW *dirent_next(_WDIR *dirp) {
 /*
  * Open directory stream using plain old C-string.
  */
-static DIR *opendir(const char *dirname) {
-    struct DIR *dirp;
+static DIR* opendir(const char* dirname) {
+    struct DIR* dirp;
     int error;
 
     /* Must have directory name */
@@ -574,7 +574,7 @@ static DIR *opendir(const char *dirname) {
     }
 
     /* Allocate memory for DIR structure */
-    dirp = (DIR *)malloc(sizeof(struct DIR));
+    dirp = (DIR*)malloc(sizeof(struct DIR));
     if (dirp) {
         wchar_t wname[PATH_MAX];
         size_t n;
@@ -629,9 +629,9 @@ static DIR *opendir(const char *dirname) {
  * ANSI strings to the console code page so many non-ASCII characters will
  * display correcly.
  */
-static struct dirent *readdir(DIR *dirp) {
-    WIN32_FIND_DATAW *datap;
-    struct dirent *entp;
+static struct dirent* readdir(DIR* dirp) {
+    WIN32_FIND_DATAW* datap;
+    struct dirent* entp;
 
     /* Read next directory entry */
     datap = dirent_next(dirp->wdirp);
@@ -706,7 +706,7 @@ static struct dirent *readdir(DIR *dirp) {
 /*
  * Close directory stream.
  */
-static int closedir(DIR *dirp) {
+static int closedir(DIR* dirp) {
     int ok;
     if (dirp) {
         /* Close wide-character directory stream */
@@ -727,13 +727,13 @@ static int closedir(DIR *dirp) {
 /*
  * Rewind directory stream to beginning.
  */
-static void rewinddir(DIR *dirp) {
+static void rewinddir(DIR* dirp) {
     /* Rewind wide-character string directory stream */
     _wrewinddir(dirp->wdirp);
 }
 
 /* Convert multi-byte string to wide character string */
-static int dirent_mbstowcs_s(size_t *pReturnValue, wchar_t *wcstr, size_t sizeInWords, const char *mbstr,
+static int dirent_mbstowcs_s(size_t* pReturnValue, wchar_t* wcstr, size_t sizeInWords, const char* mbstr,
                              size_t count) {
     int error;
 
@@ -777,8 +777,8 @@ static int dirent_mbstowcs_s(size_t *pReturnValue, wchar_t *wcstr, size_t sizeIn
 }
 
 /* Convert wide-character string to multi-byte string */
-static int dirent_wcstombs_s(size_t *pReturnValue, char *mbstr, size_t sizeInBytes, /* max size of mbstr */
-                             const wchar_t *wcstr, size_t count) {
+static int dirent_wcstombs_s(size_t* pReturnValue, char* mbstr, size_t sizeInBytes, /* max size of mbstr */
+                             const wchar_t* wcstr, size_t count) {
     int error;
 
 #if defined(_MSC_VER) && _MSC_VER >= 1400

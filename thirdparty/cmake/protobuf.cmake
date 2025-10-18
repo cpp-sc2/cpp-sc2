@@ -11,7 +11,7 @@ endif ()
 FetchContent_Declare(
     protobuf
     GIT_REPOSITORY https://github.com/protocolbuffers/protobuf.git
-    GIT_TAG v3.23.4
+    GIT_TAG v33.0
 )
 FetchContent_MakeAvailable(protobuf)
 
