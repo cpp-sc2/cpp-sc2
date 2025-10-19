@@ -19,6 +19,7 @@ endif ()
 project(cpp-sc2)
 
 include(FetchContent)
+set(FETCHCONTENT_QUIET FALSE)
 
 option(BUILD_SC2_RENDERER "Build SC2 Renderer library" ON)
 option(BUILD_API_EXAMPLES "Build Examples" ON)
