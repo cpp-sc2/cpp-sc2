@@ -197,10 +197,15 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         }
 
         if (!Convert(observation_unit.display_type(), unit->display_type)) {
-            return false;
+            std::cerr << "[cpp-sc2 warn] unit tag=" << observation_unit.tag()
+                      << " has unknown display_type=" << static_cast<int>(observation_unit.display_type())
+                      << ", skipping\n";
+            continue;
         }
         if (!Convert(observation_unit.alliance(), unit->alliance)) {
-            return false;
+            std::cerr << "[cpp-sc2 warn] unit tag=" << observation_unit.tag()
+                      << " has unknown alliance=" << static_cast<int>(observation_unit.alliance()) << ", skipping\n";
+            continue;
         }
 
         unit->tag = observation_unit.tag();
