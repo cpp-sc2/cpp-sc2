@@ -26,7 +26,7 @@ struct UnitOrder {
     //! Target unit of the order, if there is one.
     Tag target_unit_tag = NullTag;
     //! Target position of the order, if there is one.
-    Point2D target_pos;
+    Point3D target_pos;
     //! Progress of the order.
     float progress = 0.0F;
 };

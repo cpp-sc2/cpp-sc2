@@ -275,6 +275,7 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
             order.target_unit_tag = order_proto.target_unit_tag();
             order.target_pos.x = order_proto.target_world_space_pos().x();
             order.target_pos.y = order_proto.target_world_space_pos().y();
+            order.target_pos.z = order_proto.target_world_space_pos().z();
             order.progress = order_proto.progress();
             unit->orders.push_back(order);
         }
