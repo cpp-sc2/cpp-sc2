@@ -2182,6 +2182,86 @@ void ControlImp::IssueAlertEvents() {
                 client_.OnNydusDetected();
                 break;
             }
+            case SC2APIProtocol::Alert::AlertError: {
+                client_.OnAlertError();
+                break;
+            }
+            case SC2APIProtocol::Alert::AddOnComplete: {
+                client_.OnAlertAddOnComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::BuildingComplete: {
+                client_.OnAlertBuildingComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::BuildingUnderAttack: {
+                client_.OnAlertBuildingUnderAttack();
+                break;
+            }
+            case SC2APIProtocol::Alert::LarvaHatched: {
+                client_.OnAlertLarvaHatched();
+                break;
+            }
+            case SC2APIProtocol::Alert::MergeComplete: {
+                client_.OnAlertMergeComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::MineralsExhausted: {
+                client_.OnAlertMineralsExhausted();
+                break;
+            }
+            case SC2APIProtocol::Alert::MorphComplete: {
+                client_.OnAlertMorphComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::MothershipComplete: {
+                client_.OnAlertMothershipComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::MULEExpired: {
+                client_.OnAlertMULEExpired();
+                break;
+            }
+            case SC2APIProtocol::Alert::NukeComplete: {
+                client_.OnAlertNukeComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::ResearchComplete: {
+                client_.OnAlertResearchComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::TrainError: {
+                client_.OnAlertTrainError();
+                break;
+            }
+            case SC2APIProtocol::Alert::TrainUnitComplete: {
+                client_.OnAlertTrainUnitComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::TrainWorkerComplete: {
+                client_.OnAlertTrainWorkerComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::TransformationComplete: {
+                client_.OnAlertTransformationComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::UnitUnderAttack: {
+                client_.OnAlertUnitUnderAttack();
+                break;
+            }
+            case SC2APIProtocol::Alert::UpgradeComplete: {
+                client_.OnAlertUpgradeComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::VespeneExhausted: {
+                client_.OnAlertVespeneExhausted();
+                break;
+            }
+            case SC2APIProtocol::Alert::WarpInComplete: {
+                client_.OnAlertWarpInComplete();
+                break;
+            }
             default: {
                 break;
             }

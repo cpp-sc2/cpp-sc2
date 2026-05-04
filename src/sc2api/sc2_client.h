@@ -118,6 +118,50 @@ public:
     virtual void OnNuclearLaunchDetected() {
     }
 
+    //! \name Extended alert hooks. All default to noop, override only what you use.
+    //!@{
+    virtual void OnAlertError() {
+    }
+    virtual void OnAlertAddOnComplete() {
+    }
+    virtual void OnAlertBuildingComplete() {
+    }
+    virtual void OnAlertBuildingUnderAttack() {
+    }
+    virtual void OnAlertLarvaHatched() {
+    }
+    virtual void OnAlertMergeComplete() {
+    }
+    virtual void OnAlertMineralsExhausted() {
+    }
+    virtual void OnAlertMorphComplete() {
+    }
+    virtual void OnAlertMothershipComplete() {
+    }
+    virtual void OnAlertMULEExpired() {
+    }
+    virtual void OnAlertNukeComplete() {
+    }
+    virtual void OnAlertResearchComplete() {
+    }
+    virtual void OnAlertTrainError() {
+    }
+    virtual void OnAlertTrainUnitComplete() {
+    }
+    virtual void OnAlertTrainWorkerComplete() {
+    }
+    virtual void OnAlertTransformationComplete() {
+    }
+    virtual void OnAlertUnitUnderAttack() {
+    }
+    virtual void OnAlertUpgradeComplete() {
+    }
+    virtual void OnAlertVespeneExhausted() {
+    }
+    virtual void OnAlertWarpInComplete() {
+    }
+    //!@}
+
     //! Called when an enemy unit enters vision from out of fog of war.
     //!< \param unit The unit entering vision.
     virtual void OnUnitEnterVision(const Unit*) {
