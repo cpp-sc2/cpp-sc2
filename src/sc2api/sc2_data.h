@@ -261,6 +261,18 @@ struct EffectData {
 
 typedef std::vector<EffectData> Effects;
 
+//! Radar ring visible from a sensor unit (Sensor Tower, Raven, etc.).
+struct RadarRing {
+    RadarRing() = default;
+    RadarRing(const Point2D in_position, float in_radius) : position(in_position), radius(in_radius) {
+    }
+
+    //! Center position of the radar ring.
+    Point2D position;
+    //! Detection radius.
+    float radius = 0.0f;
+};
+
 //! Power source information for Protoss.
 struct PowerSource {
     PowerSource(const Point2D in_position, float in_radius, Tag in_tag)

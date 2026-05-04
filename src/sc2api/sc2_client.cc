@@ -91,6 +91,7 @@ public:
     SpatialActions rendered_actions_;
     std::vector<PowerSource> power_sources_;
     std::vector<Effect> effects_;
+    std::vector<RadarRing> radar_rings_;
     std::vector<UpgradeID> upgrades_;
     std::vector<UpgradeID> upgrades_previous_;
     std::vector<ChatMessage> chat_;
@@ -164,6 +165,9 @@ public:
     }
     const std::vector<Effect>& GetEffects() const final {
         return effects_;
+    }
+    const std::vector<RadarRing>& GetRadarRings() const final {
+        return radar_rings_;
     }
     const std::vector<UpgradeID>& GetUpgrades() const final {
         return upgrades_;
@@ -639,6 +643,13 @@ bool ObservationImp::UpdateObservation() {
     effects_.resize(observation_raw->effects_size());
     for (int i = 0; i < observation_raw->effects_size(); ++i) {
         effects_[i].ReadFromProto(observation_raw->effects(i));
+    }
+
+    radar_rings_.clear();
+    radar_rings_.reserve(observation_raw->radar_size());
+    for (int i = 0; i < observation_raw->radar_size(); ++i) {
+        const SC2APIProtocol::RadarRing& ring = observation_raw->radar(i);
+        radar_rings_.emplace_back(Point2D(ring.pos().x(), ring.pos().y()), ring.radius());
     }
 
     if (!observation_raw->has_player()) {

@@ -100,6 +100,10 @@ public:
     //!< \return List of effects.
     virtual const std::vector<Effect>& GetEffects() const = 0;
 
+    //! Gets all radar rings (Sensor Tower / Raven detection zones) in vision of the current player.
+    //!< \return List of radar rings.
+    virtual const std::vector<RadarRing>& GetRadarRings() const = 0;
+
     //! Gets all upgrades.
     //!< \return List of upgrades.
     virtual const std::vector<UpgradeID>& GetUpgrades() const = 0;
