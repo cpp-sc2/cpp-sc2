@@ -318,6 +318,25 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
         }
 
         unit->is_powered = observation_unit.is_powered();
+        unit->is_active = observation_unit.is_active();
+        unit->buff_duration_remain = observation_unit.buff_duration_remain();
+        unit->buff_duration_max = observation_unit.buff_duration_max();
+
+        unit->rally_targets.clear();
+        unit->rally_targets.reserve(observation_unit.rally_targets_size());
+        for (int i = 0; i < observation_unit.rally_targets_size(); ++i) {
+            const auto& rt_proto = observation_unit.rally_targets(i);
+            RallyTarget rt;
+            if (rt_proto.has_point()) {
+                rt.point.x = rt_proto.point().x();
+                rt.point.y = rt_proto.point().y();
+                rt.point.z = rt_proto.point().z();
+            }
+            if (rt_proto.has_tag())
+                rt.tag = rt_proto.tag();
+            unit->rally_targets.push_back(rt);
+        }
+
         unit->is_alive = true;
         if (unit->last_seen_game_loop < prev_game_loop)
             unit_pool.AddUnitEnteredVision(unit);

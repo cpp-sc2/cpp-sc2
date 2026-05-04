@@ -31,6 +31,14 @@ struct UnitOrder {
     float progress = 0.0F;
 };
 
+//! A rally target on a producer building.
+struct RallyTarget {
+    //! Position of the rally point.
+    Point3D point;
+    //! Tag of the unit being rallied to. NullTag if rally on a position.
+    Tag tag = NullTag;
+};
+
 //! A passenger on a transport.
 struct PassengerUnit {
     //! The tag of the unit in the transport.
@@ -179,6 +187,17 @@ public:
     std::vector<BuffID> buffs;
     //! Whether the unit is powered by a pylon.
     bool is_powered;
+
+    //! Whether a producer building is actively producing or researching. Only valid for this player's units.
+    bool is_active = false;
+
+    //! Rally targets on a producer building. Only valid for this player's units.
+    std::vector<RallyTarget> rally_targets;
+
+    //! Buff or temporary-unit duration remaining. Only valid for this player's units.
+    int32_t buff_duration_remain = 0;
+    //! Buff or temporary-unit total duration. Only valid for this player's units.
+    int32_t buff_duration_max = 0;
 
     //! Whether the unit is alive or not.
     bool is_alive;
