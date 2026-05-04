@@ -97,7 +97,7 @@ bool Convert(const ScorePtr& score_ptr, ScoreDetails& score_details) {
         Convert(score_details_ptr->total_damage_dealt(), score_details.total_damage_dealt);
     }
 
-    if (score_details_ptr->has_collected_minerals()) {
+    if (score_details_ptr->has_total_damage_taken()) {
         Convert(score_details_ptr->total_damage_taken(), score_details.total_damage_taken);
     }
 
