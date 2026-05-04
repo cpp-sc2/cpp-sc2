@@ -44,6 +44,7 @@ bool Convert(const ScorePtr& score_ptr, ScoreDetails& score_details) {
     score_details.killed_value_units = score_details_ptr->killed_value_units();
     score_details.killed_value_structures = score_details_ptr->killed_value_structures();
     score_details.collected_minerals = score_details_ptr->collected_minerals();
+    score_details.collected_vespene = score_details_ptr->collected_vespene();
     score_details.collection_rate_minerals = score_details_ptr->collection_rate_minerals();
     score_details.collection_rate_vespene = score_details_ptr->collection_rate_vespene();
     score_details.spent_minerals = score_details_ptr->spent_minerals();
