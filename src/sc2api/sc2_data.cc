@@ -122,7 +122,7 @@ void AbilityData::ReadFromProto(const SC2APIProtocol::AbilityData& ability_data)
 
     is_instant_placement = false;
     if (ability_data.has_is_instant_placement()) {
-        is_instant_placement = ability_data.has_is_instant_placement();
+        is_instant_placement = ability_data.is_instant_placement();
     }
 
     cast_range = 0.0f;
