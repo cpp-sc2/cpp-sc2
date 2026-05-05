@@ -120,44 +120,64 @@ public:
 
     //! \name Extended alert hooks. All default to noop, override only what you use.
     //!@{
+    //! Called when a generic in-game error alert is raised.
     virtual void OnAlertError() {
     }
+    //! Called when an add-on (Reactor / Tech Lab) finishes construction.
     virtual void OnAlertAddOnComplete() {
     }
+    //! Called when a building finishes construction.
     virtual void OnAlertBuildingComplete() {
     }
+    //! Called when one of the player's buildings is under attack.
     virtual void OnAlertBuildingUnderAttack() {
     }
+    //! Called when a larva hatches.
     virtual void OnAlertLarvaHatched() {
     }
+    //! Called when an Archon merge completes.
     virtual void OnAlertMergeComplete() {
     }
+    //! Called when a mineral patch is exhausted.
     virtual void OnAlertMineralsExhausted() {
     }
+    //! Called when a unit morph completes.
     virtual void OnAlertMorphComplete() {
     }
+    //! Called when a Mothership finishes construction.
     virtual void OnAlertMothershipComplete() {
     }
+    //! Called when a MULE expires.
     virtual void OnAlertMULEExpired() {
     }
+    //! Called when a Nuke launch completes.
     virtual void OnAlertNukeComplete() {
     }
+    //! Called when a research alert is raised.
     virtual void OnAlertResearchComplete() {
     }
+    //! Called when a training order fails.
     virtual void OnAlertTrainError() {
     }
+    //! Called when a unit finishes training.
     virtual void OnAlertTrainUnitComplete() {
     }
+    //! Called when a worker finishes training.
     virtual void OnAlertTrainWorkerComplete() {
     }
+    //! Called when a unit transformation completes.
     virtual void OnAlertTransformationComplete() {
     }
+    //! Called when one of the player's units is under attack.
     virtual void OnAlertUnitUnderAttack() {
     }
+    //! Called when an upgrade completes.
     virtual void OnAlertUpgradeComplete() {
     }
+    //! Called when a vespene geyser is exhausted.
     virtual void OnAlertVespeneExhausted() {
     }
+    //! Called when a Protoss warp-in completes.
     virtual void OnAlertWarpInComplete() {
     }
     //!@}
