@@ -281,6 +281,12 @@ struct Effect {
     //! All the positions that this effect is impacting on the map.
     //! eg. The Lurker's attack impacts multiple positions in a line.
     std::vector<Point2D> positions;
+    //! Alliance of the unit that cast the effect (SC2APIProtocol::Alliance values).
+    int32_t alliance = 3;
+    //! Player id of the caster.
+    int32_t owner = 0;
+    //! Impact radius of the effect.
+    float radius = 0.0f;
 
     void ReadFromProto(const SC2APIProtocol::Effect& effect);
 };
