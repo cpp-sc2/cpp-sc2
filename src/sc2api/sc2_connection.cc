@@ -153,7 +153,14 @@ bool Connection::Receive(SC2APIProtocol::Response*& response, unsigned int timeo
     lock.unlock();
     response = nullptr;
     Disconnect();
-    queue_.clear();
+
+    {
+        std::lock_guard<std::mutex> guard(mutex_);
+        for (auto* r : queue_) {
+            delete r;
+        }
+        queue_.clear();
+    }
 
     // Execute the timeout callback if it exists.
     if (timeout_callback_) {
