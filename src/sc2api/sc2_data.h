@@ -273,6 +273,16 @@ struct RadarRing {
     float radius = 0.0f;
 };
 
+//! An action error raised by the SC2 server when a command is rejected.
+struct ActionError {
+    //! Tag of the unit the action was directed at. 0 if not applicable.
+    uint64_t unit_tag = 0;
+    //! AbilityID of the rejected action.
+    uint32_t ability_id = 0;
+    //! Result code (SC2APIProtocol::ActionResult value).
+    uint32_t result = 0;
+};
+
 //! Power source information for Protoss.
 struct PowerSource {
     PowerSource(const Point2D in_position, float in_radius, Tag in_tag)

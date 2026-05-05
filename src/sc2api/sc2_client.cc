@@ -92,6 +92,7 @@ public:
     std::vector<PowerSource> power_sources_;
     std::vector<Effect> effects_;
     std::vector<RadarRing> radar_rings_;
+    std::vector<ActionError> action_errors_;
     std::vector<UpgradeID> upgrades_;
     std::vector<UpgradeID> upgrades_previous_;
     std::vector<ChatMessage> chat_;
@@ -168,6 +169,9 @@ public:
     }
     const std::vector<RadarRing>& GetRadarRings() const final {
         return radar_rings_;
+    }
+    const std::vector<ActionError>& GetActionErrors() const final {
+        return action_errors_;
     }
     const std::vector<UpgradeID>& GetUpgrades() const final {
         return upgrades_;
@@ -619,6 +623,17 @@ bool ObservationImp::UpdateObservation() {
     chat_.clear();
     for (const auto& message : response_->chat()) {
         chat_.push_back({message.player_id(), message.message()});
+    }
+
+    action_errors_.clear();
+    action_errors_.reserve(response_->action_errors_size());
+    for (int i = 0; i < response_->action_errors_size(); ++i) {
+        const SC2APIProtocol::ActionError& err = response_->action_errors(i);
+        ActionError pod_err;
+        pod_err.unit_tag = err.unit_tag();
+        pod_err.ability_id = err.ability_id();
+        pod_err.result = static_cast<uint32_t>(err.result());
+        action_errors_.push_back(pod_err);
     }
 
     ObservationRawPtr observation_raw;
