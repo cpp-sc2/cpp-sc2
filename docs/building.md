@@ -24,62 +24,136 @@
 
 For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
-1. Install [CMake](https://cmake.org/download/).
+### Prerequisites
 
-1. Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
+1. Install **[CMake](https://cmake.org/download/)**.
 
-1. Clone the project.
+2. Download and install **[Visual Studio 2022](https://www.techspot.com/downloads/7493-visual-studio-2022.html)**.
 
-   ```bat
-   git clone git@github.com:cpp-sc2/cpp-sc2.git
-   ```
+    - 2022 is recommended for stability; 2017 is the minimum. 
 
-1. Enter the working directory.
+    - Select **Desktop development with C++** workload and default optional settings.
 
-   ```bat
-   cd cpp-sc2
-   ```
+### Step 1: Clone
 
-1. Create Visual Studio project files.
-   E.g. for Visual Studio 2022:
+- Open **Visual Studio**, select `continue without code`, and open the PowerShell **terminal** (`` CTRL+` ``)
+- Navigate to where you want to save your bot:
+```bat
+cd C:\YOUR_FOLDER_PATH
+```
 
-   ```bat
-   cmake -B build -G "Visual Studio 17 2022"
-   ```
+#### Option A: Clone the official repo directly:
 
-1. Build the project using Visual Studio.
+```bat
+git clone --recursive https://github.com/cpp-sc2/cpp-sc2
+```
 
-   ```bat
-   start build\cpp-sc2.sln
-   ```
+#### Option B: If you made your own fork, use your fork's URL instead:
+
+```bat
+git clone --recursive https://github.com/YOUR_USERNAME/YOUR_REPO_NAME
+```
+
+### Step 2: Generate Project Files
+
+#### Enter the working directory:
+
+```bat
+cd cpp-sc2
+```
+
+#### Run CMake to create the build files for your version of Visual Studio:
+
+```bat
+cmake -B build -G "Visual Studio 17 2022"
+```
+
+<details>
+<summary>For other Visual Studio versions:</summary>
+<br>
+Replace the generator string in the command above with your version:
+
+<br><code>`"Visual Studio 15 2017"`</code>
+<br><code>`"Visual Studio 16 2019"`</code>
+<br><code>`"Visual Studio 18 2026"`</code>
+
+</details>
+
+### Step 3: cmake
+
+```bat
+cmake --build build --config RelWithDebInfo
+```
+
+<details>
+<summary>RelWithDebInfo?</summary>
+<br><code>RelWithDebInfo</code> is a blend of the Release and Debug configurations:
+<br><br>- <b>Debug</b> is not useful for bot development due to massive performance costs.
+<br><br>- <b>Release</b> is what your bot will be built as when you submit to the ladder.
+<br><br>- <b>RelWithDebInfo</b> is nearly as fast as Release, and if your client crashes, you get readable debugging output rather than Release's cryptic memory addresses.
+</details>
+
+### Step 4: Build Solution
+
+#### Open the solution file in Visual Studio:
+
+```bat
+start build\cpp-sc2.sln
+```
+
+###### If you're using Visual Studio 2026: `.slnx`
+
+#### Change Visual Studio CMake Configuration to `RelWithDebInfo`
+
+<details>
+<summary>Visual Studio 2022</summary>
+<br>- On the toolbar at the top, find the <b>Configuration</b> dropdown that reads <code>x64-Debug</code>.
+<br>- Click the down-arrow and select <code>Manage Configurations</code>.
+<br>- Click the <span style="color: green;font-size: 1.4em;"><b>+</b></span> button to add a new configuration (you will create two).
+<br>- Select <code>x64-Release</code>, rename it to <code>x64-RelWithDebInfo</code>, and confirm that the configuration type is <code>RelWithDebInfo</code>.
+<br>- Click the <span style="color: green;font-size: 1.4em;"><b>+</b></span> button again, select <code>x64-Release</code>, and change this configuration type to <code>Release</code>.
+<br>- Save the changes with <code>CTRL+S</code>.
+<br>- Close the <code>CMakeSettings.json</code> tab.
+<br>- Select the <code>x64-RelWithDebInfo</code> configuration from the dropdown.
+<br>- Open the <b>Build</b> menu on the top toolbar and select <b>Rebuild All</b> (<code>CTRL+ALT+F7</code>).
+</details>
+
+<details>
+<summary>Visual Studio 2026</summary>
+<br>- On the toolbar at the top, find the <b>Solution Configurations</b> dropdown that reads <code>Debug</code>.
+<br>- Click the down-arrow and select <code>RelWithDebInfo</code>.
+<br>- Open the <b>Build</b> menu on the top toolbar and select <b>Rebuild Solution</b> (<code>CTRL+ALT+F7</code>).
+</details>
 
 ## macOS
 
+### Prerequisites
+
 1. Install [CMake](https://cmake.org/download/).
 
-1. Install XCode.
+2. Install XCode.
 
-1. Install XCode command-line tools.
+3. Install XCode command-line tools.
 
-1. Clone the project.
+### Step 1: Clone
 
    ```bash
-   git clone git@github.com:cpp-sc2/cpp-sc2.git
+   git clone https://github.com/cpp-sc2/cpp-sc2
    ```
 
-1. Enter the working directory.
+### Step 2. Enter the working directory.
 
    ```bash
    cd cpp-sc2
    ```
 
-1. Create makefiles.
+### Step 3. Create makefiles.
 
    ```bash
    cmake -B build
    ```
 
-1. Build the project.
+### Step 4. Build the project.
 
    ```bash
    cmake --build build --parallel $(nproc)
@@ -87,31 +161,35 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
 ## Linux
 
+### Prerequisites
+
 1. Install [CMake](https://cmake.org/download/).
 
-1. Install `gcc-c++`.
+2. Install `gcc-c++`.
 
-1. Install the `make` utility.
+3. Install the `make` utility.
 
-1. Clone the project.
+### Step 1. Clone
 
    ```bash
-   git clone git@github.com:cpp-sc2/cpp-sc2.git
+   git clone https://github.com/cpp-sc2/cpp-sc2
    ```
 
-1. Enter the working directory.
+### Step 2. Create makefiles.
+
+#### Enter the working directory.
 
    ```bash
    cd cpp-sc2
    ```
 
-1. Create makefiles.
+#### Create makefiles.
 
    ```bash
    cmake -B build
    ```
 
-1. Build the project.
+### Step 3. Build the project.
 
    ``` bash
    cmake --build build --parallel $(nproc)
