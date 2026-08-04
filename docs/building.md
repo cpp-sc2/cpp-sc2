@@ -24,62 +24,107 @@
 
 For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
-1. Install [CMake](https://cmake.org/download/).
+### Prerequisites
 
-1. Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
+#### Download and install a C++ IDE with built-in CMake support: **[CLion](https://www.jetbrains.com/clion/download/?section=windows)** or **[Visual Studio](https://visualstudio.microsoft.com/downloads/)**.
 
-1. Clone the project.
+> **CLion**: Fully equipped with CMake out of the box - no separate installation required.
 
-   ```bat
-   git clone git@github.com:cpp-sc2/cpp-sc2.git
-   ```
+> **Visual Studio**: Select the **"Desktop development with C++"** workload, along with the **"C++ CMake tools for Windows"** optional component during installation.
+ 
+If you are using an IDE without CMake pre-installed, download and install **[CMake](https://cmake.org/download/)**.
 
-1. Enter the working directory.
+### Step 1: Clone Repository
 
-   ```bat
-   cd cpp-sc2
-   ```
+1. Open **Windows PowerShell**.
 
-1. Create Visual Studio project files.
-   E.g. for Visual Studio 2022:
+2. Navigate to the path where you want to save your bot:
 
-   ```bat
-   cmake -B build -G "Visual Studio 17 2022"
-   ```
+```bat
+cd C:\YOUR_FOLDER_PATH
+```
 
-1. Build the project using Visual Studio.
+#### Option A: Clone the official repo directly:
 
-   ```bat
-   start build\cpp-sc2.sln
-   ```
+```
+git clone https://github.com/cpp-sc2/cpp-sc2
+```
+
+#### Option B: If you made your own fork, use your fork's URL instead:
+
+```bat
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME
+```
+
+### Step 2: CMake Generation
+
+1. Open your IDE.
+
+2. Select **Open Folder**.
+
+3. Select the newly cloned folder:
+
+```bat
+C:\YOUR_FOLDER_PATH\REPO_NAME
+```
+
+> **CLion**: Use the **Enable profile** checkbox to enable all `x64` build presets.
+
+The initial project build process will begin automatically.
+
+When **"CMake generation finished"** appears, proceed to the next step.
+ 
+### Step 3: Build Project
+
+1. On the top toolbar is a drop-down menu:
+ 
+    change the setting from `Debug` to `RelWithDebInfo`.
+
+<details>
+<summary> What is<code>RelWithDebInfo</code>?</summary>
+<br><code>RelWithDebInfo</code> is a blend of the <code>Release</code> and <code>Debug</code> CMake build types:
+<br><br>- <code>Debug</code> is designed for development and testing, but can cause issues for SC2 bot dev due to performance costs.
+<br><br>- <code>Release</code> is what your bot will be built as when you submit to the ladder.
+<br><br>- <code>RelWithDebInfo</code> is nearly as fast as Release, and if your client crashes, you get readable debugging output rather than Release's cryptic memory addresses. If the information it provides is not adequate, consider swapping to `Debug`.
+</details>
+
+Open the <b>Build</b> menu on the top toolbar and choose the option for your IDE:
+
+> CLion: **Rebuild Project**
+
+> Visual Studio: **Rebuild Solution** (<code>Ctrl+Alt+F7</code>).
+
+A final build process will commence, taking a few minute. When complete, proceed to the [next page](getting_started.md).
 
 ## macOS
 
+### Prerequisites
+
 1. Install [CMake](https://cmake.org/download/).
 
-1. Install XCode.
+2. Install XCode.
 
-1. Install XCode command-line tools.
+3. Install XCode command-line tools.
 
-1. Clone the project.
+### Step 1: Clone
 
    ```bash
-   git clone git@github.com:cpp-sc2/cpp-sc2.git
+   git clone https://github.com/cpp-sc2/cpp-sc2
    ```
 
-1. Enter the working directory.
+### Step 2. Enter the working directory.
 
    ```bash
    cd cpp-sc2
    ```
 
-1. Create makefiles.
+### Step 3. Create makefiles.
 
    ```bash
    cmake -B build
    ```
 
-1. Build the project.
+### Step 4. Build the project.
 
    ```bash
    cmake --build build --parallel $(nproc)
@@ -87,31 +132,35 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
 ## Linux
 
+### Prerequisites
+
 1. Install [CMake](https://cmake.org/download/).
 
-1. Install `gcc-c++`.
+2. Install `gcc-c++`.
 
-1. Install the `make` utility.
+3. Install the `make` utility.
 
-1. Clone the project.
+### Step 1. Clone
 
    ```bash
-   git clone git@github.com:cpp-sc2/cpp-sc2.git
+   git clone https://github.com/cpp-sc2/cpp-sc2
    ```
 
-1. Enter the working directory.
+### Step 2. Create makefiles.
+
+#### Enter the working directory.
 
    ```bash
    cd cpp-sc2
    ```
 
-1. Create makefiles.
+#### Create makefiles.
 
    ```bash
    cmake -B build
    ```
 
-1. Build the project.
+### Step 3. Build the project.
 
    ``` bash
    cmake --build build --parallel $(nproc)
@@ -146,7 +195,7 @@ $ cmake --build build --parallel $(nproc --ignore=1)
 
 ## WSL2 Support
 
-Thanks to interoperability between the [Windows and Linux file systems](https://docs.microsoft.com/en-us/windows/wsl/filesystems) in WSL2, it is possible to cross compile `cpp-sc2` under WSL2 for Windows and launch the executables from the WSL2 context using the Windows Starcraft II installation. Current implementation may not support custom installs of Starcraft II (e.g. to an external hard drive).
+Thanks to interoperability between the [Windows and Linux file systems](https://docs.microsoft.com/en-us/windows/wsl/filesystems) in WSL2, it is possible to cross compile `cpp-sc2` under WSL2 for Windows and launch the executables from the WSL2 context using the Windows Starcraft II installation. Current implementation may not support custom installations of Starcraft II (e.g. to an external hard drive).
 
 This documentation assumes the user is familiar with WSL2 setup. For a more detailed walkthrough of using WSL2 for the first time, see the [Microsoft documentation on installing Linux on Windows with WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
 

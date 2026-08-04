@@ -57,6 +57,27 @@ target_include_directories(sc2api SYSTEM PUBLIC "${civetweb_SOURCE_DIR}/include"
 
 target_link_libraries(sc2api PUBLIC sc2protocol civetweb-c-library)
 
+# Platform-specific system networking and threading libraries
+if(WIN32)
+    target_link_libraries(sc2api PUBLIC ws2_32 winmm)
+elseif(APPLE)
+    find_library(COREFOUNDATION_FRAMEWORK CoreFoundation)
+    target_link_libraries(sc2api PUBLIC ${COREFOUNDATION_FRAMEWORK})
+elseif(UNIX)
+    find_package(Threads REQUIRED)
+    target_link_libraries(sc2api PUBLIC Threads::Threads ${CMAKE_DL_LIBS})
+endif()
+
+# Cross-platform compiler warnings and flags
 if (MSVC)
-    target_compile_options(sc2api PRIVATE /W4 /WX-)
-endif ()
+    target_compile_options(sc2api PRIVATE
+            /W4
+            /WX-
+    )
+else()
+    target_compile_options(sc2api PRIVATE
+            -Wall
+            -Wextra
+            -Wno-unused-parameter
+    )
+endif()

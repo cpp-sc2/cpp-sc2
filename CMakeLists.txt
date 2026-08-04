@@ -36,7 +36,7 @@ set(LIBRARY_OUTPUT_PATH "${CPP_SC2_BUILD_DIR}")
 
 # Windows builds subdirectories Debug/Release.
 # These variables will overwrite that and put binaries in bin.
-set(build_types DEBUG RELEASE MINSIZEREL RELWITHDEBINFO)
+set(build_types DEBUG RELEASE RELWITHDEBINFO)
 set(output_types LIBRARY ARCHIVE RUNTIME)
 
 foreach (build IN LISTS build_types)
@@ -82,7 +82,7 @@ if (WSL2_CROSS_COMPILE)
     include(protos)
 endif ()
 
-# External subproject depedencies
+# External subproject dependencies
 include(civetweb)
 include(protobuf)
 include(sc2protocol)

@@ -7,3 +7,6 @@ AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 ColumnLimit: 120
 IndentWidth: 4
+---
+Language: Json
+BasedOnStyle: llvm

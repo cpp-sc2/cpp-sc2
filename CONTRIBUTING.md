@@ -21,7 +21,7 @@ can contribute to:
 
 - [ ] Search for other issues tagged [with `good first issue` or `help wanted` tag](https://github.com/cpp-sc2/cpp-sc2/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 - [ ] Suggest new features.
-- [ ] Vote for existing issues (issues with highest number of reactions are
+- [ ] Vote for existing issues (issues with the highest number of reactions are
       likely to be fixed first).
 - [ ] Fix `// FIXME:` comments in the code.
 - [ ] Improve the documentation of the API.
@@ -33,8 +33,8 @@ can contribute to:
       the project allows to make releases more often and implement nice new
       features for developers.
 
-If you have any suggestions, feel free to message over
-[Discord](https://discord.gg/YurYAgHRSw) (the `#cpp` channel).
+If you have any suggestions, feel free to send a message over the
+[#cpp](https://discord.com/channels/350289306763657218/350289506068463618) channel of the [AI Arena](https://discord.gg/YurYAgHRSw) Discord server.
 
 ## What should I know before the start?
 
