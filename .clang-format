@@ -9,4 +9,10 @@ ColumnLimit: 120
 IndentWidth: 4
 ---
 Language: Json
-BasedOnStyle: llvm
+BasedOnStyle: Google
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+ColumnLimit: 120
+IndentWidth: 4

@@ -1,113 +1,113 @@
 {
-  "version": 3,
-  "cmakeMinimumRequired": {
-    "major": 3,
-    "minor": 20,
-    "patch": 0
-  },
-  "configurePresets": [
-    {
-      "name": "base-Ninja",
-      "description": "Base Ninja inheritance which all other build are based on",
-      "hidden": true,
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "installDir": "${sourceDir}/out/install/${presetName}"
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
     },
-    {
-      "name": "base-windows-msvc",
-      "description": "Base Window's MSVC inheritance which all other Windows builds are based on",
-      "hidden": true,
-      "inherits": "base-Ninja",
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      },
-      "toolset": {
-        "value": "host=x64",
-        "strategy": "external"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
-    },
-    {
-      "name": "x64-RelWithDebInfo",
-      "inherits": "base-windows-msvc",
-      "displayName": "RelWithDebInfo",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      }
-    },
-    {
-      "name": "x64-Release",
-      "inherits": "base-windows-msvc",
-      "displayName": "Release",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
-    },
-    {
-      "name": "x64-Debug",
-      "inherits": "base-windows-msvc",
-      "displayName": "Debug",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "base-Unix",
-      "description": "Base Unix (Linux + macOS) inheritance which all other Unix builds are based on",
-      "hidden": true,
-      "inherits": "base-Ninja",
-      "condition": {
-        "type": "not",
-        "condition": {
-          "type": "equals",
-          "lhs": "${hostSystemName}",
-          "rhs": "Windows"
+    "configurePresets": [
+        {
+            "name": "base-Ninja",
+            "description": "Base Ninja inheritance which all other build are based on",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}"
+        },
+        {
+            "name": "base-windows-msvc",
+            "description": "Base Window's MSVC inheritance which all other Windows builds are based on",
+            "hidden": true,
+            "inherits": "base-Ninja",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "toolset": {
+                "value": "host=x64",
+                "strategy": "external"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "x64-RelWithDebInfo",
+            "inherits": "base-windows-msvc",
+            "displayName": "RelWithDebInfo",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "x64-Release",
+            "inherits": "base-windows-msvc",
+            "displayName": "Release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "x64-Debug",
+            "inherits": "base-windows-msvc",
+            "displayName": "Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "base-Unix",
+            "description": "Base Unix (Linux + macOS) inheritance which all other Unix builds are based on",
+            "hidden": true,
+            "inherits": "base-Ninja",
+            "condition": {
+                "type": "not",
+                "condition": {
+                    "type": "equals",
+                    "lhs": "${hostSystemName}",
+                    "rhs": "Windows"
+                }
+            }
+        },
+        {
+            "name": "Unix-RelWithDebInfo",
+            "inherits": "base-Unix",
+            "displayName": "RelWithDebInfo",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "Unix-Release",
+            "inherits": "base-Unix",
+            "displayName": "Release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "Unix-Debug",
+            "inherits": "base-Unix",
+            "displayName": "Debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "linux-mingw64-Release",
+            "inherits": "base-Ninja",
+            "displayName": "MinGW 64-bit (Cross-Compile)",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "toolchainFile": "${sourceDir}/cmake/toolchain/x86-64-w64-mingw32.cmake",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
         }
-      }
-    },
-    {
-      "name": "Unix-RelWithDebInfo",
-      "inherits": "base-Unix",
-      "displayName": "RelWithDebInfo",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
-      }
-    },
-    {
-      "name": "Unix-Release",
-      "inherits": "base-Unix",
-      "displayName": "Release",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
-    },
-    {
-      "name": "Unix-Debug",
-      "inherits": "base-Unix",
-      "displayName": "Debug",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
-    },
-    {
-      "name": "linux-mingw64-Release",
-      "inherits": "base-Ninja",
-      "displayName": "MinGW 64-bit (Cross-Compile)",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      },
-      "toolchainFile": "${sourceDir}/cmake/toolchain/x86-64-w64-mingw32.cmake",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Linux"
-      }
-    }
-  ]
+    ]
 }
