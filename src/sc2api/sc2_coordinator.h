@@ -70,8 +70,10 @@ public:
     //! \param port_start First port number.
     void SetPortStart(int port_start);
 
-    //! Sets the address used by Connect(int). Required for AI Arena `--LadderServer`.
-    //! \param net_address Host to attach to (for example a compose service IP).
+    //! Sets the host used by Connect(int). Default is 127.0.0.1.
+    //! Needed when attaching to a remote SC2 websocket (AI Arena `--LadderServer`).
+    //! \param net_address Hostname or IP to attach to.
+    //! \sa Connect
     void SetNetAddress(const std::string& net_address);
 
     //! Indicates whether feature layers should be provided in the observation.
@@ -132,7 +134,10 @@ public:
     //! Uses settings gathered from LoadSettings, specifically the path to the executable, to run StarCraft II.
     void LaunchStarcraft();
 
-    //! Attaches to a running Starcraft.
+    //! Attaches to a running StarCraft II websocket.
+    //! Uses the host from SetNetAddress (default 127.0.0.1).
+    //! \param port Game port (AI Arena `--GamePort`).
+    //! \sa SetNetAddress
     void Connect(int port);
 
     //! Starts a game on a certain map. There are multiple ways to specify a map:

@@ -78,7 +78,7 @@ else ()
                 "-I=${sc2protocol_SOURCE_DIR}"
                 "--cpp_out=${PROJECT_BINARY_DIR}/generated"
                 "${proto}"
-            DEPENDS ${protoc_depends} ${proto_files}
+            DEPENDS ${protoc_depends} ${proto}
             VERBATIM
         )
     endforeach()
