@@ -70,6 +70,10 @@ public:
     //! \param port_start First port number.
     void SetPortStart(int port_start);
 
+    //! Sets the address used by Connect(int). Required for AI Arena `--LadderServer`.
+    //! \param net_address Host to attach to (for example a compose service IP).
+    void SetNetAddress(const std::string& net_address);
+
     //! Indicates whether feature layers should be provided in the observation.
     //! \param settings Configuration of feature layer settings.
     //! \sa FeatureLayerSettings
