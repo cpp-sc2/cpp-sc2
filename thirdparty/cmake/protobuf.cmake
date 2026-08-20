@@ -3,8 +3,9 @@ message(STATUS "FetchContent: protobuf")
 set(protobuf_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(protobuf_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-# Do not build Protobuf compiler if using precompiled proto files
-if (WSL2_CROSS_COMPILE)
+# Do not build a target protoc when it cannot run (WSL2 precompiled protos,
+# CMAKE_CROSSCOMPILING) or when the host already supplied one.
+if (WSL2_CROSS_COMPILE OR CMAKE_CROSSCOMPILING OR Protobuf_PROTOC_EXECUTABLE)
     set(protobuf_BUILD_PROTOC_BINARIES OFF CACHE BOOL "" FORCE)
 endif ()
 

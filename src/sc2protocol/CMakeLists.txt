@@ -44,6 +44,26 @@ if (WSL2_CROSS_COMPILE)
     endforeach ()
 # Compile protos with protoc
 else ()
+    if (Protobuf_PROTOC_EXECUTABLE)
+        set(protoc_executable ${Protobuf_PROTOC_EXECUTABLE})
+        set(protoc_depends ${Protobuf_PROTOC_EXECUTABLE})
+    elseif (CMAKE_CROSSCOMPILING)
+        find_program(protoc_executable
+            NAMES protoc
+            PATHS /usr/bin /usr/local/bin
+            NO_CMAKE_FIND_ROOT_PATH
+        )
+        if (NOT protoc_executable)
+            message(FATAL_ERROR
+                "Cross-compiling needs a host protoc. "
+                "Pass -DProtobuf_PROTOC_EXECUTABLE=<path>.")
+        endif()
+        set(protoc_depends ${protoc_executable})
+    else ()
+        set(protoc_executable ${PROJECT_BINARY_DIR}/bin/protoc)
+        set(protoc_depends protoc)
+    endif()
+
     foreach (proto ${proto_files})
         get_filename_component(proto_name_we ${proto} NAME_WE)
         set(protoc_out_cc "${proto_generation_dir}/${proto_name_we}.pb.cc")
@@ -54,11 +74,11 @@ else ()
                 "${protoc_out_cc}"
                 "${protoc_out_h}"
             COMMAND
-                "${PROJECT_BINARY_DIR}/bin/protoc"
+                "${protoc_executable}"
                 "-I=${sc2protocol_SOURCE_DIR}"
                 "--cpp_out=${PROJECT_BINARY_DIR}/generated"
                 "${proto}"
-            DEPENDS protoc
+            DEPENDS ${protoc_depends} ${proto_files}
             VERBATIM
         )
     endforeach()
