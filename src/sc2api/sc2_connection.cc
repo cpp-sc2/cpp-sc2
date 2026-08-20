@@ -15,23 +15,14 @@ bool StartCivetweb() {
         return true;
     }
 
-    const char* options[] = {
-        "request_timeout_ms", "5000", "websocket_timeout_ms", "1200000", "num_threads", "4", "tcp_nodelay", "1", 0};
-
-    struct mg_callbacks callbacks = {0};
-
-    struct mg_init_data mg_start_init_data = {0};
-    mg_start_init_data.callbacks = &callbacks;
-    mg_start_init_data.configuration_options = options;
-
-    struct mg_error_data mg_start_error_data = {0};
-    char ebuff[256] = {0};
-    mg_start_error_data.text = ebuff;
-    mg_start_error_data.text_buffer_size = sizeof(ebuff);
-
-    const auto* ctx = mg_start2(&mg_start_init_data, &mg_start_error_data);
-    if (!ctx) {
-        std::cerr << "Failed to start civetweb server: " << ebuff << std::endl;
+    // cpp-sc2 is a websocket client. mg_start2() starts an HTTP server that
+    // binds 8080 by default, so the process appears to listen on 8080 even
+    // though the SC2 connection uses an ephemeral source port. AI Arena's
+    // get_ipv4_port_for_pid then maps the bot to the listen port and never
+    // forwards the real websocket. mg_init_library only enables the client.
+    const unsigned got = mg_init_library(MG_FEATURES_WEBSOCKET);
+    if ((got & MG_FEATURES_WEBSOCKET) == 0) {
+        std::cerr << "Failed to init civetweb websocket client" << std::endl;
         return false;
     }
 
