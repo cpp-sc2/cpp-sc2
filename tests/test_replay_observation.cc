@@ -102,10 +102,8 @@ public:
             Debug()->DebugMoveCamera(kCameraTarget);
             Debug()->SendDebug();
         }
-        if (loop >= 16 && !saved_) {
+        if (loop >= 64 && !saved_) {
             saved_ = Control()->SaveReplay(replay_path_);
-            Debug()->DebugEndGame(true);
-            Debug()->SendDebug();
         }
     }
 
@@ -166,10 +164,10 @@ private:
 }  // namespace
 
 bool TestReplayObservation(int argc, char** argv) {
-    const std::filesystem::path replay_dir = std::filesystem::temp_directory_path() / "cpp-sc2-replay-obs";
+    const std::filesystem::path replay_dir = std::filesystem::path(GetLibraryMapsDirectory()) / "ReplayFixtures";
     std::error_code ec;
     std::filesystem::create_directories(replay_dir, ec);
-    const std::string replay_path = (replay_dir / "fixture.SC2Replay").string();
+    const std::string replay_path = (replay_dir / "cpp_sc2_fixture.SC2Replay").string();
     std::filesystem::remove(replay_path, ec);
 
     {
@@ -178,6 +176,7 @@ bool TestReplayObservation(int argc, char** argv) {
             std::cerr << "TestReplayObservation: LoadSettings failed" << std::endl;
             return false;
         }
+        coordinator.SetTimeoutMS(120000);
 
         ReplayCaptureBot bot(replay_path);
         coordinator.SetParticipants({
@@ -190,12 +189,18 @@ bool TestReplayObservation(int argc, char** argv) {
             return false;
         }
         while (coordinator.Update()) {
-            if (bot.Observation()->GetGameLoop() > 200) {
+            SleepFor(20);
+            if (bot.saved()) {
+                break;
+            }
+            if (bot.Observation()->GetGameLoop() > 256) {
                 break;
             }
         }
-        if (!bot.saved() || !std::filesystem::exists(replay_path)) {
-            std::cerr << "TestReplayObservation: SaveReplay failed at " << replay_path << std::endl;
+        const auto size = std::filesystem::exists(replay_path) ? std::filesystem::file_size(replay_path) : 0;
+        if (!bot.saved() || size < 1000) {
+            std::cerr << "TestReplayObservation: SaveReplay failed at " << replay_path << " size=" << size
+                      << " loop=" << bot.Observation()->GetGameLoop() << std::endl;
             return false;
         }
     }
