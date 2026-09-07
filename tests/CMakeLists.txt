@@ -14,7 +14,8 @@ set(sc2test_sources
     test_restart.cc
     test_snapshots.cc
     test_unit_command_common.cc
-    test_unit_command.cc)
+    test_unit_command.cc
+    test_replay_observation.cc)
 
 add_executable(all_tests ${sc2test_sources})
 

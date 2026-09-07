@@ -11,6 +11,7 @@
 #include "test_observation_interface.h"
 #include "test_performance.h"
 #include "test_rendered.h"
+#include "test_replay_observation.h"
 #include "test_restart.h"
 #include "test_snapshots.h"
 #include "test_unit_command.h"
@@ -42,6 +43,7 @@ int main(int argc, char* argv[]) {
     TEST(sc2::TestUnitCommand);
     TEST(sc2::TestPerformance);
     TEST(sc2::TestObservationInterface);
+    TEST(sc2::TestReplayObservation);
     // TEST(sc2::TestObservationActions);
 
 #ifdef BUILD_SC2_RENDERER

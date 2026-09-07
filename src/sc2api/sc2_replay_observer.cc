@@ -112,6 +112,9 @@ bool ReplayControlImp::GatherReplayInfo(const std::string& path, bool download_d
         if (player_info_extra_proto.has_player_info()) {
             const SC2APIProtocol::PlayerInfo& player_info_proto = player_info_extra_proto.player_info();
             player_info.player_id = player_info_proto.player_id();
+            if (player_info_proto.has_player_name()) {
+                player_info.name = player_info_proto.player_name();
+            }
             if (player_info_proto.has_race_actual()) {
                 player_info.race = ConvertRaceFromProto(player_info_proto.race_actual());
             }

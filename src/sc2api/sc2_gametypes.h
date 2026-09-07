@@ -123,6 +123,9 @@ static const int max_num_players = 16;
 struct ReplayPlayerInfo {
     //! Player ID.
     int player_id;
+    //! Display name from RequestReplayInfo. ResponseGameInfo during playback
+    //! often leaves PlayerInfo.player_name empty; this is the reliable source.
+    std::string name;
     //! Player ranking.
     int mmr;
     //! Player actions per minute.
