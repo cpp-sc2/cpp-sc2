@@ -13,6 +13,23 @@
 
 namespace sc2 {
 
+namespace {
+
+std::string JoinDirFile(const char* directory_path, const char* name) {
+    std::string path(directory_path);
+    if (!path.empty() && path.back() != '/' && path.back() != '\\') {
+#ifdef _WIN32
+        path += '\\';
+#else
+        path += '/';
+#endif
+    }
+    path += name;
+    return path;
+}
+
+}  // namespace
+
 int scan_directory(const char* directory_path, std::vector<std::string>& files, bool full_path, bool list_directories) {
     if (!directory_path || !*directory_path) {
         return 0;
@@ -36,8 +53,9 @@ int scan_directory(const char* directory_path, std::vector<std::string>& files, 
                 if (!full_path) {
                     files.push_back(ent->d_name);
                 } else {
-                    files.push_back(std::string(directory_path) + std::string(ent->d_name));
+                    files.push_back(JoinDirFile(directory_path, ent->d_name));
                 }
+                break;
             }
             case DT_DIR: {
                 if (!list_directories || !*ent->d_name) {
@@ -51,9 +69,10 @@ int scan_directory(const char* directory_path, std::vector<std::string>& files, 
                 if (!full_path) {
                     files.push_back(ent->d_name);
                 } else {
-                    files.push_back(std::string(directory_path) + std::string(ent->d_name));
+                    files.push_back(JoinDirFile(directory_path, ent->d_name));
                 }
-            } break;
+                break;
+            }
         }
     }
 
