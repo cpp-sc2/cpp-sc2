@@ -139,7 +139,6 @@ public:
         } else if (saw_chat_text_) {
             chat_cleared_ = true;
         }
-
     }
 
     bool stepped() const {
