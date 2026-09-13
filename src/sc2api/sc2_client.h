@@ -11,11 +11,12 @@ both inherit from Client.
 #include <string>
 #include <vector>
 
-#include "sc2_action.h"
-#include "sc2_gametypes.h"
 #include "sc2_typeenums.h"
 
 namespace sc2 {
+
+enum class Alert : int;
+struct ActionError;
 
 class ControlImp;
 class Unit;
@@ -125,8 +126,10 @@ public:
     virtual void OnAlert(Alert) {
     }
 
-    //! Called for each failed action in ResponseObservation.action_errors.
-    //! Use this for "this SCV could not place the building" / not enough minerals.
+    //! Called for each failed command from the last step, before OnStep.
+    //! Same timing as other ClientEvents. Sources: ResponseObservation.action_errors and
+    //! non-success ResponseAction.result from the previous SendActions (UI "red text",
+    //! e.g. not enough minerals). Query the full list with Observation()->GetActionErrors().
     virtual void OnActionError(const ActionError&) {
     }
 

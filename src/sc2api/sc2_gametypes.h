@@ -36,33 +36,6 @@ enum AIBuild { RandomBuild = 1, Rush = 2, Timing = 3, Power = 4, Macro = 5, Air 
 
 enum class ChatChannel { All = 0, Team = 1 };
 
-//! HUD / observation alerts. Matches SC2APIProtocol::Alert. Enum only — no unit tag or extra payload.
-//! Failed commands with a unit/ability/result are ActionError (ResponseObservation.action_errors).
-enum class Alert {
-    NuclearLaunchDetected = 1,
-    NydusWormDetected = 2,
-    AlertError = 3,
-    AddOnComplete = 4,
-    BuildingComplete = 5,
-    BuildingUnderAttack = 6,
-    LarvaHatched = 7,
-    MergeComplete = 8,
-    MineralsExhausted = 9,
-    MorphComplete = 10,
-    MothershipComplete = 11,
-    MULEExpired = 12,
-    NukeComplete = 13,
-    ResearchComplete = 14,
-    TrainError = 15,
-    TrainUnitComplete = 16,
-    TrainWorkerComplete = 17,
-    TransformationComplete = 18,
-    UnitUnderAttack = 19,
-    UpgradeComplete = 20,
-    VespeneExhausted = 21,
-    WarpInComplete = 22
-};
-
 class Agent;
 
 //! Setup for a player in a game.

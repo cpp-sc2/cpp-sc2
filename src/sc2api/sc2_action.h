@@ -10,8 +10,37 @@
 
 namespace sc2 {
 
+//! HUD / observation alerts. Matches SC2APIProtocol::Alert. Enum only — no unit tag or extra payload.
+//! Failed commands with a unit/ability/result are ActionError (ResponseObservation.action_errors).
+enum class Alert : int {
+    Unknown = 0,  // Not a protocol value. Missing or unrecognized Alert.
+    NuclearLaunchDetected = 1,
+    NydusWormDetected = 2,
+    AlertError = 3,
+    AddOnComplete = 4,
+    BuildingComplete = 5,
+    BuildingUnderAttack = 6,
+    LarvaHatched = 7,
+    MergeComplete = 8,
+    MineralsExhausted = 9,
+    MorphComplete = 10,
+    MothershipComplete = 11,
+    MULEExpired = 12,
+    NukeComplete = 13,
+    ResearchComplete = 14,
+    TrainError = 15,
+    TrainUnitComplete = 16,
+    TrainWorkerComplete = 17,
+    TransformationComplete = 18,
+    UnitUnderAttack = 19,
+    UpgradeComplete = 20,
+    VespeneExhausted = 21,
+    WarpInComplete = 22
+};
+
 //! Result of an issued action. Matches SC2APIProtocol::ActionResult.
 enum class ActionResult {
+    Unknown = 0,  // Not a protocol value. Missing or unrecognized ActionResult.
     Success = 1,
     NotSupported = 2,
     Error = 3,
@@ -233,7 +262,7 @@ enum class ActionResult {
 struct ActionError {
     Tag unit_tag = NullTag;
     AbilityID ability_id = 0;
-    ActionResult result = ActionResult::Error;
+    ActionResult result = ActionResult::Unknown;
 };
 
 //! An action (command or ability) applied to a unit or set of units.

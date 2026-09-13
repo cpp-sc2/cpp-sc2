@@ -280,6 +280,113 @@ struct TestUnitUpgradesLevel : TestSequence {
     }
 };
 
+struct TestAlertEvent : TestSequence {
+    TestAlertEvent() : TestSequence(), saw_on_alert_(false), saw_train_alert_(false), issued_train_(false) {
+    }
+
+    void OnTestStart() override {
+        wait_game_loops_ = 400;
+        const Point2D origin = GetMapCenter();
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER, origin,
+                                         agent_->Observation()->GetPlayerID(), 1);
+        agent_->Debug()->DebugGiveAllResources();
+        agent_->Debug()->SendDebug();
+    }
+
+    void OnStep() override {
+        if (issued_train_) {
+            return;
+        }
+        if (agent_->Observation()->GetMinerals() < 50) {
+            return;
+        }
+        Units command_centers =
+            agent_->Observation()->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER));
+        if (command_centers.empty()) {
+            return;
+        }
+        agent_->Actions()->UnitCommand(command_centers.front(), ABILITY_ID::TRAIN_SCV);
+        issued_train_ = true;
+    }
+
+    void OnAlert(Alert alert) override {
+        saw_on_alert_ = true;
+        if (agent_->Observation()->GetAlerts().empty()) {
+            ReportError("GetAlerts() empty while OnAlert fired");
+        }
+        if (alert == Alert::TrainWorkerComplete || alert == Alert::TrainUnitComplete) {
+            saw_train_alert_ = true;
+        }
+    }
+
+    void OnTestFinish() override {
+        if (!issued_train_) {
+            ReportError("Did not issue TRAIN_SCV");
+        } else if (!saw_on_alert_) {
+            ReportError("OnAlert was not called");
+        } else if (!saw_train_alert_) {
+            ReportError("OnAlert fired but not for TrainWorkerComplete/TrainUnitComplete");
+        }
+        KillAllUnits();
+    }
+
+    bool saw_on_alert_;
+    bool saw_train_alert_;
+    bool issued_train_;
+};
+
+struct TestActionErrorEvent : TestSequence {
+    TestActionErrorEvent() : TestSequence(), saw_event_(false), issued_command_(false) {
+    }
+
+    void OnTestStart() override {
+        wait_game_loops_ = 60;
+        const Point2D origin = GetMapCenter();
+        const uint32_t player = agent_->Observation()->GetPlayerID();
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER, origin, player, 1);
+        agent_->Debug()->DebugCreateUnit(UNIT_TYPEID::TERRAN_SCV, origin + Point2D(4.0f, 0.0f), player, 1);
+        agent_->Debug()->SendDebug();
+    }
+
+    void OnStep() override {
+        if (issued_command_) {
+            return;
+        }
+        Units command_centers =
+            agent_->Observation()->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER));
+        Units scvs = agent_->Observation()->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SCV));
+        if (command_centers.empty() || scvs.empty()) {
+            return;
+        }
+        // Empty map starts at 0 minerals. Must run before tests that DebugGiveAllResources.
+        agent_->Actions()->UnitCommand(command_centers.front(), ABILITY_ID::TRAIN_SCV);
+        agent_->Actions()->UnitCommand(scvs.front(), ABILITY_ID::BUILD_SUPPLYDEPOT, scvs.front()->pos);
+        issued_command_ = true;
+    }
+
+    void OnActionError(const ActionError& error) override {
+        saw_event_ = true;
+        if (error.result == ActionResult::Success) {
+            ReportError("OnActionError reported Success");
+        }
+        if (agent_->Observation()->GetActionErrors().empty()) {
+            ReportError("GetActionErrors() empty while OnActionError fired");
+        }
+    }
+
+    void OnTestFinish() override {
+        if (!issued_command_) {
+            ReportError("Did not issue TRAIN_SCV / BUILD_SUPPLYDEPOT");
+        } else if (!saw_event_) {
+            ReportError("OnActionError was not called");
+        }
+        KillAllUnits();
+    }
+
+    bool saw_event_;
+    bool issued_command_;
+};
+
 struct TestUnitHallucinationAttribute : TestSequence {
     TestUnitHallucinationAttribute() : TestSequence(), test_unit_(nullptr) {
     }
@@ -361,6 +468,8 @@ private:
 
 TestObservationBot::TestObservationBot() : UnitTestBot() {
     // Sequences.
+    // Action errors first: later tests call DebugGiveAllResources.
+    Add(TestActionErrorEvent());
     Add(TestGetUnitData());
     Add(TestGetAbilityData());
     Add(TestGetFoodCount());
@@ -369,6 +478,7 @@ TestObservationBot::TestObservationBot() : UnitTestBot() {
     Add(TestGetCloakedEnemyUnit());
     Add(TestUnitUpgradesLevel());
     Add(TestUnitHallucinationAttribute());
+    Add(TestAlertEvent());
 }
 
 void TestObservationBot::OnTestsBegin() {

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include "sc2_action.h"
 #include "sc2_client.h"
 #include "sc2_data.h"
 #include "sc2_game_settings.h"
@@ -54,6 +55,9 @@ public:
     virtual bool ConsumeResponse() = 0;
 
     virtual bool IssueEvents(const std::vector<Tag>& commands = {}) = 0;
+    //! Store failed command results from ResponseAction until the next observation.
+    //! OnActionError fires from IssueEvents, not from SendActions.
+    virtual void QueueActionErrors(const std::vector<ActionError>& errors) = 0;
     virtual void OnGameStart() = 0;
 
     // Diagnostic.
