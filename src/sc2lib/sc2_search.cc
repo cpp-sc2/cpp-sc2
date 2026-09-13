@@ -2,149 +2,37 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
 #include <limits>
 #include <optional>
 #include <utility>
-#include <vector>
 
+#include "sc2api/sc2_data.h"
 #include "sc2api/sc2_map_info.h"
-#include "sc2api/sc2_typeenums.h"
-#include "sc2api/sc2_unit_filters.h"
-
-namespace {
-const float PI = 3.1415927F;
-// python-sc2 compares raw 0-255 height bytes with delta <= 10 (~1.25 world units).
-const float kHeightMergeDelta = 10.0F / 8.0F;
-const int kOffsetRange = 7;
-const size_t kMaxResourcesPerExpansion = 12;
-}  // namespace
 
 namespace sc2::search {
-
-size_t CalculateQueries(float radius, float step_size, const Point2D& center,
-                        std::vector<QueryInterface::PlacementQuery>& queries) {
-    Point2D current_grid;
-    Point2D previous_grid(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
-    size_t valid_queries = 0;
-    // Find a buildable location on the circumference of the sphere
-    float loc = 0.0F;
-    while (loc < 360.0F) {
-        const Point2D point = Point2D((radius * std::cos((loc * PI) / 180.0F)) + center.x,
-                                      (radius * std::sin((loc * PI) / 180.0F)) + center.y);
-
-        const QueryInterface::PlacementQuery query(ABILITY_ID::BUILD_COMMANDCENTER, point);
-
-        current_grid = Point2D(std::floor(point.x), std::floor(point.y));
-
-        if (previous_grid != current_grid) {
-            queries.push_back(query);
-            ++valid_queries;
-        }
-
-        previous_grid = current_grid;
-        loc += step_size;
-    }
-
-    return valid_queries;
-}
-
-std::vector<std::pair<Point3D, std::vector<Unit> > > Cluster(const Units& units, float distance_apart) {
-    const float squared_distance_apart = distance_apart * distance_apart;
-    std::vector<std::pair<Point3D, std::vector<Unit> > > clusters;
-    for (const auto* unit : units) {
-        const Unit& u = *unit;
-
-        float distance = std::numeric_limits<float>::max();
-        std::pair<Point3D, std::vector<Unit> >* target_cluster = nullptr;
-        // Find the cluster this mineral patch is closest to.
-        for (auto& cluster : clusters) {
-            const float d = DistanceSquared3D(u.pos, cluster.first);
-            if (d < distance) {
-                distance = d;
-                target_cluster = &cluster;
-            }
-        }
-
-        // If the target cluster is some distance away don't use it.
-        if (distance > squared_distance_apart) {
-            clusters.push_back(std::pair<Point3D, std::vector<Unit> >(u.pos, std::vector<Unit>{u}));
-            continue;
-        }
-
-        // Otherwise append to that cluster and update it's center of mass.
-        target_cluster->second.push_back(u);
-        auto size = static_cast<float>(target_cluster->second.size());
-        target_cluster->first = ((target_cluster->first * (size - 1)) + u.pos) / size;
-    }
-
-    return clusters;
-}
-
 namespace {
+const float kHeightMergeDelta = 10.0F / 8.0F;
+const float kMinOppositeGeyserDistance = 3.0F;
+const int kOffsetRange = 7;
+const int kTownHallHalfSize = 2;
+const size_t kMaxResourcesPerExpansion = 12;
 
-Units GatherExpansionResources(const ObservationInterface* observation) {
-    const IsMineralPatch is_mineral;
-    const IsGeyser is_geyser;
-    return observation->GetUnits([&](const Unit& unit) {
-        if (unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD450) {
+bool UnitHasVespene(const Unit& unit, const UnitTypes& unit_types) {
+    const uint32_t id = unit.unit_type;
+    return id < unit_types.size() && unit_types[id].has_vespene;
+}
+
+Units GatherExpansionResources(const ObservationInterface& observation) {
+    const UnitTypes& unit_types = observation.GetUnitTypeData();
+    return observation.GetUnits([&](const Unit& unit) {
+        const uint32_t id = unit.unit_type;
+        if (id >= unit_types.size()) {
             return false;
         }
-        return is_mineral(unit) || is_geyser(unit);
+        const UnitTypeData& data = unit_types[id];
+        return data.has_minerals || data.has_vespene;
     });
-}
-
-Point2D ClusterCenter(const Units& group) {
-    float total_x = 0.0F;
-    float total_y = 0.0F;
-    for (const auto* unit : group) {
-        total_x += unit->pos.x;
-        total_y += unit->pos.y;
-    }
-    const auto count = static_cast<float>(group.size());
-    return {total_x / count, total_y / count};
-}
-
-bool SameTerrainHeight(const HeightMap& height, const Units& group_a, const Units& group_b) {
-    for (const auto* a : group_a) {
-        const float ha = height.TerrainHeight(Point2DI(a->pos));
-        for (const auto* b : group_b) {
-            const float hb = height.TerrainHeight(Point2DI(b->pos));
-            if (std::abs(ha - hb) > kHeightMergeDelta) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
-std::vector<Units> MergeResourceGroups(const Units& resources, float distance_apart, const HeightMap& height) {
-    std::vector<Units> groups;
-    groups.reserve(resources.size());
-    for (const auto* resource : resources) {
-        groups.push_back(Units{resource});
-    }
-
-    bool merged = true;
-    while (merged) {
-        merged = false;
-        for (size_t i = 0; i < groups.size() && !merged; ++i) {
-            for (size_t j = i + 1; j < groups.size(); ++j) {
-                const Point2D center_a = ClusterCenter(groups[i]);
-                const Point2D center_b = ClusterCenter(groups[j]);
-                if (Distance2D(center_a, center_b) > distance_apart) {
-                    continue;
-                }
-                if (!SameTerrainHeight(height, groups[i], groups[j])) {
-                    continue;
-                }
-                groups[i].insert(groups[i].end(), groups[j].begin(), groups[j].end());
-                groups.erase(groups.begin() + static_cast<std::ptrdiff_t>(j));
-                merged = true;
-                break;
-            }
-        }
-    }
-    return groups;
 }
 
 std::vector<Point2D> ExpansionOffsets() {
@@ -160,12 +48,20 @@ std::vector<Point2D> ExpansionOffsets() {
     return offsets;
 }
 
-bool IsGeyserUnit(const Unit& unit) {
-    return IsGeyser{}(unit);
+bool IsTownHallFootprintPlacable(const PlacementGrid& placement, const Point2D& point) {
+    const Point2DI center(point);
+    for (int x = -kTownHallHalfSize; x <= kTownHallHalfSize; ++x) {
+        for (int y = -kTownHallHalfSize; y <= kTownHallHalfSize; ++y) {
+            if (!placement.IsPlacable(Point2DI(center.x + x, center.y + y))) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 std::optional<Point3D> FindExpansionLocation(const Units& resources, const std::vector<Point2D>& offsets,
-                                             const PlacementGrid& placement) {
+                                             const PlacementGrid& placement, const UnitTypes& unit_types) {
     if (resources.empty()) {
         return std::nullopt;
     }
@@ -185,7 +81,7 @@ std::optional<Point3D> FindExpansionLocation(const Units& resources, const std::
     float best_score = std::numeric_limits<float>::max();
     for (const auto& offset : offsets) {
         const Point2D point(center_x + offset.x, center_y + offset.y);
-        if (!placement.IsPlacable(Point2DI(point))) {
+        if (!IsTownHallFootprintPlacable(placement, point)) {
             continue;
         }
 
@@ -193,7 +89,7 @@ std::optional<Point3D> FindExpansionLocation(const Units& resources, const std::
         float score = 0.0F;
         for (const auto* resource : resources) {
             const float distance = Distance2D(point, resource->pos);
-            const float min_distance = IsGeyserUnit(*resource) ? 7.0F : 6.0F;
+            const float min_distance = UnitHasVespene(*resource, unit_types) ? 7.0F : 6.0F;
             if (distance < min_distance) {
                 far_enough = false;
                 break;
@@ -237,32 +133,32 @@ bool HasOppositeSideGeyserLayout(const Units& minerals, const Units& geysers) {
         return false;
     }
 
-    const float x1 = mineral_1->pos.x;
-    const float y1 = mineral_1->pos.y;
-    const float x2 = mineral_2->pos.x;
-    const float y2 = mineral_2->pos.y;
-    const Unit* geyser_1 = geysers[0];
-    const Unit* geyser_2 = geysers[1];
-
-    if (std::abs(x2 - x1) < 0.1F) {
-        const float line_x = (x1 + x2) / 2.0F;
-        const float side_1 = geyser_1->pos.x - line_x;
-        const float side_2 = geyser_2->pos.x - line_x;
-        return side_1 * side_2 < 0.0F && std::abs(side_1) > 3.0F && std::abs(side_2) > 3.0F;
+    const float dx = mineral_2->pos.x - mineral_1->pos.x;
+    const float dy = mineral_2->pos.y - mineral_1->pos.y;
+    const float length_sq = dx * dx + dy * dy;
+    if (length_sq <= 0.0F) {
+        return false;
     }
 
-    const float slope = (y2 - y1) / (x2 - x1);
-    const float intercept = y1 - slope * x1;
-    const float side_1 = geyser_1->pos.y - slope * geyser_1->pos.x - intercept;
-    const float side_2 = geyser_2->pos.y - slope * geyser_2->pos.x - intercept;
-    return side_1 * side_2 < 0.0F;
+    const auto side = [&](const Unit& geyser) {
+        return dx * (geyser.pos.y - mineral_1->pos.y) - dy * (geyser.pos.x - mineral_1->pos.x);
+    };
+    const float side_1 = side(*geysers[0]);
+    const float side_2 = side(*geysers[1]);
+    if (side_1 * side_2 >= 0.0F) {
+        return false;
+    }
+
+    const float length = std::sqrt(length_sq);
+    return std::abs(side_1) / length > kMinOppositeGeyserDistance &&
+           std::abs(side_2) / length > kMinOppositeGeyserDistance;
 }
 
-void SplitMineralsAndGeysers(const Units& resources, Units& minerals, Units& geysers) {
+void SplitMineralsAndGeysers(const Units& resources, const UnitTypes& unit_types, Units& minerals, Units& geysers) {
     minerals.clear();
     geysers.clear();
     for (const auto* resource : resources) {
-        if (IsGeyserUnit(*resource)) {
+        if (UnitHasVespene(*resource, unit_types)) {
             geysers.push_back(resource);
         } else {
             minerals.push_back(resource);
@@ -270,134 +166,178 @@ void SplitMineralsAndGeysers(const Units& resources, Units& minerals, Units& gey
     }
 }
 
-std::vector<Point3D> CalculateExpansionLocationsFromGrid(const Units& resources, const GameInfo& game_info,
-                                                         ExpansionParameters parameters) {
-    const PlacementGrid placement(game_info);
-    const HeightMap height(game_info);
-    const std::vector<Point2D> offsets = ExpansionOffsets();
-    const std::vector<Units> groups = MergeResourceGroups(resources, parameters.cluster_distance_, height);
-
-    std::vector<Point3D> expansion_locations;
-    for (const auto& group : groups) {
-        if (group.size() > kMaxResourcesPerExpansion) {
-            continue;
-        }
-
-        Units minerals;
-        Units geysers;
-        SplitMineralsAndGeysers(group, minerals, geysers);
-
-        auto append_location = [&](const Units& local_resources) {
-            const auto location = FindExpansionLocation(local_resources, offsets, placement);
-            if (!location) {
-                return;
-            }
-            if (parameters.debug_) {
-                parameters.debug_->DebugSphereOut(*location, 0.35F, Colors::Red);
-            }
-            expansion_locations.push_back(*location);
-        };
-
-        if (HasOppositeSideGeyserLayout(minerals, geysers)) {
-            for (const auto* geyser : geysers) {
-                Units local = minerals;
-                local.push_back(geyser);
-                append_location(local);
-            }
-            continue;
-        }
-
-        append_location(group);
-    }
-    return expansion_locations;
-}
-
-std::vector<Point3D> CalculateExpansionLocationsByQuery(const Units& resources, QueryInterface* query,
-                                                        ExpansionParameters parameters) {
-    std::vector<Point3D> expansion_locations;
-    std::vector<std::pair<Point3D, std::vector<Unit> > > clusters = Cluster(resources, parameters.cluster_distance_);
-
-    std::vector<size_t> query_size;
-    std::vector<QueryInterface::PlacementQuery> queries;
-    for (const auto& cluster : clusters) {
-        if (parameters.debug_) {
-            for (auto r : parameters.radiuses_) {
-                parameters.debug_->DebugSphereOut(cluster.first, r, Colors::Green);
-            }
-        }
-
-        size_t query_count = 0;
-        for (auto r : parameters.radiuses_) {
-            query_count += CalculateQueries(r, parameters.circle_step_size_, cluster.first, queries);
-        }
-
-        query_size.push_back(query_count);
+std::vector<Units> SplitByTerrainHeight(const Units& group, const HeightMap& height) {
+    if (group.size() <= 1) {
+        return {group};
     }
 
-    if (queries.empty()) {
-        return expansion_locations;
+    struct OrderedUnit {
+        float height;
+        Tag tag;
+        const Unit* unit;
+    };
+
+    std::vector<OrderedUnit> ordered;
+    ordered.reserve(group.size());
+    for (const auto* unit : group) {
+        ordered.push_back(OrderedUnit{height.TerrainHeight(Point2DI(unit->pos)), unit->tag, unit});
+    }
+    std::sort(ordered.begin(), ordered.end(), [](const OrderedUnit& a, const OrderedUnit& b) {
+        if (a.height != b.height) {
+            return a.height < b.height;
+        }
+        return a.tag < b.tag;
+    });
+
+    if (ordered.back().height - ordered.front().height <= kHeightMergeDelta) {
+        return {group};
     }
 
-    std::vector<bool> results = query->Placement(queries);
-    size_t start_index = 0;
-    for (size_t i = 0; i < clusters.size(); ++i) {
-        auto& cluster = clusters[i];
-        float distance = std::numeric_limits<float>::max();
-        Point2D closest;
-        bool found = false;
-
-        for (size_t j = start_index, e = start_index + query_size[i]; j < e; ++j) {
-            if (!results[j]) {
-                continue;
-            }
-
-            const Point2D& p = queries[j].target_pos;
-            const float d = Distance2D(p, cluster.first);
-            if (d < distance) {
-                distance = d;
-                closest = p;
-                found = true;
-            }
+    std::vector<Units> result;
+    Units current{ordered.front().unit};
+    for (size_t i = 1; i < ordered.size(); ++i) {
+        if (ordered[i].height - ordered[i - 1].height > kHeightMergeDelta) {
+            result.push_back(std::move(current));
+            current = Units{ordered[i].unit};
+        } else {
+            current.push_back(ordered[i].unit);
         }
-
-        start_index += query_size[i];
-        if (!found) {
-            continue;
-        }
-
-        const Point3D expansion(closest.x, closest.y, cluster.second.begin()->pos.z);
-        if (parameters.debug_) {
-            parameters.debug_->DebugSphereOut(expansion, 0.35F, Colors::Red);
-        }
-        expansion_locations.push_back(expansion);
     }
-
-    return expansion_locations;
+    result.push_back(std::move(current));
+    return result;
 }
 
 }  // namespace
 
-std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* observation, QueryInterface* query,
+std::vector<Units> Cluster(const Units& units, float distance_apart) {
+    struct Group {
+        Units units;
+        Point2D center;
+        Tag tie_tag;
+    };
+
+    const auto group_less = [](const Group& a, const Group& b) {
+        if (a.center.x != b.center.x) {
+            return a.center.x < b.center.x;
+        }
+        if (a.center.y != b.center.y) {
+            return a.center.y < b.center.y;
+        }
+        return a.tie_tag < b.tie_tag;
+    };
+
+    std::vector<Group> groups;
+    groups.reserve(units.size());
+    for (const auto* unit : units) {
+        groups.push_back(Group{Units{unit}, Point2D(unit->pos), unit->tag});
+    }
+
+    const float max_distance_sq = distance_apart * distance_apart;
+    while (groups.size() > 1) {
+        std::optional<std::pair<size_t, size_t>> best;
+        float best_distance_sq = 0.0F;
+
+        for (size_t i = 0; i < groups.size(); ++i) {
+            for (size_t j = i + 1; j < groups.size(); ++j) {
+                const float distance_sq = DistanceSquared2D(groups[i].center, groups[j].center);
+                if (distance_sq > max_distance_sq) {
+                    continue;
+                }
+
+                const size_t lo = group_less(groups[i], groups[j]) ? i : j;
+                const size_t hi = lo == i ? j : i;
+                if (!best || distance_sq < best_distance_sq ||
+                    (distance_sq == best_distance_sq &&
+                     (group_less(groups[lo], groups[best->first]) ||
+                      (!group_less(groups[best->first], groups[lo]) && group_less(groups[hi], groups[best->second]))))) {
+                    best = {lo, hi};
+                    best_distance_sq = distance_sq;
+                }
+            }
+        }
+
+        if (!best) {
+            break;
+        }
+
+        const size_t keep = std::min(best->first, best->second);
+        const size_t drop = std::max(best->first, best->second);
+        auto& a = groups[keep];
+        const auto& b = groups[drop];
+        const float size_a = static_cast<float>(a.units.size());
+        const float size_b = static_cast<float>(b.units.size());
+        a.center = (a.center * size_a + b.center * size_b) / (size_a + size_b);
+        a.units.insert(a.units.end(), b.units.begin(), b.units.end());
+        a.tie_tag = std::min(a.tie_tag, b.tie_tag);
+        groups.erase(groups.begin() + static_cast<std::ptrdiff_t>(drop));
+    }
+
+    std::vector<Units> result;
+    result.reserve(groups.size());
+    for (auto& group : groups) {
+        result.push_back(std::move(group.units));
+    }
+    return result;
+}
+
+std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* observation,
                                                  ExpansionParameters parameters) {
     if (!observation) {
         return {};
     }
 
-    const Units resources = GatherExpansionResources(observation);
+    const Units resources = GatherExpansionResources(*observation);
     if (resources.empty()) {
         return {};
     }
 
     const GameInfo& game_info = observation->GetGameInfo();
-    if (game_info.placement_grid.width > 0 && game_info.placement_grid.height > 0 &&
-        !game_info.placement_grid.data.empty()) {
-        return CalculateExpansionLocationsFromGrid(resources, game_info, parameters);
-    }
-
-    if (!query) {
+    if (game_info.placement_grid.width <= 0 || game_info.placement_grid.height <= 0 ||
+        game_info.placement_grid.data.empty()) {
         return {};
     }
-    return CalculateExpansionLocationsByQuery(resources, query, parameters);
+
+    const PlacementGrid placement(game_info);
+    const HeightMap height(game_info);
+    const UnitTypes& unit_types = observation->GetUnitTypeData();
+    const std::vector<Point2D> offsets = ExpansionOffsets();
+    const std::vector<Units> groups = Cluster(resources, parameters.cluster_distance_);
+
+    std::vector<Point3D> expansion_locations;
+    for (const auto& group : groups) {
+        for (const auto& height_group : SplitByTerrainHeight(group, height)) {
+            if (height_group.size() > kMaxResourcesPerExpansion) {
+                continue;
+            }
+
+            Units minerals;
+            Units geysers;
+            SplitMineralsAndGeysers(height_group, unit_types, minerals, geysers);
+
+            auto append_location = [&](const Units& local_resources) {
+                const auto location = FindExpansionLocation(local_resources, offsets, placement, unit_types);
+                if (!location) {
+                    return;
+                }
+                if (parameters.debug_) {
+                    parameters.debug_->DebugSphereOut(*location, 0.35F, Colors::Red);
+                }
+                expansion_locations.push_back(*location);
+            };
+
+            if (HasOppositeSideGeyserLayout(minerals, geysers)) {
+                for (const auto* geyser : geysers) {
+                    Units local = minerals;
+                    local.push_back(geyser);
+                    append_location(local);
+                }
+                continue;
+            }
+
+            append_location(height_group);
+        }
+    }
+    return expansion_locations;
 }
 
 }  // namespace sc2::search
