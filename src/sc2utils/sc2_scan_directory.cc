@@ -2,8 +2,10 @@
 
 #include <cassert>
 #include <cstring>
+#include <filesystem>
 #include <iostream>
 #include <string>
+#include <string_view>
 
 #ifdef _WIN32
 #include "dirent.h"
@@ -15,17 +17,8 @@ namespace sc2 {
 
 namespace {
 
-std::string JoinDirFile(const char* directory_path, const char* name) {
-    std::string path(directory_path);
-    if (!path.empty() && path.back() != '/' && path.back() != '\\') {
-#ifdef _WIN32
-        path += '\\';
-#else
-        path += '/';
-#endif
-    }
-    path += name;
-    return path;
+std::string JoinDirFile(const std::filesystem::path& directory_path, std::string_view name) {
+    return (directory_path / name).string();
 }
 
 }  // namespace

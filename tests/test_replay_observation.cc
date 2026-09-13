@@ -1,8 +1,11 @@
 #include "test_replay_observation.h"
 
+#include <algorithm>
 #include <filesystem>
 #include <iostream>
+#include <sstream>
 #include <string>
+#include <string_view>
 
 #include "sc2api/sc2_api.h"
 #include "sc2lib/sc2_lib.h"
@@ -12,31 +15,29 @@ namespace sc2 {
 
 namespace {
 
-const char* kPlayerAlpha = "HelixAlpha";
-const char* kPlayerBravo = "HelixBravo";
-const char* kChatLine = "cpp-sc2 replay chat probe";
+constexpr const char kPlayerAlpha[] = "HelixAlpha";
+constexpr const char kPlayerBravo[] = "HelixBravo";
+constexpr const char kChatLine[] = "cpp-sc2 replay chat probe";
 const Point2D kCameraTarget(24.0f, 28.0f);
 
-void Report(std::string* errors, const std::string& message) {
-    std::cerr << "TestReplayObservation: " << message << std::endl;
-    if (errors->empty()) {
-        *errors = message;
-    } else {
-        *errors += "; " + message;
+void Report(std::ostringstream& errors, std::string_view message) {
+    std::cerr << "TestReplayObservation: " << message << '\n';
+
+    if (errors.tellp() > 0) {
+        errors << "; ";
     }
+
+    errors << message;
 }
 
 bool HasPlayerNamed(const ReplayInfo& info, const std::string& name, Race expected_race) {
-    for (int i = 0; i < info.num_players; ++i) {
-        const ReplayPlayerInfo& player = info.players[i];
-        if (player.name == name) {
-            return player.race == expected_race || player.race_selected == expected_race;
-        }
-    }
-    return false;
+    const auto begin = info.players;
+    const auto end = info.players + info.num_players;
+    const auto it = std::find_if(begin, end, [&name](const ReplayPlayerInfo& player) { return player.name == name; });
+    return it != end && (it->race == expected_race || it->race_selected == expected_race);
 }
 
-bool AssertReplayInfoComplete(const ReplayInfo& info, const std::string& replay_path, std::string* errors) {
+bool AssertReplayInfoComplete(const ReplayInfo& info, std::ostringstream& errors) {
     bool ok = true;
     if (info.num_players != 2) {
         Report(errors, "expected 2 players, got " + std::to_string(info.num_players));
@@ -82,7 +83,6 @@ bool AssertReplayInfoComplete(const ReplayInfo& info, const std::string& replay_
         Report(errors, std::string("missing named Zerg player ") + kPlayerBravo);
         ok = false;
     }
-    (void)replay_path;
     return ok;
 }
 
@@ -114,7 +114,7 @@ private:
 
 class ReplayInfoObserver : public ReplayObserver {
 public:
-    explicit ReplayInfoObserver(std::string* errors) : errors_(errors) {
+    explicit ReplayInfoObserver(std::ostringstream& errors) : errors_(errors) {
     }
 
     bool info_ok() const {
@@ -122,42 +122,22 @@ public:
     }
 
     bool IgnoreReplay(const ReplayInfo& replay_info, uint32_t) override {
-        info_ok_ = AssertReplayInfoComplete(replay_info, replay_info.replay_path, errors_);
+        info_ok_ = AssertReplayInfoComplete(replay_info, errors_);
         return false;
     }
 
     void OnStep() override {
         stepped_ = true;
-        const auto& chat = Observation()->GetChatMessages();
-        if (!chat.empty()) {
-            saw_chat_ = true;
-            for (const auto& message : chat) {
-                if (message.message == kChatLine) {
-                    saw_chat_text_ = true;
-                }
-            }
-        } else if (saw_chat_text_) {
-            chat_cleared_ = true;
-        }
     }
 
     bool stepped() const {
         return stepped_;
     }
-    bool saw_chat_text() const {
-        return saw_chat_text_;
-    }
-    bool chat_cleared() const {
-        return chat_cleared_;
-    }
 
 private:
-    std::string* errors_;
+    std::ostringstream& errors_;
     bool info_ok_ = false;
     bool stepped_ = false;
-    bool saw_chat_ = false;
-    bool saw_chat_text_ = false;
-    bool chat_cleared_ = false;
 };
 
 }  // namespace
@@ -172,7 +152,7 @@ bool TestReplayObservation(int argc, char** argv) {
     {
         Coordinator coordinator;
         if (!coordinator.LoadSettings(argc, argv)) {
-            std::cerr << "TestReplayObservation: LoadSettings failed" << std::endl;
+            std::cerr << "TestReplayObservation: LoadSettings failed\n";
             return false;
         }
         coordinator.SetTimeoutMS(120000);
@@ -184,7 +164,7 @@ bool TestReplayObservation(int argc, char** argv) {
         });
         coordinator.LaunchStarcraft();
         if (!coordinator.StartGame(kMapBelShirVestigeLE)) {
-            std::cerr << "TestReplayObservation: StartGame failed" << std::endl;
+            std::cerr << "TestReplayObservation: StartGame failed\n";
             return false;
         }
         while (coordinator.Update()) {
@@ -199,39 +179,35 @@ bool TestReplayObservation(int argc, char** argv) {
         const auto size = std::filesystem::exists(replay_path) ? std::filesystem::file_size(replay_path) : 0;
         if (!bot.saved() || size < 1000) {
             std::cerr << "TestReplayObservation: SaveReplay failed at " << replay_path << " size=" << size
-                      << " loop=" << bot.Observation()->GetGameLoop() << std::endl;
+                      << " loop=" << bot.Observation()->GetGameLoop() << '\n';
             return false;
         }
     }
 
-    std::string errors;
+    std::ostringstream errors;
     Coordinator replay_coordinator;
     if (!replay_coordinator.LoadSettings(argc, argv)) {
-        std::cerr << "TestReplayObservation: replay LoadSettings failed" << std::endl;
+        std::cerr << "TestReplayObservation: replay LoadSettings failed\n";
         return false;
     }
     if (!replay_coordinator.SetReplayPath(replay_dir.string())) {
-        std::cerr << "TestReplayObservation: SetReplayPath failed" << std::endl;
+        std::cerr << "TestReplayObservation: SetReplayPath failed\n";
         return false;
     }
 
-    ReplayInfoObserver observer(&errors);
+    ReplayInfoObserver observer(errors);
     replay_coordinator.AddReplayObserver(&observer);
     while (replay_coordinator.Update()) {
     }
 
     bool success = observer.info_ok() && observer.stepped();
     if (!observer.info_ok()) {
-        std::cerr << "TestReplayObservation: ReplayInfo incomplete: " << errors << std::endl;
+        std::cerr << "TestReplayObservation: ReplayInfo incomplete: " << errors.str() << '\n';
     }
     if (!observer.stepped()) {
-        std::cerr << "TestReplayObservation: ReplayObserver never stepped" << std::endl;
+        std::cerr << "TestReplayObservation: ReplayObserver never stepped\n";
         success = false;
     }
-    // Camera and chat assertions land in later topic PRs. This test only
-    // requires a complete ReplayInfo including both player names.
-    (void)observer.saw_chat_text();
-    (void)observer.chat_cleared();
     return success;
 }
 
