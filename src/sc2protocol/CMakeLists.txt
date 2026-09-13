@@ -42,28 +42,8 @@ if (WSL2_CROSS_COMPILE)
             DESTINATION
                 "${proto_generation_dir}")
     endforeach ()
-# Compile protos with protoc
+# Compile protos with protoc (executable resolved in thirdparty/cmake/protobuf.cmake)
 else ()
-    if (Protobuf_PROTOC_EXECUTABLE)
-        set(protoc_executable ${Protobuf_PROTOC_EXECUTABLE})
-        set(protoc_depends ${Protobuf_PROTOC_EXECUTABLE})
-    elseif (CMAKE_CROSSCOMPILING)
-        find_program(protoc_executable
-            NAMES protoc
-            PATHS /usr/bin /usr/local/bin
-            NO_CMAKE_FIND_ROOT_PATH
-        )
-        if (NOT protoc_executable)
-            message(FATAL_ERROR
-                "Cross-compiling needs a host protoc. "
-                "Pass -DProtobuf_PROTOC_EXECUTABLE=<path>.")
-        endif()
-        set(protoc_depends ${protoc_executable})
-    else ()
-        set(protoc_executable ${PROJECT_BINARY_DIR}/bin/protoc)
-        set(protoc_depends protoc)
-    endif()
-
     foreach (proto ${proto_files})
         get_filename_component(proto_name_we ${proto} NAME_WE)
         set(protoc_out_cc "${proto_generation_dir}/${proto_name_we}.pb.cc")
