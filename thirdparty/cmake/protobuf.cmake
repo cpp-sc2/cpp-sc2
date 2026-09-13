@@ -28,3 +28,27 @@ foreach (target IN LISTS protobuf_targets)
         target_compile_options(${target} PRIVATE /W0)
     endif ()
 endforeach ()
+
+# Resolve the protoc used to generate s2clientprotocol sources.
+# WSL2_CROSS_COMPILE copies precompiled dumps in sc2protocol and skips this.
+if (NOT WSL2_CROSS_COMPILE)
+    if (Protobuf_PROTOC_EXECUTABLE)
+        set(protoc_executable ${Protobuf_PROTOC_EXECUTABLE})
+        set(protoc_depends ${Protobuf_PROTOC_EXECUTABLE})
+    elseif (CMAKE_CROSSCOMPILING)
+        find_program(protoc_executable
+            NAMES protoc
+            PATHS /usr/bin /usr/local/bin
+            NO_CMAKE_FIND_ROOT_PATH
+        )
+        if (NOT protoc_executable)
+            message(FATAL_ERROR
+                "Cross-compiling needs a host protoc. "
+                "Pass -DProtobuf_PROTOC_EXECUTABLE=<path>.")
+        endif()
+        set(protoc_depends ${protoc_executable})
+    else ()
+        set(protoc_executable ${PROJECT_BINARY_DIR}/bin/protoc)
+        set(protoc_depends protoc)
+    endif()
+endif ()
