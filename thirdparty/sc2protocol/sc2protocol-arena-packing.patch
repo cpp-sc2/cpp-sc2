@@ -1,0 +1,198 @@
+﻿diff --git a/s2clientprotocol/common.proto b/s2clientprotocol/common.proto
+index 081f306..cbbc15c 100644
+--- a/s2clientprotocol/common.proto
++++ b/s2clientprotocol/common.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+diff --git a/s2clientprotocol/data.proto b/s2clientprotocol/data.proto
+index 1ac5e56..1590150 100644
+--- a/s2clientprotocol/data.proto
++++ b/s2clientprotocol/data.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+@@ -85,7 +86,7 @@ message UnitTypeData {
+   optional bool has_minerals = 20;
+   optional float sight_range = 25;                                // Range unit reveals vision.
+ 
+-  repeated uint32 tech_alias = 21;                                // Other units that satisfy the same tech requirement.
++  repeated uint32 tech_alias = 21 [packed = true];                // Other units that satisfy the same tech requirement.
+   optional uint32 unit_alias = 22;                                // The morphed variant of this unit.
+ 
+   optional uint32 tech_requirement = 23;                          // Structure required to build this unit. (Or any with the same tech_alias)
+diff --git a/s2clientprotocol/debug.proto b/s2clientprotocol/debug.proto
+index 60ae90a..e53ca25 100644
+--- a/s2clientprotocol/debug.proto
++++ b/s2clientprotocol/debug.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+@@ -89,7 +90,7 @@ message DebugCreateUnit {
+ }
+ 
+ message DebugKillUnit {
+-  repeated uint64 tag = 1;
++  repeated uint64 tag = 1 [packed = true];
+ }
+ 
+ message DebugTestProcess {
+diff --git a/s2clientprotocol/error.proto b/s2clientprotocol/error.proto
+index fe223e9..c7214e2 100644
+--- a/s2clientprotocol/error.proto
++++ b/s2clientprotocol/error.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+diff --git a/s2clientprotocol/query.proto b/s2clientprotocol/query.proto
+index c4270f6..c57a973 100644
+--- a/s2clientprotocol/query.proto
++++ b/s2clientprotocol/query.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+diff --git a/s2clientprotocol/raw.proto b/s2clientprotocol/raw.proto
+index 1a08e6a..f2e0dd0 100644
+--- a/s2clientprotocol/raw.proto
++++ b/s2clientprotocol/raw.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+@@ -46,7 +47,7 @@ message PowerSource {
+ message PlayerRaw {
+   repeated PowerSource power_sources = 1;
+   optional Point camera = 2;
+-  repeated uint32 upgrade_ids = 3;          // TODO: Add to UI observation?
++  repeated uint32 upgrade_ids = 3 [packed = true]; // TODO: Add to UI observation?
+ }
+ 
+ message UnitOrder {
+@@ -110,7 +111,7 @@ message Unit {
+   optional float radius = 8;
+   optional float build_progress = 9;        // Range: [0.0, 1.0]
+   optional CloakState cloak = 10;
+-  repeated uint32 buff_ids = 27;
++  repeated uint32 buff_ids = 27 [packed = true];
+ 
+   optional float detect_range = 31;
+   optional float radar_range = 32;
+@@ -158,7 +159,7 @@ message MapState {
+ }
+ 
+ message Event {
+-  repeated uint64 dead_units = 1;
++  repeated uint64 dead_units = 1 [packed = true];
+ }
+ 
+ message Effect {
+@@ -188,7 +189,7 @@ message ActionRawUnitCommand {
+     Point2D target_world_space_pos = 2;
+     uint64 target_unit_tag = 3;
+   }
+-  repeated uint64 unit_tags = 4;
++  repeated uint64 unit_tags = 4 [packed = true];
+   optional bool queue_command = 5;
+ }
+ 
+@@ -198,5 +199,5 @@ message ActionRawCameraMove {
+ 
+ message ActionRawToggleAutocast {
+   optional int32 ability_id = 1;
+-  repeated uint64 unit_tags = 2;
++  repeated uint64 unit_tags = 2 [packed = true];
+ }
+diff --git a/s2clientprotocol/sc2api.proto b/s2clientprotocol/sc2api.proto
+index d82db04..06abef9 100644
+--- a/s2clientprotocol/sc2api.proto
++++ b/s2clientprotocol/sc2api.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+@@ -24,7 +25,7 @@ import "s2clientprotocol/ui.proto";
+ //    2) Designate a host, and Request.create_game with a multiplayer map.
+ //    3) Call Request.join on BOTH clients. Join will block until both clients connect.
+ //    4) Wait for a response from both clients. They can now play/step.
+-//    5) Steps should be syncronized. One client may time out if they are not. Multiple step sizes are ok.
++//    5) Steps should be synchronized. One client may time out if they are not. Multiple step sizes are ok.
+ //    4) Call Request.leave at any point or when the game ends. Observations will not be valid after this.
+ //
+ // States:
+@@ -677,7 +678,7 @@ message ActionObserverCameraFollowPlayer {
+ }
+ 
+ message ActionObserverCameraFollowUnits {
+-  repeated uint64 unit_tags = 1;
++  repeated uint64 unit_tags = 1 [packed = true];
+ }
+ 
+ enum Alert {
+diff --git a/s2clientprotocol/score.proto b/s2clientprotocol/score.proto
+index 71a0ae9..e967868 100644
+--- a/s2clientprotocol/score.proto
++++ b/s2clientprotocol/score.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+diff --git a/s2clientprotocol/spatial.proto b/s2clientprotocol/spatial.proto
+index 1e8b736..ce6fe19 100644
+--- a/s2clientprotocol/spatial.proto
++++ b/s2clientprotocol/spatial.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+diff --git a/s2clientprotocol/ui.proto b/s2clientprotocol/ui.proto
+index d760be5..cc99004 100644
+--- a/s2clientprotocol/ui.proto
++++ b/s2clientprotocol/ui.proto
+@@ -1,5 +1,6 @@
+ 
+ syntax = "proto2";
++option cc_enable_arenas = true;
+ 
+ package SC2APIProtocol;
+ 
+@@ -42,7 +43,7 @@ message SinglePanel {
+   optional int32 attack_upgrade_level = 2;
+   optional int32 armor_upgrade_level = 3;
+   optional int32 shield_upgrade_level = 4;
+-  repeated int32 buffs = 5;
++  repeated int32 buffs = 5 [packed = true];
+ }
+ 
+ message MultiPanel {
