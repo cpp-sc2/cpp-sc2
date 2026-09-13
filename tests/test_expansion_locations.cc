@@ -181,8 +181,8 @@ void CheckUnoccupiedPlacement(TestSequence& test, QueryInterface& query, const s
         const float distance = Distance2D(center, centroid);
         if (distance > kCentroidMatchDistance) {
             test.ReportError(("Expansion (" + std::to_string(center.x) + ", " + std::to_string(center.y) +
-                              ") is not the local best placement; neighborhood centroid is " + std::to_string(distance) +
-                              " away")
+                              ") is not the local best placement; neighborhood centroid is " +
+                              std::to_string(distance) + " away")
                                  .c_str());
         }
     }

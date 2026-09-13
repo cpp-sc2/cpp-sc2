@@ -248,8 +248,8 @@ std::vector<Units> Cluster(const Units& units, float distance_apart) {
                 const size_t hi = lo == i ? j : i;
                 if (!best || distance_sq < best_distance_sq ||
                     (distance_sq == best_distance_sq &&
-                     (group_less(groups[lo], groups[best->first]) ||
-                      (!group_less(groups[best->first], groups[lo]) && group_less(groups[hi], groups[best->second]))))) {
+                     (group_less(groups[lo], groups[best->first]) || (!group_less(groups[best->first], groups[lo]) &&
+                                                                      group_less(groups[hi], groups[best->second]))))) {
                     best = {lo, hi};
                     best_distance_sq = distance_sq;
                 }
