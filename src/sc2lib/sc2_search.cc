@@ -9,6 +9,7 @@
 
 #include "sc2api/sc2_data.h"
 #include "sc2api/sc2_map_info.h"
+#include "sc2api/sc2_typeenums.h"
 
 namespace sc2::search {
 namespace {
@@ -21,6 +22,20 @@ const size_t kMaxResourcesPerExpansion = 12;
 bool UnitHasVespene(const Unit& unit, const UnitTypes& unit_types) {
     const uint32_t id = unit.unit_type;
     return id < unit_types.size() && unit_types[id].has_vespene;
+}
+
+bool IsWallMineralType(UNIT_TYPEID type) {
+    return type == UNIT_TYPEID::NEUTRAL_MINERALFIELD450 || type == UNIT_TYPEID::MINERALFIELDOPAQUE ||
+           type == UNIT_TYPEID::MINERALFIELDOPAQUE900;
+}
+
+bool HasExpansionMineral(const Units& minerals) {
+    for (const auto* mineral : minerals) {
+        if (!IsWallMineralType(mineral->unit_type)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 Units GatherExpansionResources(const ObservationInterface& observation) {
@@ -36,11 +51,17 @@ Units GatherExpansionResources(const ObservationInterface& observation) {
 }
 
 std::vector<Point2D> ExpansionOffsets() {
+    // Integer offsets with hypot in (4, 8]. Squaring those bounds (16 and 64)
+    // yields the same points; a single radius test is equivalent as hypot or as
+    // distance-squared. Cluster() already uses DistanceSquared2D the same way
+    // (closest pair vs a threshold). Do not replace the FindExpansionLocation
+    // score — sum of Distance2D — with a sum of squares. That is a different
+    // objective and can select a different town hall cell.
     std::vector<Point2D> offsets;
     for (int x = -kOffsetRange; x <= kOffsetRange; ++x) {
         for (int y = -kOffsetRange; y <= kOffsetRange; ++y) {
-            const float hypot = std::hypot(static_cast<float>(x), static_cast<float>(y));
-            if (hypot > 4.0F && hypot <= 8.0F) {
+            const float radius = std::hypot(static_cast<float>(x), static_cast<float>(y));
+            if (radius > 4.0F && radius <= 8.0F) {
                 offsets.emplace_back(static_cast<float>(x), static_cast<float>(y));
             }
         }
@@ -313,6 +334,9 @@ std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* obs
             Units minerals;
             Units geysers;
             SplitMineralsAndGeysers(height_group, unit_types, minerals, geysers);
+            if (!HasExpansionMineral(minerals)) {
+                continue;
+            }
 
             auto append_location = [&](const Units& local_resources) {
                 const auto location = FindExpansionLocation(local_resources, offsets, placement, unit_types);

@@ -19,7 +19,18 @@ struct ExpansionParameters {
     DebugInterface* debug_ = nullptr;
 };
 
-// Calculates expansion locations from the placement/height grids on GameInfo. Call once and cache.
+// Calculates expansion locations from resource units and the placement/height grids on GameInfo.
+// Call once and cache.
+//
+// Resources are units whose catalog UnitTypeData has has_minerals or has_vespene. Contents
+// fields are not used (unset on snapshots). Clusters whose minerals are only wall types
+// (MineralField450 / opaque) are skipped; a real base keeps at least one full or 750 field,
+// and that unit type does not change as the patch is mined.
+//
+// Remaining clusters are split on terrain-height jumps. Each group of at most 12 resources
+// gets a 5x5-placable .5/.5 town hall on an annulus of hypot radius (4, 8] around the
+// resource centroid, minimizing the sum of Euclidean distances (min 6 from minerals, 7 from
+// geysers). Opposite-side double geyser lines emit two locations (minerals + each geyser).
 std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* observation,
                                                  ExpansionParameters parameters = ExpansionParameters());
 
