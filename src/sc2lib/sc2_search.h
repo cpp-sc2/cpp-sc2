@@ -8,28 +8,30 @@
 
 namespace sc2::search {
 
-// Clusters units within some distance of each other and returns a list of them and their center of mass.
-std::vector<std::pair<Point3D, std::vector<Unit> > > Cluster(const Units& units, float distance_apart);
+// Groups units whose centroids are within distance_apart.
+std::vector<Units> Cluster(const Units& units, float distance_apart);
 
 struct ExpansionParameters {
-    // By default we use values that generally work but may require tuning for certain maps.
-
-    // The various radius to check at from the center of an expansion.
-    std::vector<float> radiuses_ = {6.4F, 5.3F};
-
-    // With what granularity to step the circumference of the circle.
-    float circle_step_size_ = 0.5F;
-
-    // With what distance to cluster mineral/vespene in, this will be used for center of mass calulcation.
-    float cluster_distance_ = 15.0F;
+    // Distance used to group mineral/vespene fields into one expansion.
+    float cluster_distance_ = 10.5F;
 
     // If filled out CalculateExpansionLocations will render spheres to show what it calculated.
     DebugInterface* debug_ = nullptr;
 };
 
-// Calculates expansion locations, this call can take on the order of 100ms since it makes blocking queries to SC2 so
-// call it once and cache the reults.
-std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* observation, QueryInterface* query,
+// Calculates expansion locations from resource units and the placement/height grids on GameInfo.
+// Call once and cache.
+//
+// Resources are units whose catalog UnitTypeData has has_minerals or has_vespene. Contents
+// fields are not used (unset on snapshots). Clusters whose minerals are only wall types
+// (MineralField450 / opaque) are skipped; a real base keeps at least one full or 750 field,
+// and that unit type does not change as the patch is mined.
+//
+// Remaining clusters are split on terrain-height jumps. Each group of at most 12 resources
+// gets a 5x5-placable .5/.5 town hall on an annulus of hypot radius (4, 8] around the
+// resource centroid, minimizing the sum of Euclidean distances (min 6 from minerals, 7 from
+// geysers). Opposite-side double geyser lines emit two locations (minerals + each geyser).
+std::vector<Point3D> CalculateExpansionLocations(const ObservationInterface* observation,
                                                  ExpansionParameters parameters = ExpansionParameters());
 
 }  // namespace sc2::search
