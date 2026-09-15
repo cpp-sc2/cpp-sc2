@@ -7,7 +7,11 @@ FetchContent_Declare(
     GIT_PROGRESS TRUE
     # Patch to apply:
     # - Packed Encoding for Repeated Fields
-    # - Arena Allocation
-    PATCH_COMMAND git apply "${CMAKE_CURRENT_LIST_DIR}/sc2protocol-arena-packing.patch"
+    # - Arena Allocation (requires local implementation)
+    PATCH_COMMAND git apply
+        --ignore-space-change
+        --ignore-whitespace
+        --3way
+        "${CMAKE_CURRENT_LIST_DIR}/sc2protocol-arena-packing.patch"
 )
 FetchContent_MakeAvailable(sc2protocol)
