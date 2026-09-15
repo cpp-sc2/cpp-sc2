@@ -370,6 +370,18 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
             continue;
         }
         const SC2APIProtocol::ActionRaw& action_raw = proto_action.action_raw();
+        if (action_raw.has_camera_move()) {
+            const SC2APIProtocol::ActionRawCameraMove& camera_move = action_raw.camera_move();
+            ActionRaw action;
+            action.target_type = ActionRaw::TargetCamera;
+            if (camera_move.has_center_world_space()) {
+                action.target_point.x = camera_move.center_world_space().x();
+                action.target_point.y = camera_move.center_world_space().y();
+                action.target_z = camera_move.center_world_space().z();
+            }
+            actions.push_back(action);
+            continue;
+        }
         if (!action_raw.has_unit_command()) {
             continue;
         }
