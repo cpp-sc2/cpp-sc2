@@ -2,9 +2,26 @@
 
 #include "sc2_control_interfaces.h"
 #include "sc2_interfaces.h"
+#include "sc2_proto_to_pods.h"
 #include "sc2_unit.h"
 
 namespace sc2 {
+
+namespace {
+
+void QueueFailedActionResults(ControlInterface& control, const GameResponsePtr& response,
+                              const SC2APIProtocol::RequestAction* request_action) {
+    if (!response || !response->has_action() || !request_action) {
+        return;
+    }
+    std::vector<ActionError> errors;
+    ConvertActionResults(response->action(), *request_action, errors);
+    if (!errors.empty()) {
+        control.QueueActionErrors(errors);
+    }
+}
+
+}  // namespace
 
 //-------------------------------------------------------------------------------------------------
 // ActionImp: an implementation of an ActionInterface.
@@ -70,18 +87,19 @@ void ActionImp::SendActions() {
         return;
     }
 
-    SC2APIProtocol::RequestAction* request_action = GetRequestAction();
+    SC2APIProtocol::RequestAction* request_action = request_actions_->mutable_action();
     if (request_action) {
         for (int i = 0, e = request_action->actions_size(); i < e; ++i) {
             const SC2APIProtocol::Action& action = request_action->actions(i);
             for (auto tag : action.action_raw().unit_command().unit_tags()) {
                 commands_.push_back(tag);
-            };
+            }
         }
     }
 
+    const GameResponsePtr response = control_.WaitForResponse();
+    QueueFailedActionResults(control_, response, request_action);
     request_actions_ = nullptr;
-    control_.WaitForResponse();
 }
 
 void ActionImp::ToggleAutocast(Tag unit_tag, AbilityID ability) {
@@ -281,8 +299,10 @@ void ActionFeatureLayerImp::SendActions() {
         return;
     }
 
+    SC2APIProtocol::RequestAction* request_action = request_actions_->mutable_action();
+    const GameResponsePtr response = control_.WaitForResponse();
+    QueueFailedActionResults(control_, response, request_action);
     request_actions_ = nullptr;
-    control_.WaitForResponse();
 }
 
 void ActionFeatureLayerImp::UnitCommand(AbilityID ability) {

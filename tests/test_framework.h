@@ -81,6 +81,8 @@ private:
     void OnBuildingConstructionComplete(const Unit* unit) final;
     void OnNydusDetected() final;
     void OnNuclearLaunchDetected() final;
+    void OnAlert(Alert alert) final;
+    void OnActionError(const ActionError& error) final;
 
     bool success_;
     std::vector<std::unique_ptr<TestSequence>> sequences_;

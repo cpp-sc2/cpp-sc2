@@ -15,6 +15,9 @@ both inherit from Client.
 
 namespace sc2 {
 
+enum class Alert : int;
+struct ActionError;
+
 class ControlImp;
 class Unit;
 class ObservationInterface;
@@ -116,6 +119,18 @@ public:
 
     //! Called when a nuclear launch is detected.
     virtual void OnNuclearLaunchDetected() {
+    }
+
+    //! Called for every protocol Alert this step. Alerts have no extra payload.
+    //! OnNydusDetected / OnNuclearLaunchDetected still fire for those two values.
+    virtual void OnAlert(Alert) {
+    }
+
+    //! Called for each failed command from the last step, before OnStep.
+    //! Same timing as other ClientEvents. Sources: ResponseObservation.action_errors and
+    //! non-success ResponseAction.result from the previous SendActions (UI "red text",
+    //! e.g. not enough minerals). Query the full list with Observation()->GetActionErrors().
+    virtual void OnActionError(const ActionError&) {
     }
 
     //! Called when an enemy unit enters vision from out of fog of war.
