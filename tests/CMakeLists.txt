@@ -29,3 +29,7 @@ if (BUILD_SC2_RENDERER)
 endif ()
 
 target_link_libraries(all_tests sc2api sc2lib sc2utils)
+
+add_executable(test_unit_pool test_unit_pool.cc)
+set_target_properties(test_unit_pool PROPERTIES FOLDER tests)
+target_link_libraries(test_unit_pool sc2api)
