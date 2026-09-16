@@ -19,6 +19,14 @@ Tags ConvertToTags(const Units& units) {
     return tags;
 }
 
+namespace {
+
+void ResetUnit(Unit* unit) {
+    *unit = Unit{};
+}
+
+}  // namespace
+
 Unit* UnitPool::CreateUnit(Tag tag) {
     Unit* existing = GetUnit(tag);
     if (existing) {
@@ -26,17 +34,28 @@ Unit* UnitPool::CreateUnit(Tag tag) {
         return existing;
     }
 
-    if (unit_pool_.empty() || unit_pool_.size() == available_index_.first) {
-        unit_pool_.push_back(std::vector<Unit>(ENTRY_SIZE));
+    Unit* unit = nullptr;
+    if (!free_units_.empty()) {
+        unit = free_units_.back();
+        free_units_.pop_back();
+        ResetUnit(unit);
+    } else {
+        if (unit_pool_.empty() || unit_pool_.size() == available_index_.first) {
+            unit_pool_.push_back(std::vector<Unit>(ENTRY_SIZE));
+        }
+
+        std::vector<Unit>& pool = unit_pool_[available_index_.first];
+        unit = &pool[available_index_.second];
+        ResetUnit(unit);
+        IncrementIndex();
     }
 
-    std::vector<Unit>& pool = unit_pool_[available_index_.first];
-    Unit* unit = &pool[available_index_.second];
     unit->last_seen_game_loop = 0;  // initialization required for OnUnitEnterVision
+    unit->is_alive = true;
+    unit->tag = tag;
     tag_to_unit_[tag] = unit;
     tag_to_existing_unit_[tag] = unit;
     AddNewUnit(unit);
-    IncrementIndex();
     return unit;
 }
 
@@ -59,13 +78,29 @@ void UnitPool::IncrementIndex() {
 }
 
 void UnitPool::MarkDead(Tag tag) {
+    MarkDead(tag, 0);
+}
+
+void UnitPool::MarkDead(Tag tag, uint32_t game_loop) {
     Unit* unit = GetUnit(tag);
     if (!unit) {
         return;
     }
     unit->is_alive = false;
-    // CHeck if this is necessary, bro
+    unit->died_game_loop = game_loop;
     tag_to_existing_unit_.erase(tag);
+}
+
+void UnitPool::SweepDead(uint32_t game_loop) {
+    for (auto it = tag_to_unit_.begin(); it != tag_to_unit_.end();) {
+        Unit* unit = it->second;
+        if (unit->is_alive || game_loop < unit->died_game_loop + kDeadUnitCacheLoops) {
+            ++it;
+            continue;
+        }
+        it = tag_to_unit_.erase(it);
+        free_units_.push_back(unit);
+    }
 }
 
 void UnitPool::ForEachExistingUnit(const std::function<void(Unit& unit)>& functor) const {

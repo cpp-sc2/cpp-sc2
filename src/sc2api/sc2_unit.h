@@ -184,6 +184,9 @@ public:
     bool is_alive;
     //! The last time the unit was seen.
     uint32_t last_seen_game_loop;
+    //! Game loop when MarkDead ran. Meaningful only when is_alive is false.
+    //! Unseen enemies that die in fog never get a death event and are never recycled.
+    uint32_t died_game_loop;
 
     //! Level of weapon upgrades.
     int32_t attack_upgrade_level;
@@ -217,10 +220,16 @@ using UnitsDamaged = std::vector<UnitDamage>;
 
 class UnitPool {
 public:
+    static constexpr uint32_t kDeadUnitCacheLoops = 50;
+
     Unit* CreateUnit(Tag tag);
     [[nodiscard]] Unit* GetUnit(Tag tag) const;
     [[nodiscard]] Unit* GetExistingUnit(Tag tag) const;
     void MarkDead(Tag tag);
+    void MarkDead(Tag tag, uint32_t game_loop);
+    //! Drop confirmed-dead units from the tag cache after kDeadUnitCacheLoops.
+    //! Does not evict units that merely left vision (no death event).
+    void SweepDead(uint32_t game_loop);
 
     // TODO(?): Change alive -> Exist
     void ForEachExistingUnit(const std::function<void(Unit& unit)>& functor) const;
@@ -270,6 +279,7 @@ private:
     std::pair<size_t, size_t> available_index_;
     std::unordered_map<Tag, Unit*> tag_to_unit_;
     std::unordered_map<Tag, Unit*> tag_to_existing_unit_;
+    std::vector<Unit*> free_units_;
     Units units_newly_created_;
     Units units_entering_vision_;
     Units buildings_constructed_;
