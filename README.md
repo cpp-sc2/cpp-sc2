@@ -26,11 +26,6 @@ a C++ and class-based abstraction.
 * To start from scratch, please check this
   [boilerplate](https://github.com/cpp-sc2/blank-bot).
 
-## Precompiled Libraries
-
-You can download precompiled libraries for Windows and OS X
-[here](docs/precompiled_libs.md).
-
 ## Support
 
 Have questions but don't want to create an issue? Join the unofficial
