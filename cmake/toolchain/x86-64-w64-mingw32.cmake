@@ -1,5 +1,5 @@
 set(CMAKE_SYSTEM_NAME Windows)
-set(CMAKE_SYSTEM_PROCESSOR x86)
+set(CMAKE_SYSTEM_PROCESSOR x86_64)
 
 # Cross compilation option to pass CMake checks
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
