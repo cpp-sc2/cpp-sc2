@@ -1,4 +1,4 @@
-# Build instructions
+# Build Instructions
 
 > :construction: This project requires a compiler with C++20 support.
 
@@ -26,7 +26,7 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
 1. Install [CMake](https://cmake.org/download/).
 
-1. Download and install Visual Studio ([2017](https://www.visualstudio.com/downloads/) or newer).
+1. Download and install Visual Studio ([2022](https://www.visualstudio.com/downloads/) or newer).
 
 1. Clone the project.
 
@@ -138,15 +138,15 @@ $ cmake -DSC2_VERSION=4.10.0 ../
 
 ### Build freezes (Linux or macOS)
 
-If project compilation freezes, decrease nproc to 1 or more, e.g.:
+If project compilation freezes, decrease the number of parallel jobs, e.g.:
 
 ``` bash
-$ cmake --build build --parallel $(nproc --ignore=1)
+$ cmake --build build --parallel 2
 ```
 
 ## WSL2 Support
 
-Thanks to interoperability between the [Windows and Linux file systems](https://docs.microsoft.com/en-us/windows/wsl/filesystems) in WSL2, it is possible to cross compile `cpp-sc2` under WSL2 for Windows and launch the executables from the WSL2 context using the Windows Starcraft II installation. Current implementation may not support custom installs of Starcraft II (e.g. to an external hard drive).
+Thanks to interoperability between the [Windows and Linux file systems](https://docs.microsoft.com/en-us/windows/wsl/filesystems) in WSL2, it is possible to cross compile `cpp-sc2` under WSL2 for Windows and launch the executables from the WSL2 context using the Windows Starcraft II installation. Current implementation may not support custom installations of Starcraft II (e.g. to an external hard drive).
 
 This documentation assumes the user is familiar with WSL2 setup. For a more detailed walkthrough of using WSL2 for the first time, see the [Microsoft documentation on installing Linux on Windows with WSL](https://docs.microsoft.com/en-us/windows/wsl/install)
 
@@ -174,7 +174,7 @@ $ sudo update-alternatives --config x86_64-w64-mingw32-g++
 
 ### Building
 
-To cross compile, enable the `WSL2_CROSS_COMPILING` option either in the project root `CMakeLists.txt` or by passing the option from the command line:
+To cross compile, enable the `WSL2_CROSS_COMPILE` option either in the project root `CMakeLists.txt` or by passing the option from the command line:
 
 ```bash
 # Generate CMake configuration
