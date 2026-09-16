@@ -21,7 +21,7 @@ can contribute to:
 
 - [ ] Search for other issues tagged [with `good first issue` or `help wanted` tag](https://github.com/cpp-sc2/cpp-sc2/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 - [ ] Suggest new features.
-- [ ] Vote for existing issues (issues with highest number of reactions are
+- [ ] Vote for existing issues (issues with the highest number of reactions are
       likely to be fixed first).
 - [ ] Fix `// FIXME:` comments in the code.
 - [ ] Improve the documentation of the API.
@@ -33,8 +33,9 @@ can contribute to:
       the project allows to make releases more often and implement nice new
       features for developers.
 
-If you have any suggestions, feel free to message over
-[Discord](https://discord.gg/YurYAgHRSw) (the `#cpp` channel).
+If you have any suggestions, feel free to send a message over the
+[#cpp](https://discord.com/channels/350289306763657218/350289506068463618)
+channel of the [AI Arena](https://discord.gg/YurYAgHRSw) Discord server.
 
 ## What should I know before the start?
 
@@ -43,8 +44,7 @@ an open and welcoming environment.
 
 ### Coding Standard
 
-We use the [Google C++ Style Guide][google-c++-style-guide] with some tweaks and
-[`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) to format
+We use [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) to format
 the code.
 
 ### Commit guidelines
@@ -88,4 +88,3 @@ To edit and generate the documentation yourself:
 - Consider implementing a test.
 
 [doxygen]: http://www.stack.nl/~dimitri/doxygen/download.html#srcbin
-[google-c++-style-guide]: https://google.github.io/styleguide/cppguide.html
