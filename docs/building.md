@@ -41,10 +41,16 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
    ```
 
 1. Create Visual Studio project files.
-   E.g. for Visual Studio 2022:
 
    ```bat
-   cmake -B build -G "Visual Studio 17 2022"
+   cmake --preset release
+   ```
+
+   To pick a particular Visual Studio version, pass the generator explicitly,
+   e.g. for Visual Studio 2022:
+
+   ```bat
+   cmake --preset release -G "Visual Studio 17 2022"
    ```
 
 1. Build the project using Visual Studio.
@@ -76,7 +82,7 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 1. Create makefiles.
 
    ```bash
-   cmake -B build
+   cmake --preset release
    ```
 
 1. Build the project.
@@ -108,7 +114,7 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 1. Create makefiles.
 
    ```bash
-   cmake -B build
+   cmake --preset release
    ```
 
 1. Build the project.
@@ -123,7 +129,7 @@ For building for Windows under WSL2, see [WSL2 Support](#wsl2-support).
 
 By default, the API assumes the latest version of the game client. The assumed version can be found in cmake's output, e.g.:
 ```bash
-$ cmake ../ | grep 'SC2 version'
+$ cmake --preset release | grep 'SC2 version'
 Target SC2 version: 5.0.5
 ...
 ```
@@ -131,7 +137,7 @@ Target SC2 version: 5.0.5
 However, sometimes one may need to compile with an older version of the game, e.g. to play with a Linux build which is
 always behind the Windows version. It is possible by specifying the game version manually, e.g.:
 ```bash
-$ cmake -DSC2_VERSION=4.10.0 ../
+$ cmake --preset release -DSC2_VERSION=4.10.0
 ```
 
 ## Troubleshooting
@@ -178,7 +184,7 @@ To cross compile, enable the `WSL2_CROSS_COMPILE` option either in the project r
 
 ```bash
 # Generate CMake configuration
-$ cmake -B build -DWSL2_CROSS_COMPILE=ON
+$ cmake --preset release -DWSL2_CROSS_COMPILE=ON
 
 # Compile
 $ cmake --build build -j
