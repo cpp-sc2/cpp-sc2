@@ -80,6 +80,11 @@ public:
     //!< \return List of raw actions.
     virtual const RawActions& GetRawActions() const = 0;
 
+    //! Gets world-space camera pans observed this step on the raw interface.
+    //!< \return List of world-space camera moves.
+    //!< \note Not GetCameraPos (current camera) and not the replay spectator camera.
+    virtual const RawCameraMoves& GetRawCameraMoves() const = 0;
+
     //! Gets a list of actions performed. For use with the feature layer options.
     //!< \return List of actions.
     virtual const SpatialActions& GetFeatureLayerActions() const = 0;

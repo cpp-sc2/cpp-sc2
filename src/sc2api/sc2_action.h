@@ -19,9 +19,7 @@ struct ActionRaw {
         //! The target is a unit tag, could also be a snapshot in the fog-of-war.
         TargetUnitTag,
         //! The target is a point.
-        TargetPosition,
-        //! Raw camera move. ability_id is unused; target_point/target_z hold world space.
-        TargetCamera
+        TargetPosition
     };
 
     //! The ID of the ability to invoke.
@@ -32,10 +30,8 @@ struct ActionRaw {
     TargetType target_type = TargetNone;
     //! The target of this action. Valid only when target_type == TargetUnitTag.
     Tag target_tag = NullTag;
-    //! The target point for this action. Valid when target_type == TargetPosition or TargetCamera.
+    //! The target point for this action. Valid only when target_type == TargetPosition.
     Point2D target_point;
-    //! World-space Z for TargetCamera. Unused for other target types.
-    float target_z = 0.0f;
 
     //! Comparison overload.
 
@@ -55,14 +51,18 @@ struct ActionRaw {
         if (target_point.y != a.target_point.y) {
             return false;
         }
-        if (target_z != a.target_z) {
-            return false;
-        }
         return true;
     }
 };
 
 using RawActions = std::vector<ActionRaw>;
+
+//! World-space camera pan on the raw interface. Not a unit command.
+struct RawCameraMove {
+    Point3D center_world_space;
+};
+
+using RawCameraMoves = std::vector<RawCameraMove>;
 
 //! An action (command or ability) applied to selected units when using feature layers or the rendered interface.
 struct SpatialUnitCommand {

@@ -87,6 +87,7 @@ public:
     uint32_t current_game_loop_;
     uint32_t previous_game_loop;
     RawActions raw_actions_;
+    RawCameraMoves raw_camera_moves_;
     SpatialActions feature_layer_actions_;
     SpatialActions rendered_actions_;
     std::vector<PowerSource> power_sources_;
@@ -149,6 +150,9 @@ public:
     const Unit* GetUnit(Tag tag) const final;
     const RawActions& GetRawActions() const final {
         return raw_actions_;
+    }
+    const RawCameraMoves& GetRawCameraMoves() const final {
+        return raw_camera_moves_;
     }
     const SpatialActions& GetFeatureLayerActions() const final {
         return feature_layer_actions_;
@@ -591,20 +595,19 @@ bool ObservationImp::UpdateObservation() {
     // Actions first, as the actions apply to the previous selection.
     if (is_new_frame) {
         raw_actions_.clear();
+        raw_camera_moves_.clear();
         feature_layer_actions_ = SpatialActions();
         rendered_actions_ = SpatialActions();
     }
 
     ConvertRawActions(response_, raw_actions_);
+    ConvertRawCameraMoves(response_, raw_camera_moves_);
     ConvertFeatureLayerActions(response_, feature_layer_actions_);
     ConvertRenderedActions(response_, rendered_actions_);
 
     // Remap ability ids.
     {
         for (ActionRaw& action : raw_actions_) {
-            if (action.target_type == ActionRaw::TargetCamera) {
-                continue;
-            }
             action.ability_id = GetGeneralizedAbilityID(action.ability_id, *this);
         }
         for (SpatialUnitCommand& spatial_action : feature_layer_actions_.unit_commands) {
@@ -1477,6 +1480,7 @@ public:
     void IssueUnitDamagedEvents();
 
     void IssueAlertEvents();
+    void IssueCameraMoveEvents();
     void IssueUpgradeEvents();
 
     void DumpProtoUsage() override;
@@ -2166,6 +2170,12 @@ void ControlImp::IssueAlertEvents() {
     }
 }
 
+void ControlImp::IssueCameraMoveEvents() {
+    for (const auto& move : observation_imp_->GetRawCameraMoves()) {
+        client_.OnCameraMove(move);
+    }
+}
+
 void ControlImp::IssueUpgradeEvents() {
     std::set<uint32_t> previous;
     for (auto up : observation_imp_->upgrades_previous_) {
@@ -2190,6 +2200,7 @@ bool ControlImp::IssueEvents(const Tags& commands) {
     IssueIdleEvents(commands);
     IssueUpgradeEvents();
     IssueAlertEvents();
+    IssueCameraMoveEvents();
     IssueUnitDamagedEvents();
 
     // Run the users OnStep function after events have been issued.
