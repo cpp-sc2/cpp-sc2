@@ -23,6 +23,7 @@ bool Convert(const ObservationPtr& observation_ptr, RenderedFrame& render);
 bool Convert(const ResponseGameInfoPtr& response_game_info_ptr, GameInfo& game_info);
 
 void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, RawActions& actions);
+void ConvertRawCameraMoves(const ResponseObservationPtr& response_observation_ptr, RawCameraMoves& camera_moves);
 void ConvertFeatureLayerActions(const ResponseObservationPtr& response_observation_ptr, SpatialActions& actions);
 void ConvertRenderedActions(const ResponseObservationPtr& response_observation_ptr, SpatialActions& actions);
 

@@ -57,6 +57,13 @@ struct ActionRaw {
 
 using RawActions = std::vector<ActionRaw>;
 
+//! World-space camera pan on the raw interface. Not a unit command.
+struct RawCameraMove {
+    Point3D center_world_space;
+};
+
+using RawCameraMoves = std::vector<RawCameraMove>;
+
 //! An action (command or ability) applied to selected units when using feature layers or the rendered interface.
 struct SpatialUnitCommand {
     //! If this action should apply to the screen or minimap.

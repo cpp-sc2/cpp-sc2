@@ -55,6 +55,14 @@ public:
         debug->DebugTextOut(last_action_text_);
     }
 
+    // Shown when no unit is selected. EchoAction overwrites this if a unit command
+    // is present in the same step.
+    void OnCameraMove(const sc2::RawCameraMove& move) override {
+        const sc2::Point3D& center = move.center_world_space;
+        last_action_text_ =
+            "Camera: " + std::to_string(center.x) + ", " + std::to_string(center.y) + ", " + std::to_string(center.z);
+    }
+
     void OnStep() final {
         Control()->GetObservation();
 
@@ -88,8 +96,11 @@ public:
                 break;
             }
         }
-        if (!unit)
+        if (!unit) {
+            debug->DebugTextOut(last_action_text_);
+            debug->SendDebug();
             return;
+        }
 
         // Actions.
         EchoAction(obs->GetRawActions(), debug, abilities);

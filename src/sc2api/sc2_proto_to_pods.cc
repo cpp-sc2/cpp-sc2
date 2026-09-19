@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <utility>
 
 #include "sc2_unit_filters.h"
 
@@ -399,6 +400,27 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
         // optional Point target_world_space_pos = 2;
 
         actions.push_back(action);
+    }
+}
+
+void ConvertRawCameraMoves(const ResponseObservationPtr& response_observation_ptr, RawCameraMoves& camera_moves) {
+    for (int i = 0; i < response_observation_ptr->actions_size(); ++i) {
+        const SC2APIProtocol::Action& proto_action = response_observation_ptr->actions(i);
+        if (!proto_action.has_action_raw()) {
+            continue;
+        }
+        const SC2APIProtocol::ActionRaw& action_raw = proto_action.action_raw();
+        if (!action_raw.has_camera_move()) {
+            continue;
+        }
+        const SC2APIProtocol::ActionRawCameraMove& camera_move = action_raw.camera_move();
+        if (!camera_move.has_center_world_space()) {
+            continue;
+        }
+        const SC2APIProtocol::Point& center = camera_move.center_world_space();
+        RawCameraMove move;
+        move.center_world_space = Point3D(center.x(), center.y(), center.z());
+        camera_moves.push_back(std::move(move));
     }
 }
 

@@ -81,6 +81,7 @@ private:
     void OnBuildingConstructionComplete(const Unit* unit) final;
     void OnNydusDetected() final;
     void OnNuclearLaunchDetected() final;
+    void OnCameraMove(const RawCameraMove& move) final;
 
     bool success_;
     std::vector<std::unique_ptr<TestSequence>> sequences_;

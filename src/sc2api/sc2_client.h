@@ -17,6 +17,7 @@ namespace sc2 {
 
 class ControlImp;
 class Unit;
+struct RawCameraMove;
 class ObservationInterface;
 class QueryInterface;
 class DebugInterface;
@@ -116,6 +117,12 @@ public:
 
     //! Called when a nuclear launch is detected.
     virtual void OnNuclearLaunchDetected() {
+    }
+
+    //! Called for each raw-interface camera pan this step.
+    //!< \param move World-space camera center.
+    //!< \note Not the replay spectator camera (ObserverActionInterface::CameraMove).
+    virtual void OnCameraMove(const RawCameraMove& /*move*/) {
     }
 
     //! Called when an enemy unit enters vision from out of fog of war.
