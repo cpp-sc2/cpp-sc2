@@ -287,7 +287,10 @@ void CoordinatorImp::StartReplay() {
 }
 
 void CoordinatorImp::StepAgents() {
-    auto step_agent = [this](Agent* a) {
+    std::vector<char> got_obs(agents_.size(), 0);
+
+    auto step_agent = [this, &got_obs](size_t i) {
+        Agent* a = agents_[i];
         ControlInterface* control = a->Control();
 
         if (control->GetAppState() != AppState::normal) {
@@ -303,29 +306,40 @@ void CoordinatorImp::StepAgents() {
         }
 
         control->Step(process_settings_.step_size);
-        control->WaitStep();
+        if (!control->WaitStep()) {
+            return;
+        }
+        got_obs[i] = 1;
         if (process_settings_.multi_threaded) {
             CallOnStep(a);
         }
     };
 
     if (agents_.size() == 1) {
-        step_agent(agents_.front());
+        step_agent(0);
     } else {
-        RunParallel(step_agent, agents_);
+        std::vector<std::thread> threads;
+        threads.reserve(agents_.size());
+        for (size_t i = 0; i < agents_.size(); ++i) {
+            threads.emplace_back(step_agent, i);
+        }
+        for (auto& t : threads) {
+            t.join();
+        }
     }
 
     if (!process_settings_.multi_threaded) {
-        for (auto a : agents_) {
+        for (size_t i = 0; i < agents_.size(); ++i) {
+            if (!got_obs[i]) {
+                continue;
+            }
+            Agent* a = agents_[i];
             if (a->Control()->GetAppState() != AppState::normal) {
                 continue;
             }
-
-            // It is possible to have a pending leave game request here.
             if (a->Control()->PollLeaveGame()) {
                 continue;
             }
-
             CallOnStep(a);
         }
     }
@@ -356,7 +370,9 @@ void CoordinatorImp::StepAgentsRealtime() {
         }
 
         // This agent shouldn't call step since it's real time.
-        control->GetObservation();
+        if (!control->GetObservation()) {
+            return;
+        }
         control->IssueEvents(a->Actions()->Commands());
         action->SendActions();
 
@@ -377,8 +393,10 @@ void CoordinatorImp::StepAgentsRealtime() {
 }
 
 void CoordinatorImp::StepReplayObservers() {
-    // Run all replay observers.
-    auto run_replay = [this](ReplayObserver* r) {
+    std::vector<char> got_obs(replay_observers_.size(), 0);
+
+    auto run_replay = [this, &got_obs](size_t i) {
+        ReplayObserver* r = replay_observers_[i];
         if (r->Control()->GetAppState() != AppState::normal) {
             return;
         }
@@ -394,9 +412,11 @@ void CoordinatorImp::StepReplayObservers() {
 
         if (r->Control()->IsInGame()) {
             r->Control()->Step(process_settings_.step_size);
-            r->Control()->WaitStep();
+            if (!r->Control()->WaitStep()) {
+                return;
+            }
+            got_obs[i] = 1;
 
-            // If multithreaded run everyones OnStep in parallel.
             if (process_settings_.multi_threaded) {
                 r->Control()->IssueEvents();
                 r->ObserverAction()->SendActions();
@@ -409,28 +429,27 @@ void CoordinatorImp::StepReplayObservers() {
     };
 
     if (replay_observers_.size() == 1) {
-        run_replay(replay_observers_.front());
+        run_replay(0);
     } else {
-        // Run all steps in parallel.
         std::vector<std::thread> threads;
         threads.reserve(replay_observers_.size());
-        for (auto r : replay_observers_) {
-            threads.emplace_back(run_replay, r);
+        for (size_t i = 0; i < replay_observers_.size(); ++i) {
+            threads.emplace_back(run_replay, i);
         }
-
-        // Join all threads.
         for (auto& t : threads) {
             t.join();
         }
     }
 
-    // Do everyones OnStep, if not multi threaded, in single threaded mode.
     if (!process_settings_.multi_threaded) {
-        for (auto r : replay_observers_) {
+        for (size_t i = 0; i < replay_observers_.size(); ++i) {
+            if (!got_obs[i]) {
+                continue;
+            }
+            ReplayObserver* r = replay_observers_[i];
             if (r->Control()->GetAppState() != AppState::normal) {
                 continue;
             }
-
             r->Control()->IssueEvents();
             r->ObserverAction()->SendActions();
         }
@@ -438,8 +457,10 @@ void CoordinatorImp::StepReplayObservers() {
 }
 
 void CoordinatorImp::StepReplayObserversRealtime() {
-    // Run all replay observers.
-    auto run_replay = [this](ReplayObserver* r) {
+    std::vector<char> got_obs(replay_observers_.size(), 0);
+
+    auto run_replay = [this, &got_obs](size_t i) {
+        ReplayObserver* r = replay_observers_[i];
         if (r->Control()->GetAppState() != AppState::normal) {
             return;
         }
@@ -454,9 +475,11 @@ void CoordinatorImp::StepReplayObserversRealtime() {
         }
 
         if (r->Control()->IsInGame()) {
-            r->Control()->GetObservation();
+            if (!r->Control()->GetObservation()) {
+                return;
+            }
+            got_obs[i] = 1;
 
-            // If multithreaded run everyones OnStep in parallel.
             if (process_settings_.multi_threaded) {
                 r->Control()->IssueEvents();
             }
@@ -468,28 +491,27 @@ void CoordinatorImp::StepReplayObserversRealtime() {
     };
 
     if (replay_observers_.size() == 1) {
-        run_replay(replay_observers_.front());
+        run_replay(0);
     } else {
-        // Run all steps in parallel.
         std::vector<std::thread> threads;
         threads.reserve(replay_observers_.size());
-        for (auto r : replay_observers_) {
-            threads.emplace_back(run_replay, r);
+        for (size_t i = 0; i < replay_observers_.size(); ++i) {
+            threads.emplace_back(run_replay, i);
         }
-
-        // Join all threads.
         for (auto& t : threads) {
             t.join();
         }
     }
 
-    // Do everyones OnStep, if not multi threaded, in single threaded mode.
     if (!process_settings_.multi_threaded) {
-        for (auto r : replay_observers_) {
+        for (size_t i = 0; i < replay_observers_.size(); ++i) {
+            if (!got_obs[i]) {
+                continue;
+            }
+            ReplayObserver* r = replay_observers_[i];
             if (r->Control()->GetAppState() != AppState::normal) {
                 continue;
             }
-
             r->Control()->IssueEvents();
         }
     }

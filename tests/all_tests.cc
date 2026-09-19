@@ -18,7 +18,8 @@
 // Tests. Easier to extern than create a .h for a single function prototype.
 namespace sc2 {
 bool TestAbilityRemap(int argc, char** argv);
-}
+bool TestProtoMatch(int argc, char** argv);
+}  // namespace sc2
 
 #define TEST(X)                                                    \
     std::cout << "Running test: " << #X << std::endl;              \
@@ -34,6 +35,7 @@ int main(int argc, char* argv[]) {
     bool success = true;
 
     // Add tests here.
+    TEST(sc2::TestProtoMatch);
     TEST(sc2::TestAbilityRemap);
     TEST(sc2::TestSnapshots);
     TEST(sc2::TestMultiplayer);

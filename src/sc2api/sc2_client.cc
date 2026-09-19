@@ -1874,6 +1874,8 @@ GameResponsePtr ControlImp::WaitForResponse() {
     }
     assert(!response.get());
 
+    proto_.ClearPending();
+
     // The game application did not responded, the previous request was either not sent or the app is non-responsive.
 
     // Step 1: distinguish between a hang and a crash. Lots of time has elapsed, so if there was a crash
@@ -1996,6 +1998,11 @@ bool ControlImp::GetObservation() {
         return false;
     }
 
+    if (proto_.HasResponsePending()) {
+        WaitForResponse();
+        return false;
+    }
+
     GameRequestPtr request = proto_.MakeRequest();
     request->mutable_observation();
     if (!proto_.SendRequest(request)) {
@@ -2006,19 +2013,6 @@ bool ControlImp::GetObservation() {
     ResponseObservationPtr response_observation;
     SET_MESSAGE_RESPONSE(response_observation, response, observation);
     if (response_observation.HasErrors()) {
-        std::cerr << std::endl << "Error in returning observation:" << std::endl;
-        std::cerr << "The main response is of type: " << std::to_string(response->response_case()) << std::endl;
-        if (response_observation.HasResponse()) {
-            std::cerr << "There is no ResponseObservation/message!" << std::endl;
-        }
-        if (response->error_size() > 0) {
-            for (int i = 0; i < response->error_size(); ++i) {
-                std::cerr << "Error string: " << response->error(i) << std::endl;
-            }
-        } else {
-            std::cerr << "No error strings in result." << std::endl;
-        }
-        std::cerr << std::endl;
         return false;
     }
 
