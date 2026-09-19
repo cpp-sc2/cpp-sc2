@@ -4,21 +4,42 @@ Checks: "*,
         -altera-*,
         -android-*,
         -boost-*,
-        -bugprone-easily-swappable-parameters,
-        -cppcoreguidelines-avoid-magic-numbers,
-        -cppcoreguidelines-non-private-member-variables-in-classes,
-        -cppcoreguidelines-pro-type-reinterpret-cast,
+        -cert-*,
+        -cppcoreguidelines-pro-bounds-pointer-arithmetic,
         -fuchsia-*,
-        -google-default-arguments,
-        -llvm*,
-        -misc-confusable-identifiers,
-        -misc-non-private-member-variables-in-classes,
-        -modernize-use-trailing-return-type,
+        -google-*,
+        -hicpp-*,
+        -linuxkernel-*,
+        -llvm-*,
+        -llvmlibc-*,
+        -mpi-*,
+        -objc-*,
+        -openmp-*,
+        -portability-avoid-pragma-once,
         -readability-identifier-length,
-        -readability-implicit-bool-conversion,
-        -readability-magic-numbers,
         -zircon-*,
+        cert-dcl50-cpp,
+        cert-dcl58-cpp,
+        cert-env33-c,
+        cert-err33-c,
+        cert-err34-c,
+        cert-err52-cpp,
+        cert-err58-cpp,
+        cert-err60-cpp,
+        cert-flp30-c,
+        cert-mem57-cpp,
+        cert-msc50-cpp,
+        cert-msc51-cpp,
+        cert-oop57-cpp,
+        cert-oop58-cpp,
+        google-build-namespaces,
+        google-readability-casting,
+        llvm-namespace-comment
 "
-WarningsAsErrors: '*'
-HeaderFilterRegex: ''
-FormatStyle:     none
+CheckOptions:
+  misc-include-cleaner.IgnoreHeaders: 'sc2api/sc2_typeenums.h;sc2api/typeids/.*'
+  readability-function-cognitive-complexity.DescribeBasicIncrements: false
+ExcludeHeaderFilterRegex: '.*/_deps/.*'
+FormatStyle: none
+HeaderFilterRegex: '.*/src/.*'
+# WarningsAsErrors: '*'

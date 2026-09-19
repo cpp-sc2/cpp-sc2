@@ -4,12 +4,12 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
     cmake_policy(SET CMP0135 NEW)
 endif ()
 
-# Skip generating proto files with Protobuf compiler and use prebuilt files
-# Will still build Protobuf as libprotobuf is required for linking
+# Skip generating proto files with Protobuf compiler and use prebuilt files.
+# Will still build Protobuf as libprotobuf is required for linking.
 option(WSL2_CROSS_COMPILE "Building on WSL2 for Windows" OFF)
 
 # Downstream projects including cpp-sc2 as a dependency must set toolchain the
-# toolchain file
+# toolchain file.
 if (DEFINED CMAKE_TOOLCHAIN_FILE)
     message(DEBUG "Toolchain file already set to ${CMAKE_TOOLCHAIN_FILE}")
 elseif (WSL2_CROSS_COMPILE)
@@ -45,7 +45,7 @@ foreach (build IN LISTS build_types)
     endforeach ()
 endforeach ()
 
-# All libraries built with debug should be the same postfix
+# All libraries built with debug should be the same postfix.
 set(LIBRARY_DEBUG_POSTFIX d)
 set(CMAKE_DEBUG_POSTFIX ${LIBRARY_DEBUG_POSTFIX})
 
@@ -63,10 +63,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if (MSVC)
-    # Setup MSVC parallelized builds
+    # Setup MSVC parallelized builds.
     add_compile_options(/MP)
 
-    # Use statically linked runtime
+    # Use statically linked runtime.
     set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Debug>:Debug>)
 endif ()
 
@@ -82,7 +82,7 @@ if (WSL2_CROSS_COMPILE)
     include(protos)
 endif ()
 
-# External subproject depedencies
+# External subproject dependencies.
 include(civetweb)
 include(protobuf)
 include(sc2protocol)
@@ -90,5 +90,5 @@ if (BUILD_SC2_RENDERER)
     include(SDL)
 endif ()
 
-# cpp-sc2 libraries
+# Project libraries.
 add_subdirectory(src)

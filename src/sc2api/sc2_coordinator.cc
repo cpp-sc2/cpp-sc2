@@ -876,6 +876,10 @@ void Coordinator::SetPortStart(int port_start) {
     imp_->process_settings_.port_start = port_start;
 }
 
+void Coordinator::SetNetAddress(const std::string& net_address) {
+    imp_->process_settings_.net_address = net_address;
+}
+
 void Coordinator::SetFeatureLayers(const FeatureLayerSettings& settings) {
     // Feature Layers must be set before LaunchStarcraft is called.
     assert(!imp_->starcraft_started_);

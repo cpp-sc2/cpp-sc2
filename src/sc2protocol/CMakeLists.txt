@@ -42,7 +42,7 @@ if (WSL2_CROSS_COMPILE)
             DESTINATION
                 "${proto_generation_dir}")
     endforeach ()
-# Compile protos with protoc
+# Compile protos with protoc (executable resolved in thirdparty/cmake/protobuf.cmake)
 else ()
     foreach (proto ${proto_files})
         get_filename_component(proto_name_we ${proto} NAME_WE)
@@ -54,11 +54,11 @@ else ()
                 "${protoc_out_cc}"
                 "${protoc_out_h}"
             COMMAND
-                "${PROJECT_BINARY_DIR}/bin/protoc"
+                "${protoc_executable}"
                 "-I=${sc2protocol_SOURCE_DIR}"
                 "--cpp_out=${PROJECT_BINARY_DIR}/generated"
                 "${proto}"
-            DEPENDS protoc
+            DEPENDS ${protoc_depends} ${proto}
             VERBATIM
         )
     endforeach()
