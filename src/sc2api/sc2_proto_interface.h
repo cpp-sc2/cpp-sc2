@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <functional>
 
 #include "s2clientprotocol/sc2api.pb.h"
@@ -95,6 +96,7 @@ public:
         return latest_status_;
     }
     bool HasResponsePending() const;
+    void ClearPending();
     SC2APIProtocol::Response::ResponseCase GetResponsePending() const {
         return response_pending_;
     }
@@ -124,6 +126,8 @@ protected:
     std::function<void(const std::string& error_str)> error_callback_;
     SC2APIProtocol::Status latest_status_;
     SC2APIProtocol::Response::ResponseCase response_pending_;
+    uint32_t pending_id_;
+    uint32_t next_request_id_;
     std::vector<uint32_t> count_uses_;
     ControlInterface* control_;
 
@@ -133,5 +137,10 @@ protected:
 
 // Helper to produce a string for the proto type.
 const char* RequestResponseIDToName(int type);
+
+enum class PendingMatch { Stale, Wait, Accept, Mismatch };
+
+PendingMatch MatchPendingResponse(SC2APIProtocol::Response::ResponseCase pending_type, uint32_t pending_id,
+                                  const SC2APIProtocol::Response& response);
 
 }  // namespace sc2

@@ -11,6 +11,7 @@ set(sc2test_sources
     test_multiplayer.cc
     test_observation_interface.cc
     test_performance.cc
+    test_proto_match.cc
     test_restart.cc
     test_snapshots.cc
     test_unit_command_common.cc
