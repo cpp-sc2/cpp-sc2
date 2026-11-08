@@ -197,6 +197,19 @@ public:
     //! Whether the unit is building or not.
     bool is_building;
 
+    //! Optional bot-owned pointer. The library never dereferences or deletes this.
+    //! Survives across observations for the same tag. New units start as nullptr.
+    //! Free any heap allocation in OnUnitDestroyed (or when you clear it).
+    void* user = nullptr;
+
+    void SetUser(void* user_data) {
+        user = user_data;
+    }
+
+    [[nodiscard]] void* User() const {
+        return user;
+    }
+
     //! Whether the unit construction/training completed.
     [[nodiscard]] bool IsBuildFinished() const;
 };

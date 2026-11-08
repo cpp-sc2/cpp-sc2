@@ -33,6 +33,7 @@ Unit* UnitPool::CreateUnit(Tag tag) {
     std::vector<Unit>& pool = unit_pool_[available_index_.first];
     Unit* unit = &pool[available_index_.second];
     unit->last_seen_game_loop = 0;  // initialization required for OnUnitEnterVision
+    unit->user = nullptr;
     tag_to_unit_[tag] = unit;
     tag_to_existing_unit_[tag] = unit;
     AddNewUnit(unit);
