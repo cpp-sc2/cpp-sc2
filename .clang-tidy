@@ -41,5 +41,5 @@ CheckOptions:
   readability-function-cognitive-complexity.DescribeBasicIncrements: false
 ExcludeHeaderFilterRegex: '.*/_deps/.*'
 FormatStyle: none
-HeaderFilterRegex: '.*/src/.*'
+HeaderFilterRegex: '.*/(src|tests|examples)/.*'
 # WarningsAsErrors: '*'
