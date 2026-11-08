@@ -80,6 +80,13 @@ public:
     //!< \return List of raw actions.
     virtual const RawActions& GetRawActions() const = 0;
 
+    //! Failed commands from the last step. Valid during OnActionError and OnStep.
+    //! Combines ResponseObservation.action_errors with non-success ResponseAction.result
+    //! from the previous SendActions (UI "red text", e.g. not enough minerals).
+    //! ResponseAction results stay queued if IssueEvents skips a same-loop observation.
+    //!< \return List of action errors. Empty when no command failed last step.
+    virtual const std::vector<ActionError>& GetActionErrors() const = 0;
+
     //! Gets a list of actions performed. For use with the feature layer options.
     //!< \return List of actions.
     virtual const SpatialActions& GetFeatureLayerActions() const = 0;
@@ -91,6 +98,10 @@ public:
     //! Gets new chat messages.
     //!< \return List of chat messages.
     virtual const std::vector<ChatMessage>& GetChatMessages() const = 0;
+
+    //! HUD / observation alerts for this step. Matches SC2APIProtocol::Alert.
+    //!< \return List of alerts. Empty when none fired this step.
+    virtual const std::vector<Alert>& GetAlerts() const = 0;
 
     //! Gets all power sources associated with the current player.
     //!< \return List of power sources.

@@ -151,4 +151,14 @@ void UnitTestBot::OnNuclearLaunchDetected() {
         sequences_[current_sequence_]->OnNuclearLaunchDetected();
 }
 
+void UnitTestBot::OnAlert(Alert alert) {
+    if (current_sequence_ < sequences_.size())
+        sequences_[current_sequence_]->OnAlert(alert);
+}
+
+void UnitTestBot::OnActionError(const ActionError& error) {
+    if (current_sequence_ < sequences_.size())
+        sequences_[current_sequence_]->OnActionError(error);
+}
+
 }  // namespace sc2

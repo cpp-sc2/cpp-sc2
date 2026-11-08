@@ -8,6 +8,7 @@
 #include <unordered_map>
 
 #include "s2clientprotocol/sc2api.pb.h"
+#include "sc2_action.h"
 #include "sc2_common.h"
 #include "sc2_control_interfaces.h"
 #include "sc2_game_settings.h"
@@ -89,6 +90,9 @@ public:
     RawActions raw_actions_;
     SpatialActions feature_layer_actions_;
     SpatialActions rendered_actions_;
+    std::vector<ActionError> action_errors_;
+    std::vector<ActionError> pending_action_errors_;
+    std::vector<Alert> alerts_;
     std::vector<PowerSource> power_sources_;
     std::vector<Effect> effects_;
     std::vector<UpgradeID> upgrades_;
@@ -150,6 +154,9 @@ public:
     const RawActions& GetRawActions() const final {
         return raw_actions_;
     }
+    const std::vector<ActionError>& GetActionErrors() const final {
+        return action_errors_;
+    }
     const SpatialActions& GetFeatureLayerActions() const final {
         return feature_layer_actions_;
     };
@@ -158,6 +165,9 @@ public:
     }
     const std::vector<ChatMessage>& GetChatMessages() const final {
         return chat_;
+    }
+    const std::vector<Alert>& GetAlerts() const final {
+        return alerts_;
     }
     const std::vector<PowerSource>& GetPowerSources() const final {
         return power_sources_;
@@ -226,6 +236,7 @@ public:
     const SC2APIProtocol::Observation* GetRawObservation() const final;
 
     bool UpdateObservation();
+    void ConsumePendingActionErrors();
 };
 
 ObservationImp::ObservationImp(ProtoInterface& proto, ObservationPtr& observation, ResponseObservationPtr& response,
@@ -598,11 +609,16 @@ bool ObservationImp::UpdateObservation() {
     ConvertRawActions(response_, raw_actions_);
     ConvertFeatureLayerActions(response_, feature_layer_actions_);
     ConvertRenderedActions(response_, rendered_actions_);
+    ConvertActionErrors(response_, action_errors_);
+    ConvertAlerts(observation_, alerts_);
 
     // Remap ability ids.
     {
         for (ActionRaw& action : raw_actions_) {
             action.ability_id = GetGeneralizedAbilityID(action.ability_id, *this);
+        }
+        for (ActionError& error : action_errors_) {
+            error.ability_id = GetGeneralizedAbilityID(error.ability_id, *this);
         }
         for (SpatialUnitCommand& spatial_action : feature_layer_actions_.unit_commands) {
             spatial_action.ability_id = GetGeneralizedAbilityID(spatial_action.ability_id, *this);
@@ -673,6 +689,14 @@ bool ObservationImp::UpdateObservation() {
     }
 
     return true;
+}
+
+void ObservationImp::ConsumePendingActionErrors() {
+    for (ActionError& error : pending_action_errors_) {
+        error.ability_id = GetGeneralizedAbilityID(error.ability_id, *this);
+    }
+    action_errors_.insert(action_errors_.end(), pending_action_errors_.begin(), pending_action_errors_.end());
+    pending_action_errors_.clear();
 }
 
 const SC2APIProtocol::Observation* ObservationImp::GetRawObservation() const {
@@ -1467,6 +1491,7 @@ public:
     void ErrorIf(bool condition, ClientError error, const std::vector<std::string>& errors = {}) override;
 
     bool IssueEvents(const Tags& commands = {}) override;
+    void QueueActionErrors(const std::vector<ActionError>& errors) override;
     void IssueUnitDestroyedEvents();
     void IssueUnitAddedEvents();
     void IssueIdleEvents(const Tags& commands);
@@ -1474,6 +1499,7 @@ public:
     void IssueUnitDamagedEvents();
 
     void IssueAlertEvents();
+    void IssueActionErrorEvents();
     void IssueUpgradeEvents();
 
     void DumpProtoUsage() override;
@@ -2145,22 +2171,25 @@ void ControlImp::IssueBuildingCompletedEvents() {
 }
 
 void ControlImp::IssueAlertEvents() {
-    // Iterate the alerts and issue relevant events.
-    for (const auto alert : observation_->alerts()) {
-        switch (alert) {
-            case SC2APIProtocol::Alert::NuclearLaunchDetected: {
-                client_.OnNuclearLaunchDetected();
-                break;
-            }
-            case SC2APIProtocol::Alert::NydusWormDetected: {
-                client_.OnNydusDetected();
-                break;
-            }
-            default: {
-                break;
-            }
+    for (const Alert alert : observation_imp_->alerts_) {
+        client_.OnAlert(alert);
+        if (alert == Alert::NuclearLaunchDetected) {
+            client_.OnNuclearLaunchDetected();
+        } else if (alert == Alert::NydusWormDetected) {
+            client_.OnNydusDetected();
         }
     }
+}
+
+void ControlImp::IssueActionErrorEvents() {
+    for (const ActionError& error : observation_imp_->action_errors_) {
+        client_.OnActionError(error);
+    }
+}
+
+void ControlImp::QueueActionErrors(const std::vector<ActionError>& errors) {
+    observation_imp_->pending_action_errors_.insert(observation_imp_->pending_action_errors_.end(), errors.begin(),
+                                                    errors.end());
 }
 
 void ControlImp::IssueUpgradeEvents() {
@@ -2181,12 +2210,15 @@ bool ControlImp::IssueEvents(const Tags& commands) {
         return false;
     }
 
+    observation_imp_->ConsumePendingActionErrors();
+
     IssueUnitDestroyedEvents();
     IssueUnitAddedEvents();
     IssueBuildingCompletedEvents();
     IssueIdleEvents(commands);
     IssueUpgradeEvents();
     IssueAlertEvents();
+    IssueActionErrorEvents();
     IssueUnitDamagedEvents();
 
     // Run the users OnStep function after events have been issued.

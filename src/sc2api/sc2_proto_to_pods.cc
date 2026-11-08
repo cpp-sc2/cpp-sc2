@@ -500,6 +500,66 @@ void ConvertRenderedActions(const ResponseObservationPtr& response_observation_p
     }
 }
 
+void ConvertActionErrors(const ResponseObservationPtr& response_observation_ptr, std::vector<ActionError>& errors) {
+    errors.clear();
+    if (!response_observation_ptr.HasMessage()) {
+        return;
+    }
+
+    errors.reserve(static_cast<size_t>(response_observation_ptr->action_errors_size()));
+    for (int i = 0; i < response_observation_ptr->action_errors_size(); ++i) {
+        const SC2APIProtocol::ActionError& proto_error = response_observation_ptr->action_errors(i);
+        ActionError error;
+        error.unit_tag = proto_error.has_unit_tag() ? proto_error.unit_tag() : NullTag;
+        error.ability_id = proto_error.has_ability_id() ? AbilityID(proto_error.ability_id()) : AbilityID(0);
+        if (proto_error.has_result()) {
+            error.result = ConvertActionResultFromProto(proto_error.result());
+        } else {
+            error.result = ActionResult::Unknown;
+        }
+        errors.push_back(error);
+    }
+}
+
+void ConvertActionResults(const SC2APIProtocol::ResponseAction& response_action,
+                          const SC2APIProtocol::RequestAction& request_action, std::vector<ActionError>& errors) {
+    errors.clear();
+    for (int i = 0; i < response_action.result_size(); ++i) {
+        const ActionResult result = ConvertActionResultFromProto(response_action.result(i));
+        if (result == ActionResult::Success) {
+            continue;
+        }
+
+        ActionError error;
+        error.result = result;
+        if (i < request_action.actions_size()) {
+            const SC2APIProtocol::Action& action = request_action.actions(i);
+            if (action.has_action_raw() && action.action_raw().has_unit_command()) {
+                const SC2APIProtocol::ActionRawUnitCommand& command = action.action_raw().unit_command();
+                if (command.unit_tags_size() > 0) {
+                    error.unit_tag = command.unit_tags(0);
+                }
+                if (command.has_ability_id()) {
+                    error.ability_id = AbilityID(command.ability_id());
+                }
+            }
+        }
+        errors.push_back(error);
+    }
+}
+
+void ConvertAlerts(const ObservationPtr& observation_ptr, std::vector<Alert>& alerts) {
+    alerts.clear();
+    if (!observation_ptr.HasMessage()) {
+        return;
+    }
+
+    alerts.reserve(static_cast<size_t>(observation_ptr->alerts_size()));
+    for (int i = 0; i < observation_ptr->alerts_size(); ++i) {
+        alerts.push_back(ConvertAlertFromProto(observation_ptr->alerts(i)));
+    }
+}
+
 void Convert(const SC2APIProtocol::SpatialCameraSetup& setup_proto, SpatialSetup& setup) {
     setup.camera_width = setup_proto.width();
     const SC2APIProtocol::Size2DI& resolution = setup_proto.resolution();
@@ -694,6 +754,23 @@ AIBuild ConvertAIBuildFromProto(SC2APIProtocol::AIBuild ai_build) {
     }
 
     return RandomBuild;
+}
+
+Alert ConvertAlertFromProto(SC2APIProtocol::Alert alert) {
+    const int value = static_cast<int>(alert);
+    if (value < static_cast<int>(Alert::NuclearLaunchDetected) || value > static_cast<int>(Alert::WarpInComplete)) {
+        return Alert::Unknown;
+    }
+    return static_cast<Alert>(value);
+}
+
+ActionResult ConvertActionResultFromProto(SC2APIProtocol::ActionResult result) {
+    const int value = static_cast<int>(result);
+    if (value < static_cast<int>(ActionResult::Success) ||
+        value > static_cast<int>(ActionResult::CantFindCancelOrder)) {
+        return ActionResult::Unknown;
+    }
+    return static_cast<ActionResult>(value);
 }
 
 }  // namespace sc2
