@@ -12,6 +12,7 @@ Checks: "*,
         -linuxkernel-*,
         -llvm-*,
         -llvmlibc-*,
+        -modernize-use-trailing-return-type,
         -mpi-*,
         -objc-*,
         -openmp-*,
@@ -41,5 +42,5 @@ CheckOptions:
   readability-function-cognitive-complexity.DescribeBasicIncrements: false
 ExcludeHeaderFilterRegex: '.*/_deps/.*'
 FormatStyle: none
-HeaderFilterRegex: '.*/src/.*'
+HeaderFilterRegex: '.*/(src|tests|examples)/.*'
 # WarningsAsErrors: '*'

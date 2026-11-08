@@ -12,3 +12,13 @@ repos:
     rev: v23.1.1
     hooks:
       - id: clang-format
+
+  - repo: local
+    hooks:
+      - id: clang-tidy
+        name: clang-tidy
+        description: Run clang-tidy over the changed sources.
+        entry: clang-tidy -p build --quiet
+        language: system
+        types: [c++]
+        stages: [manual]

@@ -45,7 +45,30 @@ an open and welcoming environment.
 ### Coding Standard
 
 We use [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) to format
-the code.
+the code and [`clang-tidy`](https://clang.llvm.org/extra/clang-tidy/) to lint it.
+Both are wired into [`pre-commit`](https://pre-commit.com/) hooks, install them
+once with `pre-commit install`.
+
+`clang-format` runs on every commit. `clang-tidy` is registered as a manual hook,
+as the code base isn't clean yet, so run it yourself:
+
+```bash
+# Everything tracked in the repository.
+pre-commit run --hook-stage manual clang-tidy --all-files
+
+# Only the staged files.
+pre-commit run --hook-stage manual clang-tidy
+
+# Everything your branch has changed.
+pre-commit run --hook-stage manual clang-tidy --from-ref master --to-ref HEAD
+```
+
+The hook reads `build/compile_commands.json`, so configure the project with the
+`dev` preset beforehand:
+
+```bash
+cmake --preset dev
+```
 
 ### Commit guidelines
 
