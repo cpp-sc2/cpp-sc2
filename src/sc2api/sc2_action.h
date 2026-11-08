@@ -13,13 +13,18 @@ namespace sc2 {
 //! An action (command or ability) applied to a unit or set of units.
 struct ActionRaw {
     //! Type of target. Target types are mutually exclusive.
-    enum TargetType {
+    enum class TargetType : uint8_t {
         //! No target generally means 'self', e.g., a order to make a unit.
-        TargetNone,
-        //! The target is a unit tag, could also be a snapshot in the fog-of-war.
-        TargetUnitTag,
+        None = 1,
         //! The target is a point.
-        TargetPosition
+        Position = 2,
+        //! The target is a unit tag, could also be a snapshot in the fog-of-war.
+        UnitTag = 3,
+
+        TargetNone [[deprecated("Use \"None\" instead.")]] = 1,          // Temporary; wil be removed in the future.
+        TargetPosition [[deprecated("Use \"Position\" instead.")]] = 2,  // Temporary; wil be removed in the future.
+        TargetUnitTag [[deprecated("Use \"UnitTag\" instead.")]] = 3,    // Temporary; wil be removed in the future.
+
     };
 
     //! The ID of the ability to invoke.
@@ -27,7 +32,7 @@ struct ActionRaw {
     //! Units this action applies to. In normal use, this would be the currently selected units.
     std::vector<Tag> unit_tags;
     //! Which target fields are valid.
-    TargetType target_type = TargetNone;
+    TargetType target_type{TargetType::None};
     //! The target of this action. Valid only when target_type == TargetUnitTag.
     Tag target_tag = NullTag;
     //! The target point for this action. Valid only when target_type == TargetPosition.
@@ -56,15 +61,19 @@ struct ActionRaw {
 };
 
 using RawActions = std::vector<ActionRaw>;
+using RawTargetType = ActionRaw::TargetType;
 
 //! An action (command or ability) applied to selected units when using feature layers or the rendered interface.
 struct SpatialUnitCommand {
     //! If this action should apply to the screen or minimap.
-    enum TargetType {
+    enum class TargetType : uint8_t {
         //! Apply this action to the main game screen.
-        TargetScreen,
+        ScreenCoord = 1,
         //! Apply this action to the minimap.
-        TargetMinimap
+        MinimapCoord = 2,
+
+        TargetScreen [[deprecated("Use \"ScreenCoord\" instead.")]] = 1,    // Temporary; wil be removed in the future.
+        TargetMinimap [[deprecated("Use \"MinimapCoord\" instead.")]] = 2,  // Temporary; wil be removed in the future.
     };
 
     //! The ID of the ability to invoke.
@@ -77,21 +86,25 @@ struct SpatialUnitCommand {
     bool queued;
 };
 
+using SpatialTargetType = SpatialUnitCommand::TargetType;
+
 //! Where to move the camera to on the minimap.
 struct SpatialCameraMove {
     Point2DI center_minimap;
 };
 
 //! Types of selection.
-enum class PointSelectionType {
-    //! Equivalent to normal click. Changes selection to unit.
-    PtSelect = 1,
-    //! Equivalent to shift+click. Toggle selection of unit.
-    PtToggle = 2,
-    //! Equivalent to control+click. Selects all units of a given type.
-    PtAllType = 3,
-    //! Equivalent to shift+control+click. Selects all units of a given type.
-    PtAddAllType = 4
+enum class PointSelectionType : uint8_t {
+    Invalid = 0,
+    Select = 1,      // Equivalent to normal click. Changes selection to unit.
+    Toggle = 2,      // Equivalent to shift+click. Toggle selection of unit.
+    AllType = 3,     // Equivalent to control+click. Selects all units of a given type.
+    AddAllType = 4,  // Equivalent to shift+control+click. Selects all units of a given type.
+
+    PtSelect [[deprecated("Use \"Select\" instead.")]] = 1,          // Temporary; wil be removed in the future.
+    PtToggle [[deprecated("Use \"Toggle\" instead.")]] = 2,          // Temporary; wil be removed in the future.
+    PtAllType [[deprecated("Use \"AllType\" instead.")]] = 3,        // Temporary; wil be removed in the future.
+    PtAddAllType [[deprecated("Use \"AddAllType\" instead.")]] = 4,  // Temporary; wil be removed in the future.
 };
 
 //! Point selection.

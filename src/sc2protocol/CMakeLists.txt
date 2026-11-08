@@ -1,14 +1,14 @@
 set(proto_files
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/common.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/data.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/debug.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/error.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/query.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/raw.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/sc2api.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/score.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/spatial.proto"
-    "${sc2protocol_SOURCE_DIR}/s2clientprotocol/ui.proto")
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/common.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/data.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/debug.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/error.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/query.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/raw.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/sc2api.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/score.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/spatial.proto"
+    "${sc2client-proto_SOURCE_DIR}/s2clientprotocol/ui.proto")
 
 # Create the output directory for generated protos.
 set(proto_generation_dir "${PROJECT_BINARY_DIR}/generated/s2clientprotocol")
@@ -55,7 +55,7 @@ else ()
                 "${protoc_out_h}"
             COMMAND
                 "${protoc_executable}"
-                "-I=${sc2protocol_SOURCE_DIR}"
+                "-I=${sc2client-proto_SOURCE_DIR}"
                 "--cpp_out=${PROJECT_BINARY_DIR}/generated"
                 "${proto}"
             DEPENDS ${protoc_depends} ${proto}

@@ -84,17 +84,17 @@ public:
     }
 
     void TestTagsTargetingUnit(ActionInterface* act) {
-        test_ability_ = sc2::ABILITY_ID::GENERAL_MOVE;
-        const sc2::Units target_units_ = agent_->Observation()->GetUnits(sc2::Unit::Enemy);
-        sc2::Tag target_unit_tag_ = ConvertToTags(target_units_).front();
+        test_ability_ = ABILITY_ID::GENERAL_MOVE;
+        const Units target_units_ = agent_->Observation()->GetUnits(Alliance::Enemy);
+        const Tag target_unit_tag_ = ConvertToTags(target_units_).front();
 
         act->UnitCommand(test_units_tags_, test_ability_, target_unit_tag_);
     }
 
     void TestTagTargetingUnit(ActionInterface* act) {
-        test_ability_ = sc2::ABILITY_ID::GENERAL_MOVE;
-        const sc2::Units target_units_ = agent_->Observation()->GetUnits(sc2::Unit::Enemy);
-        sc2::Tag target_unit_tag_ = ConvertToTags(target_units_).front();
+        test_ability_ = ABILITY_ID::GENERAL_MOVE;
+        const Units target_units_ = agent_->Observation()->GetUnits(Alliance::Enemy);
+        const Tag target_unit_tag_ = ConvertToTags(target_units_).front();
 
         act->UnitCommand(test_units_tags_.front(), test_ability_, target_unit_tag_);
     }
@@ -210,13 +210,13 @@ public:
     void OnTestFinish() override {
         const ObservationInterface* obs = agent_->Observation();
 
-        Units barracks_units = obs->GetUnits(Unit::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
+        const Units barracks_units = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
         if (barracks_units.size() != 1) {
             ReportError("Could not find landed barracks.");
         }
 
         // Find the tech lab.
-        Units techlab_units = obs->GetUnits(Unit::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKSTECHLAB));
+        const Units techlab_units = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKSTECHLAB));
         if (techlab_units.size() != 1) {
             ReportError("Could not find a tech lab.");
         }
@@ -252,13 +252,13 @@ public:
         const ObservationInterface* obs = agent_->Observation();
 
         // Barracks will have landed. Find it.
-        Units barracks_units = obs->GetUnits(Unit::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
+        const Units barracks_units = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
         if (barracks_units.size() != 1) {
             ReportError("Could not find landed barracks.");
         }
 
         // Find the tech lab.
-        Units techlab_units = obs->GetUnits(Unit::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKSTECHLAB));
+        const Units techlab_units = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKSTECHLAB));
         if (techlab_units.size() != 1) {
             ReportError("Could not find a tech lab.");
         }
@@ -295,13 +295,13 @@ public:
         Units units = obs->GetUnits();
 
         // Barracks will have landed. Find it.
-        Units barracks_units = obs->GetUnits(Unit::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
+        const Units barracks_units = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKS));
         if (barracks_units.size() != 1) {
             ReportError("Could not find landed barracks.");
         }
 
         // Find the tech lab.
-        Units techlab_units = obs->GetUnits(Unit::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKSTECHLAB));
+        const Units techlab_units = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_BARRACKSTECHLAB));
         if (techlab_units.size() != 1) {
             ReportError("Could not find a tech lab.");
         }
@@ -506,7 +506,7 @@ public:
             return;
         }
 
-        const Units& units = obs->GetUnits(Unit::Alliance::Self);
+        const Units& units = obs->GetUnits(Alliance::Self);
         for (const auto& unit : units) {
             if (unit->unit_type == test_unit_type_) {
                 test_unit_ = unit;
@@ -571,7 +571,7 @@ public:
             return;
         }
 
-        Units units = obs->GetUnits(Unit::Alliance::Self);
+        Units units = obs->GetUnits(Alliance::Self);
         for (const auto& unit : units) {
             if (unit->unit_type == test_unit_type_) {
                 test_unit_ = unit;
@@ -711,7 +711,8 @@ public:
             ReportError("Pre-ability target unit health is not correct.");
         }
 
-        test_units_ = obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
+        test_units_ =
+            obs->GetUnits(Alliance::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
 
         if (test_units_.size() > 0) {
             test_unit_ = test_units_.front();
@@ -832,7 +833,8 @@ public:
             return;
         }
 
-        test_units_ = obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
+        test_units_ =
+            obs->GetUnits(Alliance::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
 
         if (test_units_.size() > 0) {
             test_unit_ = test_units_.front();
@@ -855,7 +857,7 @@ public:
             if (test_hatchery_->is_on_screen == true) {
                 ReportError("Enemy structure on screen is true.");
             }
-            if (test_hatchery_->alliance != Unit::Alliance::Enemy) {
+            if (test_hatchery_->alliance != Alliance::Enemy) {
                 ReportError("Enemy alliance is incorrect.");
             }
             if (test_hatchery_->owner != 2) {
@@ -904,8 +906,8 @@ public:
 
     void OnTestFinish() override {
         const ObservationInterface* obs = agent_->Observation();
-        Units test_nexus_units =
-            obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::PROTOSS_NEXUS; });
+        Units test_nexus_units = obs->GetUnits(
+            Alliance::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::PROTOSS_NEXUS; });
 
         if (target_unit_->mineral_contents < 1400) {
             ReportError("Mineral patch does not contain any minerals.");
@@ -957,12 +959,12 @@ public:
 
     void OnTestFinish() override {
         const ObservationInterface* obs = agent_->Observation();
-        Units test_nexus_units =
-            obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::PROTOSS_NEXUS; });
+        Units test_nexus_units = obs->GetUnits(
+            Alliance::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::PROTOSS_NEXUS; });
 
         // Ensure the vespene geyser has gas.
         {
-            Units geysers = obs->GetUnits(Unit::Alliance::Neutral, IsUnit(UNIT_TYPEID::NEUTRAL_VESPENEGEYSER));
+            Units geysers = obs->GetUnits(Alliance::Neutral, IsUnit(UNIT_TYPEID::NEUTRAL_VESPENEGEYSER));
             if (geysers.size() < 1) {
                 ReportError("Could not find any geysers.");
             } else {
@@ -1230,7 +1232,7 @@ public:
             return;
         }
 
-        Units units = obs->GetUnits(Unit::Alliance::Self);
+        Units units = obs->GetUnits(Alliance::Self);
         for (const auto& unit : units) {
             if (unit->unit_type == test_unit_type_) {
                 test_unit_ = unit;
@@ -1258,8 +1260,8 @@ public:
         VerifyUnitIdleAfterOrder(UNIT_TYPEID::TERRAN_MARINE);
 
         const ObservationInterface* obs = agent_->Observation();
-        Units test_marine_units =
-            obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::TERRAN_MARINE; });
+        Units test_marine_units = obs->GetUnits(
+            Alliance::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::TERRAN_MARINE; });
 
         if (Point2D(test_marine_units.front()->pos) != target_point_) {
             ReportError("Trained marine is not at rally point.");
@@ -1323,7 +1325,7 @@ public:
 
     void OnTestFinish() override {
         const ObservationInterface* obs = agent_->Observation();
-        const Units& target_units = obs->GetUnits(Unit::Alliance::Enemy);
+        const Units& target_units = obs->GetUnits(Alliance::Enemy);
 
         if (target_units.front()->is_blip != true) {
             ReportError("Target unit is not a blip.");
@@ -1364,7 +1366,8 @@ public:
     void OnStep() override {
         const ObservationInterface* obs = agent_->Observation();
 
-        test_units_ = obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
+        test_units_ =
+            obs->GetUnits(Alliance::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
 
         const Unit* test_unit = nullptr;
         if (test_units_.size() > 0) {
@@ -1432,7 +1435,8 @@ public:
             return;
         }
 
-        test_units_ = obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
+        test_units_ =
+            obs->GetUnits(Alliance::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
 
         const Unit* test_unit = nullptr;
         if (test_units_.size() > 0) {
@@ -1503,8 +1507,8 @@ public:
         VerifyUnitIdleAfterOrder(UNIT_TYPEID::PROTOSS_WARPGATE);
         const ObservationInterface* obs = agent_->Observation();
 
-        Units test_warped_zealot =
-            obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::PROTOSS_ZEALOT; });
+        Units test_warped_zealot = obs->GetUnits(
+            Alliance::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::PROTOSS_ZEALOT; });
 
         if (Point2D(test_warped_zealot.front()->pos) != target_point_) {
             ReportError("Unit did not warp to target point.");
@@ -1597,7 +1601,8 @@ public:
 
     void OnTestFinish() override {
         const ObservationInterface* obs = agent_->Observation();
-        Units roaches = obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
+        Units roaches =
+            obs->GetUnits(Alliance::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
 
         if (roaches.size() != 3) {
             ReportError("The number of units trained was not correct.");
@@ -1636,7 +1641,8 @@ public:
             return;
         }
 
-        test_units_ = obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
+        test_units_ =
+            obs->GetUnits(Alliance::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
 
         if (test_units_.size() > 0) {
             test_unit_ = test_units_.front();
@@ -1708,7 +1714,8 @@ public:
             return;
         }
 
-        test_units_ = obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
+        test_units_ =
+            obs->GetUnits(Alliance::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
 
         const Unit* test_unit = nullptr;
         if (test_units_.size() > 0) {
@@ -1716,8 +1723,8 @@ public:
             test_unit = test_units_.front();
         }
 
-        Units test_marauder_units =
-            obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::TERRAN_MARAUDER; });
+        Units test_marauder_units = obs->GetUnits(
+            Alliance::Self, [&](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::TERRAN_MARAUDER; });
 
         if (!marauders_loaded_) {
             act->UnitCommand(test_marauder_units, ABILITY_ID::SMART, test_unit_);

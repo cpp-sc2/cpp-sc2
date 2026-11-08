@@ -35,7 +35,7 @@ TryBuildBarracks in order to determine if we should build one or not.
 
 ```C++
 size_t CountUnitType(UNIT_TYPEID unit_type) {
-    return Observation()->GetUnits(Unit::Alliance::Self, IsUnit(unit_type)).size();
+    return Observation()->GetUnits(Alliance::Self, IsUnit(unit_type)).size();
 }
 ```
 
@@ -193,7 +193,7 @@ public:
     }
 private:
     size_t CountUnitType(UNIT_TYPEID unit_type) {
-        return Observation()->GetUnits(Unit::Alliance::Self, IsUnit(unit_type)).size();
+        return Observation()->GetUnits(Alliance::Self, IsUnit(unit_type)).size();
     }
 
     bool TryBuildStructure(ABILITY_ID ability_type_for_structure, UNIT_TYPEID unit_type = UNIT_TYPEID::TERRAN_SCV) {
@@ -202,7 +202,7 @@ private:
         // If a unit already is building a supply structure of this type, do nothing.
         // Also get an scv to build the structure.
         const Unit* unit_to_build = nullptr;
-        Units units = observation->GetUnits(Unit::Alliance::Self);
+        Units units = observation->GetUnits(Alliance::Self);
         for (const auto& unit : units) {
             for (const auto& order : unit->orders) {
                 if (order.ability_id == ability_type_for_structure) {
@@ -237,7 +237,7 @@ private:
     }
 
     const Unit* FindNearestMineralPatch(const Point2D& start) {
-        Units units = Observation()->GetUnits(Unit::Alliance::Neutral);
+        Units units = Observation()->GetUnits(Alliance::Neutral);
         float distance = std::numeric_limits<float>::max();
         const Unit* target = nullptr;
         for (const auto& u : units) {

@@ -127,7 +127,7 @@ public:
 
     void OnTestFinish() override {
         const ObservationInterface* obs = agent_->Observation();
-        Units pylons = obs->GetUnits(Unit::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
+        Units pylons = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::PROTOSS_PYLON));
         if (pylons.size() == 0)
             ReportError("Failed to build pylon");
     }

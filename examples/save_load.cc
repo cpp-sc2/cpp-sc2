@@ -29,7 +29,7 @@ public:
         // Worker rush the enemy!
         //
         auto enemy_base = obs->GetGameInfo().enemy_start_locations[0];
-        const auto& workers = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SCV));
+        const auto& workers = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SCV));
         for (auto unit : workers) {
             Actions()->UnitCommand(unit, ABILITY_ID::ATTACK, enemy_base);
         }
@@ -38,7 +38,7 @@ public:
         // Create a savepoint as we arrive at the enemy base
         //
         if (!has_save) {
-            const auto& enemies = obs->GetUnits(Unit::Alliance::Enemy, IsVisible());
+            const auto& enemies = obs->GetUnits(Alliance::Enemy, IsVisible());
             if (enemies.size() > 0) {
                 Control()->Save();
                 has_save = true;

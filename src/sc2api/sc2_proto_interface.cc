@@ -91,12 +91,12 @@ ProtoInterface::ProtoInterface()
     : address_("127.0.0.1"),
       port_(5000),
       default_timeout_ms_(kDefaultProtoInterfaceTimeout),
-      latest_status_(SC2APIProtocol::Status::unknown),
+      latest_status_(SC2APIProtocol::Status::Unknown),
       response_pending_(SC2APIProtocol::Response::RESPONSE_NOT_SET) {
 }
 
 bool ProtoInterface::ConnectToGame(const std::string& address, int port, int timeout_ms) {
-    latest_status_ = SC2APIProtocol::Status::unknown;
+    latest_status_ = SC2APIProtocol::Status::Unknown;
     address_ = address;
     port_ = port;
     default_timeout_ms_ = timeout_ms;
@@ -151,7 +151,7 @@ bool ProtoInterface::SendRequest(GameRequestPtr& request, bool ignore_pending_re
 }
 
 GameResponsePtr ProtoInterface::WaitForResponseInternal() {
-    latest_status_ = SC2APIProtocol::Status::unknown;
+    latest_status_ = SC2APIProtocol::Status::Unknown;
     SC2APIProtocol::Response* response = nullptr;
     if (!connection_.Receive(response, default_timeout_ms_)) {
         // If the receive fails, it means a timeout has occurred.

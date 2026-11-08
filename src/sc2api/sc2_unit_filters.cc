@@ -163,7 +163,7 @@ bool IsWorker::operator()(UNIT_TYPEID type_) const {
 }
 
 bool IsVisible::operator()(const Unit& unit_) const {
-    return unit_.display_type == Unit::Visible;
+    return unit_.display_type == DisplayType::Visible;
 };
 
 bool IsCarryingMinerals(const Unit& unit) {

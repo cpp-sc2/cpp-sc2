@@ -108,11 +108,16 @@ struct ReplaySettings {
 };
 
 //! Game status.
-enum class AppState {
-    normal,          // The game application has behaved normally.
-    timeout,         // A timeout has occurred, and the game application was terminated.
-    timeout_zombie,  // A timeout has occurred, but the game application could not be terminated.
-    crashed          // A crash has been detected.
+enum class AppState : uint8_t {
+    Normal,         // The game application has behaved normally.
+    Timeout,        // A timeout has occurred, and the game application was terminated.
+    TimeoutZombie,  // A timeout has occurred, but the game application could not be terminated.
+    Crashed,        // A crash has been detected.
+
+    normal [[deprecated("Use \"Normal\" instead.")]],                 // Temporary; wil be removed in the future.
+    timeout [[deprecated("Use \"Timeout\" instead.")]],               // Temporary; wil be removed in the future.
+    timeout_zombie [[deprecated("Use \"TimeoutZombie\" instead.")]],  // Temporary; wil be removed in the future.
+    crashed [[deprecated("Use \"Crashed\" instead.")]],               // Temporary; wil be removed in the future.
 };
 
 //! Known maps.

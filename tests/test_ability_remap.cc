@@ -24,7 +24,7 @@ public:
 
     const Unit* GetCommandCenter() {
         const ObservationInterface* obs = agent_->Observation();
-        Units found_command_centers = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER));
+        Units found_command_centers = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER));
         if (found_command_centers.size() != 1) {
             ReportError("Could not find the command center");
             assert(0);
@@ -146,7 +146,7 @@ public:
 
     void OnTestFinish() override {
         const ObservationInterface* obs = agent_->Observation();
-        Units found_command_centers = obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER));
+        Units found_command_centers = obs->GetUnits(Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_COMMANDCENTER));
         if (found_command_centers.size() != 0) {
             ReportError("Command center was not destroyed!");
             assert(0);

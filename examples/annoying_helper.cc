@@ -21,7 +21,7 @@ public:
         const sc2::ObservationInterface* observation = Observation();
         sc2::ActionInterface* action = Actions();
 
-        sc2::Units my_units = observation->GetUnits(sc2::Unit::Alliance::Self);
+        sc2::Units my_units = observation->GetUnits(sc2::Alliance::Self);
         if (my_units.empty()) {
             return;
         }

@@ -1,0 +1,336 @@
+diff --git a/s2clientprotocol/common.proto b/s2clientprotocol/common.proto
+index 081f306..5f4e68c 100644
+--- a/s2clientprotocol/common.proto
++++ b/s2clientprotocol/common.proto
+@@ -1,5 +1,5 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+diff --git a/s2clientprotocol/data.proto b/s2clientprotocol/data.proto
+index 1ac5e56..77c7f68 100644
+--- a/s2clientprotocol/data.proto
++++ b/s2clientprotocol/data.proto
+@@ -1,5 +1,5 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+@@ -19,6 +19,7 @@ message AbilityData {
+   optional uint32 remaps_to_ability_id = 7;                       // This ability id may be represented by the given more generic id.
+ 
+   enum Target {
++    Invalid = 0;
+     None = 1;                                                     // Does not require a target.
+     Point = 2;                                                    // Requires a target position.
+     Unit = 3;                                                     // Requires a unit to target. Given by position using feature layers.
+@@ -37,6 +38,7 @@ message AbilityData {
+ }
+ 
+ enum Attribute {
++  Invalid_Attribute = 0;
+   Light = 1;
+   Armored = 2;
+   Biological = 3;
+@@ -57,6 +59,7 @@ message DamageBonus {
+ 
+ message Weapon {
+   enum TargetType {
++    Invalid = 0;
+     Ground = 1;
+     Air = 2;
+     Any = 3;
+diff --git a/s2clientprotocol/debug.proto b/s2clientprotocol/debug.proto
+index 60ae90a..da3a03c 100644
+--- a/s2clientprotocol/debug.proto
++++ b/s2clientprotocol/debug.proto
+@@ -1,5 +1,5 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+@@ -69,6 +70,7 @@ message DebugSphere {
+ enum DebugGameState {
+   option allow_alias = true;
+ 
++  Invalid_DebugGameState = 0;
+   ShowMap = 1;
+   show_map = 1 [deprecated = true];       // Temporary. Will be deleted at some point in the future.
+   ControlEnemy = 2;
+@@ -110,6 +110,7 @@ message DebugTestProcess {
+   enum Test {
+     option allow_alias = true;
+ 
++    Invalid = 0;
+     Hang = 1;
+     hang = 1 [deprecated = true];          // Temporary. Will be deleted at some point in the future.
+     Crash = 2;
+@@ -127,6 +129,7 @@ message DebugSetScore {
+ 
+ message DebugEndGame {
+   enum EndResult {
++    Invalid = 0;
+     Surrender = 1;                  // Default if nothing is set. The current player admits defeat.
+     DeclareVictory = 2;
+   }
+@@ -138,6 +138,7 @@ message DebugEndGame {
+ 
+ message DebugSetUnitValue {
+   enum UnitValue {
++    Invalid = 0;
+     Energy = 1;
+     Life = 2;
+     Shields = 3;
+diff --git a/s2clientprotocol/error.proto b/s2clientprotocol/error.proto
+index fe223e9..2564297 100644
+--- a/s2clientprotocol/error.proto
++++ b/s2clientprotocol/error.proto
+@@ -1,9 +1,10 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+ enum ActionResult {
++  Invalid = 0;
+   Success = 1;
+   NotSupported = 2;
+   Error = 3;
+diff --git a/s2clientprotocol/query.proto b/s2clientprotocol/query.proto
+index c4270f6..a93f5d6 100644
+--- a/s2clientprotocol/query.proto
++++ b/s2clientprotocol/query.proto
+@@ -1,5 +1,5 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+diff --git a/s2clientprotocol/raw.proto b/s2clientprotocol/raw.proto
+index 1a08e6a..d9f4ac1 100644
+--- a/s2clientprotocol/raw.proto
++++ b/s2clientprotocol/raw.proto
+@@ -1,5 +1,5 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+@@ -59,6 +59,7 @@ message UnitOrder {
+ }
+ 
+ enum DisplayType {
++  Invalid_DisplayType = 0;
+   Visible = 1;                            // Fully visible
+   Snapshot = 2;                           // Dimmed version of unit left behind after entering fog of war
+   Hidden = 3;                             // Fully hidden
+@@ -66,6 +67,7 @@ enum DisplayType {
+ }
+ 
+ enum Alliance {
++  Invalid_Alliance = 0;
+   Self = 1;
+   Ally = 2;
+   Neutral = 3;
+diff --git a/s2clientprotocol/sc2api.proto b/s2clientprotocol/sc2api.proto
+index d82db04..8e2fa01 100644
+--- a/s2clientprotocol/sc2api.proto
++++ b/s2clientprotocol/sc2api.proto
+@@ -1,5 +1,5 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+@@ -157,6 +157,7 @@ message Response {
+ enum Status {
+   option allow_alias = true;
+ 
++  Invalid_Status = 0;
+   Launched = 1;                                 // Game has been launched and is not yet doing anything.
+   launched = 1 [deprecated = true];             // Temporary. Will be deleted at some point in the future.
+   InitGame = 2;                                 // Create game has been called, and the host is awaiting players.
+@@ -200,6 +201,7 @@ message LocalMap {
+ 
+ message ResponseCreateGame {
+   enum Error {
++    Unknown = 0;
+     MissingMap = 1;
+     InvalidMapPath = 2;
+     InvalidMapData = 3;
+@@ -241,6 +243,7 @@ message ResponseJoinGame {
+   optional uint32 player_id = 1;
+ 
+   enum Error {
++    Invalid = 0;
+     MissingParticipation = 1;
+     InvalidObservedPlayerId = 2;
+     MissingOptions = 3;
+@@ -267,6 +270,7 @@ message RequestRestartGame {
+ // The defaultRestartGameLoops is specified to be (1<<18) by default
+ message ResponseRestartGame {
+   enum Error {
++    Invalid = 0;
+     LaunchError = 1;
+   }
+   optional Error error = 1;
+@@ -291,6 +295,7 @@ message RequestStartReplay {
+ 
+ message ResponseStartReplay {
+   enum Error {
++    Invalid = 0;
+     MissingReplay = 1;
+     InvalidReplayPath = 2;
+     InvalidReplayData = 3;
+@@ -311,6 +316,7 @@ message RequestMapCommand {
+ 
+ message ResponseMapCommand {
+   enum Error {
++    Invalid = 0;
+     NoTriggerError = 1;
+   }
+   optional Error error = 1;
+@@ -463,6 +469,7 @@ message ResponseReplayInfo {
+   optional uint32 base_build = 8;
+ 
+   enum Error {
++    Invalid = 0;
+     MissingReplay = 1;
+     InvalidReplayPath = 2;
+     InvalidReplayData = 3;
+@@ -493,6 +500,7 @@ message RequestSaveMap {
+ 
+ message ResponseSaveMap {
+   enum Error {
++    Invalid = 0;
+     InvalidMapData = 1;
+   }
+   optional Error error = 1;
+@@ -523,6 +531,7 @@ message ResponseDebug {
+ //
+ 
+ enum Difficulty {
++  Invalid_Difficulty = 0;
+   VeryEasy = 1;
+   Easy = 2;
+   Medium = 3;
+@@ -536,12 +545,14 @@ enum Difficulty {
+ }
+ 
+ enum PlayerType {
++  Invalid_PlayerType = 0;
+   Participant = 1;
+   Computer = 2;
+   Observer = 3;
+ }
+ 
+ enum AIBuild {
++  Invalid_AIBuild = 0;
+   RandomBuild = 1;
+   Rush = 2;
+   Timing = 3;
+@@ -647,6 +658,7 @@ message Action {
+ 
+ message ActionChat {
+   enum Channel {
++    Invalid = 0;
+     Broadcast = 1;
+     Team = 2;
+   }
+@@ -690,6 +702,7 @@ message ActionObserverCameraFollowUnits {
+ }
+ 
+ enum Alert {
++  Invalid_Alert = 0;
+   AlertError = 3;
+   AddOnComplete = 4;
+   BuildingComplete = 5;
+@@ -715,6 +728,7 @@ enum Alert {
+ }
+ 
+ enum Result {
++  Invalid_Result = 0;
+   Victory = 1;
+   Defeat = 2;
+   Tie = 3;
+diff --git a/s2clientprotocol/score.proto b/s2clientprotocol/score.proto
+index 71a0ae9..53eb570 100644
+--- a/s2clientprotocol/score.proto
++++ b/s2clientprotocol/score.proto
+@@ -1,10 +1,11 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+ message Score {
+   enum ScoreType {
++    Invalid = 0;
+     Curriculum = 1;                // Map generated score (from curriculum maps with special scoring).
+     Melee = 2;                     // Summation of in-progress and current units/buildings value + minerals + vespene.
+   }
+diff --git a/s2clientprotocol/spatial.proto b/s2clientprotocol/spatial.proto
+index 1e8b736..93c1eed 100644
+--- a/s2clientprotocol/spatial.proto
++++ b/s2clientprotocol/spatial.proto
+@@ -1,5 +1,5 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+@@ -101,6 +101,7 @@ message ActionSpatialCameraMove {
+ message ActionSpatialUnitSelectionPoint {
+   optional PointI selection_screen_coord = 1;
+   enum Type {
++    Invalid = 0;
+     Select = 1;         // Equivalent to normal click. Changes selection to unit.
+     Toggle = 2;         // Equivalent to shift+click. Toggle selection of unit.
+     AllType = 3;        // Equivalent to control+click. Selects all units of a given type.
+diff --git a/s2clientprotocol/ui.proto b/s2clientprotocol/ui.proto
+index d760be5..b5d8c7a 100644
+--- a/s2clientprotocol/ui.proto
++++ b/s2clientprotocol/ui.proto
+@@ -1,5 +1,5 @@
+ 
+-syntax = "proto2";
++syntax = "proto3";
+ 
+ package SC2APIProtocol;
+ 
+@@ -90,6 +90,7 @@ message ActionUI {
+ 
+ message ActionControlGroup {
+   enum ControlGroupAction {
++    Invalid = 0;
+     Recall = 1;             // Equivalent to number hotkey. Replaces current selection with control group.
+     Set = 2;                // Equivalent to Control + number hotkey. Sets control group to current selection.
+     Append = 3;             // Equivalent to Shift + number hotkey. Adds current selection into control group.
+@@ -113,6 +114,7 @@ message ActionSelectLarva {
+ 
+ message ActionSelectIdleWorker {
+   enum Type {
++    Invalid = 0;
+     Set = 1;        // Equivalent to click with no modifiers. Replaces selection with single idle worker.
+     Add = 2;        // Equivalent to shift+click. Adds single idle worker to current selection.
+     All = 3;        // Equivalent to control+click. Selects all idle workers.
+@@ -123,6 +125,7 @@ message ActionSelectIdleWorker {
+ 
+ message ActionMultiPanel {
+   enum Type {
++    Invalid = 0;
+     SingleSelect = 1;         // Click on icon
+     DeselectUnit = 2;         // Shift Click on icon
+     SelectAllOfType = 3;      // Control Click on icon.

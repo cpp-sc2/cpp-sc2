@@ -16,7 +16,7 @@ AbilityData::AbilityData()
       ability_id(0),
       link_index(0),
       remaps_to_ability_id(0),
-      target(Target::None),
+      target(Target::Invalid),
       allow_minimap(false),
       allow_autocast(false),
       is_building(false),
@@ -72,6 +72,15 @@ void AbilityData::ReadFromProto(const SC2APIProtocol::AbilityData& ability_data)
     // target_
     if (ability_data.has_target()) {
         switch (ability_data.target()) {
+            case SC2APIProtocol::AbilityData_Target_Invalid:
+            default: {
+                target = Target::Invalid;
+                break;
+            }
+            case SC2APIProtocol::AbilityData_Target_None: {
+                target = Target::None;
+                break;
+            }
             case SC2APIProtocol::AbilityData_Target_Point: {
                 target = Target::Point;
                 break;
@@ -86,11 +95,6 @@ void AbilityData::ReadFromProto(const SC2APIProtocol::AbilityData& ability_data)
             }
             case SC2APIProtocol::AbilityData_Target_PointOrNone: {
                 target = Target::PointOrNone;
-                break;
-            }
-            case SC2APIProtocol::AbilityData_Target_None:
-            default: {
-                target = Target::None;
                 break;
             }
         }
@@ -146,6 +150,15 @@ std::string AbilityData::Log() const {
     }
 
     switch (target) {
+        case Target::Invalid:
+        default: {
+            str_out += "  Target: INVALID\n";
+            break;
+        }
+        case Target::None: {
+            str_out += "  Target: None\n";
+            break;
+        }
         case Target::Point: {
             str_out += "  Target: Point\n";
             break;
@@ -155,12 +168,11 @@ std::string AbilityData::Log() const {
             break;
         }
         case Target::PointOrUnit: {
-            str_out += "  Target: Point or unit\n";
+            str_out += "  Target: Point or Unit\n";
             break;
         }
-        case Target::None:
-        default: {
-            str_out += "  Target: None\n";
+        case Target::PointOrNone: {
+            str_out += "  Target: Point or None\n";
             break;
         }
     }
@@ -171,8 +183,11 @@ std::string AbilityData::Log() const {
     return str_out;
 }
 
-static Attribute ConvertAttributeEnum(SC2APIProtocol::Attribute attribute) {
+static auto ConvertAttributeEnum(const SC2APIProtocol::Attribute attribute) -> Attribute {
     switch (attribute) {
+        case SC2APIProtocol::Attribute::Invalid_Attribute:
+        default:
+            return Attribute::Invalid;
         case SC2APIProtocol::Attribute::Light:
             return Attribute::Light;
         case SC2APIProtocol::Attribute::Armored:
@@ -195,8 +210,6 @@ static Attribute ConvertAttributeEnum(SC2APIProtocol::Attribute attribute) {
             return Attribute::Heroic;
         case SC2APIProtocol::Attribute::Summoned:
             return Attribute::Summoned;
-        default:
-            return Attribute::Invalid;
     }
 }
 
@@ -211,18 +224,21 @@ void DamageBonus::ReadFromProto(const SC2APIProtocol::DamageBonus& damage_bonus)
     bonus = damage_bonus.bonus();
 }
 
-static Weapon::TargetType ConvertTargetTypeEnum(SC2APIProtocol::Weapon::TargetType type) {
+namespace {
+auto ConvertTargetTypeEnum(const SC2APIProtocol::Weapon::TargetType type) -> Weapon::TargetType {
     switch (type) {
+        case SC2APIProtocol::Weapon::Invalid:
+        default:
+            return Weapon::TargetType::Invalid;
         case SC2APIProtocol::Weapon::Ground:
             return Weapon::TargetType::Ground;
         case SC2APIProtocol::Weapon::Air:
             return Weapon::TargetType::Air;
         case SC2APIProtocol::Weapon::Any:
             return Weapon::TargetType::Any;
-        default:
-            return Weapon::TargetType::Invalid;
     }
 }
+}  // namespace
 
 Weapon::Weapon() {
 }

@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 
+#include "sc2_gametypes.h"
 #include "sc2_unit_filters.h"
 
 namespace sc2 {
@@ -129,62 +130,72 @@ bool Convert(const ObservationPtr& observation_ptr, Score& score) {
     return true;
 }
 
-bool Convert(const SC2APIProtocol::DisplayType& type_proto, Unit::DisplayType& type) {
+namespace {
+auto Convert(const SC2APIProtocol::DisplayType& type_proto, DisplayType& type) -> bool {
     switch (type_proto) {
+        case SC2APIProtocol::DisplayType::Invalid_DisplayType:
+        default:
+            type = DisplayType::Invalid;
+            return false;
         case SC2APIProtocol::DisplayType::Visible:
-            type = Unit::Visible;
+            type = DisplayType::Visible;
             return true;
         case SC2APIProtocol::DisplayType::Snapshot:
-            type = Unit::Snapshot;
+            type = DisplayType::Snapshot;
             return true;
         case SC2APIProtocol::DisplayType::Hidden:
-            type = Unit::Hidden;
+            type = DisplayType::Hidden;
             return true;
         case SC2APIProtocol::DisplayType::Placeholder:
-            type = Unit::Placeholder;
+            type = DisplayType::Placeholder;
             return true;
     }
-    return false;
 }
 
-bool Convert(const SC2APIProtocol::Alliance& alliance_proto, Unit::Alliance& alliance) {
+auto Convert(const SC2APIProtocol::Alliance& alliance_proto, Alliance& alliance) -> bool {
     switch (alliance_proto) {
+        case SC2APIProtocol::Alliance::Invalid_Alliance:
+        default:
+            alliance = Alliance::Invalid;
+            return false;
         case SC2APIProtocol::Alliance::Self:
-            alliance = Unit::Self;
+            alliance = Alliance::Self;
             return true;
         case SC2APIProtocol::Alliance::Ally:
-            alliance = Unit::Ally;
+            alliance = Alliance::Ally;
             return true;
         case SC2APIProtocol::Alliance::Neutral:
-            alliance = Unit::Neutral;
+            alliance = Alliance::Neutral;
             return true;
         case SC2APIProtocol::Alliance::Enemy:
-            alliance = Unit::Enemy;
+            alliance = Alliance::Enemy;
             return true;
     }
-    return false;
 }
 
-bool Convert(const SC2APIProtocol::CloakState& cloak_proto, Unit::CloakState& cloak) {
+auto Convert(const SC2APIProtocol::CloakState& cloak_proto, CloakState& cloak) -> bool {
     switch (cloak_proto) {
         case SC2APIProtocol::CloakState::CloakedUnknown:
-            cloak = Unit::CloakedUnknown;
+            cloak = CloakState::CloakedUnknown;
             return true;
         case SC2APIProtocol::CloakState::Cloaked:
-            cloak = Unit::Cloaked;
+            cloak = CloakState::Cloaked;
             return true;
         case SC2APIProtocol::CloakState::CloakedDetected:
-            cloak = Unit::CloakedDetected;
+            cloak = CloakState::CloakedDetected;
             return true;
         case SC2APIProtocol::CloakState::NotCloaked:
-            cloak = Unit::NotCloaked;
+            cloak = CloakState::NotCloaked;
             return true;
         case SC2APIProtocol::CloakState::CloakedAllied:
-            cloak = Unit::CloakedAllied;
+            cloak = CloakState::CloakedAllied;
             return true;
+        default:
+            cloak = CloakState::CloakedUnknown;
+            return false;
     }
-    return false;
 }
+}  // namespace
 
 bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint32_t game_loop,
              uint32_t prev_game_loop) {
@@ -226,7 +237,7 @@ bool Convert(const ObservationRawPtr& observation_raw, UnitPool& unit_pool, uint
                 return false;
             }
         } else {
-            unit->cloak = Unit::CloakedUnknown;
+            unit->cloak = CloakState::CloakedUnknown;
         }
 
         unit->detect_range = observation_unit.detect_range();
@@ -382,13 +393,13 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
         ActionRaw action;
         action.ability_id = AbilityID(action_raw_command.ability_id());
 
-        if (action_raw_command.has_target_unit_tag()) {
-            action.target_type = ActionRaw::TargetUnitTag;
-            action.target_tag = action_raw_command.target_unit_tag();
-        } else if (action_raw_command.has_target_world_space_pos()) {
-            action.target_type = ActionRaw::TargetPosition;
+        if (action_raw_command.has_target_world_space_pos()) {
+            action.target_type = RawTargetType::Position;
             action.target_point.x = action_raw_command.target_world_space_pos().x();
             action.target_point.y = action_raw_command.target_world_space_pos().y();
+        } else if (action_raw_command.has_target_unit_tag()) {
+            action.target_type = RawTargetType::UnitTag;
+            action.target_tag = action_raw_command.target_unit_tag();
         }
 
         for (int j = 0; j < action_raw_command.unit_tags_size(); ++j) {
@@ -402,36 +413,41 @@ void ConvertRawActions(const ResponseObservationPtr& response_observation_ptr, R
     }
 }
 
-bool Convert(const SC2APIProtocol::ActionSpatialUnitSelectionPoint::Type& type_proto, PointSelectionType& type) {
+namespace {
+auto Convert(const SC2APIProtocol::ActionSpatialUnitSelectionPoint::Type& type_proto, PointSelectionType& type)
+    -> bool {
     switch (type_proto) {
+        case SC2APIProtocol::ActionSpatialUnitSelectionPoint::Invalid:
+        default:
+            type = PointSelectionType::Invalid;
+            return false;
         case SC2APIProtocol::ActionSpatialUnitSelectionPoint::Select:
-            type = PointSelectionType::PtSelect;
+            type = PointSelectionType::Select;
             return true;
         case SC2APIProtocol::ActionSpatialUnitSelectionPoint::Toggle:
-            type = PointSelectionType::PtToggle;
+            type = PointSelectionType::Toggle;
             return true;
         case SC2APIProtocol::ActionSpatialUnitSelectionPoint::AllType:
-            type = PointSelectionType::PtAllType;
+            type = PointSelectionType::AllType;
             return true;
         case SC2APIProtocol::ActionSpatialUnitSelectionPoint::AddAllType:
-            type = PointSelectionType::PtAddAllType;
+            type = PointSelectionType::AddAllType;
             return true;
     }
-    return false;
 }
 
-static void ConvertSpatialAction(const SC2APIProtocol::ActionSpatial& action_proto, SpatialActions& actions) {
+void ConvertSpatialAction(const SC2APIProtocol::ActionSpatial& action_proto, SpatialActions& actions) {
     if (action_proto.has_unit_command()) {
         const SC2APIProtocol::ActionSpatialUnitCommand& action_command = action_proto.unit_command();
 
         SpatialUnitCommand command;
         command.ability_id = AbilityID(action_command.ability_id());
         if (action_command.has_target_screen_coord()) {
-            command.target_type = SpatialUnitCommand::TargetScreen;
+            command.target_type = SpatialTargetType::ScreenCoord;
             command.target.x = action_command.target_screen_coord().x();
             command.target.y = action_command.target_screen_coord().y();
         } else if (action_command.has_target_minimap_coord()) {
-            command.target_type = SpatialUnitCommand::TargetMinimap;
+            command.target_type = SpatialTargetType::MinimapCoord;
             command.target.x = action_command.target_minimap_coord().x();
             command.target.y = action_command.target_minimap_coord().y();
         }
@@ -476,6 +492,7 @@ static void ConvertSpatialAction(const SC2APIProtocol::ActionSpatial& action_pro
         actions.select_rects.push_back(select);
     }
 }
+}  // namespace
 
 void ConvertFeatureLayerActions(const ResponseObservationPtr& response_observation_ptr, SpatialActions& actions) {
     for (int i = 0; i < response_observation_ptr->actions_size(); ++i) {
@@ -590,110 +607,123 @@ bool Convert(const ResponseGameInfoPtr& response_game_info_ptr, GameInfo& game_i
     return true;
 }
 
-Race ConvertRaceFromProto(SC2APIProtocol::Race race) {
+auto ConvertRaceFromProto(const SC2APIProtocol::Race race) -> Race {
     switch (race) {
+        case SC2APIProtocol::NoRace: {
+            return Race::NoRace;
+        }
         case SC2APIProtocol::Terran: {
-            return Terran;
+            return Race::Terran;
         }
         case SC2APIProtocol::Zerg: {
-            return Zerg;
+            return Race::Zerg;
         }
         case SC2APIProtocol::Protoss: {
-            return Protoss;
+            return Race::Protoss;
         }
+        case SC2APIProtocol::Random:
         default: {
-            break;
+            return Race::Random;
         }
     }
-    return Random;
 }
 
-GameResult ConvertGameResultFromProto(SC2APIProtocol::Result result) {
+auto ConvertGameResultFromProto(const SC2APIProtocol::Result result) -> GameResult {
     switch (result) {
+        case SC2APIProtocol::Invalid_Result: {
+            return GameResult::Invalid;
+        }
         case SC2APIProtocol::Victory: {
-            return Win;
+            return GameResult::Win;
         }
         case SC2APIProtocol::Defeat: {
-            return Loss;
+            return GameResult::Loss;
         }
         case SC2APIProtocol::Tie: {
-            return Tie;
+            return GameResult::Tie;
         }
-        default: {
-            break;
+        case SC2APIProtocol::Undecided: {
+            default: {
+                return GameResult::Undecided;
+            }
         }
     }
-    return Undecided;
 }
 
-PlayerType ConvertPlayerTypeFromProto(SC2APIProtocol::PlayerType type) {
+auto ConvertPlayerTypeFromProto(const SC2APIProtocol::PlayerType type) -> PlayerType {
     switch (type) {
+        case SC2APIProtocol::Invalid_PlayerType: {
+            return PlayerType::Invalid;
+        }
         case SC2APIProtocol::Participant: {
-            return Participant;
+            return PlayerType::Participant;
         }
         case SC2APIProtocol::Computer: {
-            return Computer;
+            return PlayerType::Computer;
         }
-        case SC2APIProtocol::Observer: {
-            return Observer;
+        case SC2APIProtocol::Observer:
+        default: {
+            return PlayerType::Observer;
         }
     }
-    return Observer;
 }
 
-Difficulty ConvertDifficultyFromProto(SC2APIProtocol::Difficulty difficulty) {
+auto ConvertDifficultyFromProto(const SC2APIProtocol::Difficulty difficulty) -> Difficulty {
     switch (difficulty) {
-        case SC2APIProtocol::VeryEasy: {
-            return VeryEasy;
+        case SC2APIProtocol::Invalid_Difficulty: {
+            return Difficulty::Invalid;
+        }
+        case SC2APIProtocol::VeryEasy:
+        default: {
+            return Difficulty::VeryEasy;
         }
         case SC2APIProtocol::Easy: {
-            return Easy;
+            return Difficulty::Easy;
         }
         case SC2APIProtocol::Medium: {
-            return Medium;
+            return Difficulty::Medium;
         }
         case SC2APIProtocol::MediumHard: {
-            return MediumHard;
+            return Difficulty::MediumHard;
         }
         case SC2APIProtocol::Hard: {
-            return Hard;
+            return Difficulty::Hard;
         }
         case SC2APIProtocol::Harder: {
-            return HardVeryHard;
+            return Difficulty::HardVeryHard;
         }
         case SC2APIProtocol::VeryHard: {
-            return VeryHard;
+            return Difficulty::VeryHard;
         }
         case SC2APIProtocol::CheatVision: {
-            return CheatVision;
+            return Difficulty::CheatVision;
         }
         case SC2APIProtocol::CheatMoney: {
-            return CheatMoney;
+            return Difficulty::CheatMoney;
         }
         case SC2APIProtocol::CheatInsane: {
-            return CheatInsane;
+            return Difficulty::CheatInsane;
         }
     }
-    return VeryEasy;
 }
 
-AIBuild ConvertAIBuildFromProto(SC2APIProtocol::AIBuild ai_build) {
+auto ConvertAIBuildFromProto(const SC2APIProtocol::AIBuild ai_build) -> AIBuild {
     switch (ai_build) {
+        case SC2APIProtocol::Invalid_AIBuild:
+            return AIBuild::Invalid;
         case SC2APIProtocol::RandomBuild:
-            return RandomBuild;
+        default:
+            return AIBuild::RandomBuild;
         case SC2APIProtocol::Rush:
-            return Rush;
+            return AIBuild::Rush;
         case SC2APIProtocol::Timing:
-            return Timing;
+            return AIBuild::Timing;
         case SC2APIProtocol::Power:
-            return Power;
+            return AIBuild::Power;
         case SC2APIProtocol::Macro:
-            return Macro;
+            return AIBuild::Macro;
         case SC2APIProtocol::Air:
-            return Air;
+            return AIBuild::Air;
     }
-
-    return RandomBuild;
 }
-
 }  // namespace sc2

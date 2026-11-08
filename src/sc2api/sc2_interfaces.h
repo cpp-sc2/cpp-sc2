@@ -29,7 +29,7 @@ class ObservationInterface;
 struct Score;
 struct GameInfo;
 
-enum class Visibility { Hidden = 0, Fogged = 1, Visible = 2, FullHidden = 3 };
+enum class Visibility : uint8_t { Hidden = 0, Fogged = 1, Visible = 2, FullHidden = 3 };
 
 //! Used to filter out units when querying. You can use this filter to get all full health units, for example.
 //!< \param unit The unit in question to filter.
@@ -62,7 +62,7 @@ public:
     //!< \param alliance The faction the units belong to.
     //!< \param filter A functor or lambda used to filter out any unneeded units in the list.
     //!< \return A list of units that meet the conditions provided by alliance and filter.
-    virtual Units GetUnits(Unit::Alliance alliance, Filter filter = {}) const = 0;
+    virtual Units GetUnits(Alliance alliance, Filter filter = {}) const = 0;
 
     //! Get all units belonging to self that meet the conditions provided by the filter. The unit structure is const
     //! data only. Therefore editing that data will not change any in game state. See the ActionInterface for changing
@@ -562,7 +562,16 @@ public:
     //!< \param pos The camera position in world space.
     virtual void DebugMoveCamera(const Point2D& pos) = 0;
 
-    enum AppTest { hang = 1, crash = 2, exit = 3 };
+    enum class AppTest : uint8_t {
+        Hang = 1,
+        Crash = 2,
+        Exit = 3,
+
+        hang [[deprecated("Use \"Hang\" instead.")]] = 1,    // Temporary; wil be removed in the future.
+        crash [[deprecated("Use \"Crash\" instead.")]] = 2,  // Temporary; wil be removed in the future.
+        exit [[deprecated("Use \"Exit\" instead.")]] = 3,    // Temporary; wil be removed in the future.
+    };
+
     //! Cause the game to fail; useful to test library behavior.
     //!< \param app_test State to put the game into.
     //!< \param delay_ms Time to elapse before invoking the game state.
@@ -572,5 +581,5 @@ public:
     //! This will also clear or set new debug primitives like text and lines.
     virtual void SendDebug() = 0;
 };
-
+using AppTest = DebugInterface::AppTest;
 }  // namespace sc2

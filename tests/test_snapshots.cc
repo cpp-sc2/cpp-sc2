@@ -45,7 +45,7 @@ public:
     bool FindSCV(const Unit*& unit) {
         assert(bot_);
         Units my_scvs = agent_->Observation()->GetUnits(
-            Unit::Self, [](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::TERRAN_SCV; });
+            Alliance::Self, [](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::TERRAN_SCV; });
         if (my_scvs.size() < 1) {
             ReportError("Can't find a friendly TERRAN_SCV!");
             assert(0);
@@ -113,7 +113,7 @@ public:
 
         // Get the tag for the mineral patch.
         Units minerals = agent_->Observation()->GetUnits(
-            Unit::Neutral, [](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD; });
+            Alliance::Neutral, [](const Unit& unit) { return unit.unit_type == UNIT_TYPEID::NEUTRAL_MINERALFIELD; });
         if (minerals.size() < 1) {
             ReportError("Can't find the mineral patch!");
             assert(0);

@@ -32,7 +32,7 @@ void TestUnitCommand::OnStep() {
         return;
     }
 
-    test_units_ = obs->GetUnits(Unit::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
+    test_units_ = obs->GetUnits(Alliance::Self, [&](const Unit& unit) { return unit.unit_type == test_unit_type_; });
 
     if (test_units_.size() > 0) {
         test_unit_ = test_units_.front();
@@ -104,7 +104,7 @@ void TestUnitCommand::VerifyUnitExistsAndComplete(UNIT_TYPEID unit_type, bool ve
     const Unit* test_unit = nullptr;
 
     const ObservationInterface* obs = agent_->Observation();
-    const Units& units = obs->GetUnits(Unit::Alliance::Self);
+    const Units& units = obs->GetUnits(Alliance::Self);
     for (const auto& unit : units) {
         if (unit->unit_type == unit_type) {
             unit_exists = true;
@@ -123,7 +123,7 @@ void TestUnitCommand::VerifyUnitExistsAndComplete(UNIT_TYPEID unit_type, bool ve
 
 void TestUnitCommand::VerifyUnitDoesNotExist(UNIT_TYPEID unit_type) {
     const ObservationInterface* obs = agent_->Observation();
-    const Units& units = obs->GetUnits(Unit::Alliance::Self);
+    const Units& units = obs->GetUnits(Alliance::Self);
     for (const auto& unit : units) {
         if (unit->unit_type == unit_type) {
             ReportError("Unexpected unit exists when it should not.");

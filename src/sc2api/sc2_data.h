@@ -30,7 +30,8 @@ struct AvailableAbility {
 //! Data about an ability.
 struct AbilityData {
     //! Type of target this ability applies to.
-    enum class Target {
+    enum class Target : uint8_t {
+        Invalid = 0,
         //! There is no target, applies to self.
         None = 1,
         //! Target is a point.
@@ -104,8 +105,9 @@ struct AvailableAbilities {
     }
 };
 
-//! Category of unit.
-enum class Attribute {
+// Category of unit.
+enum class Attribute : uint8_t {
+    Invalid = 0,
     Light = 1,
     Armored = 2,
     Biological = 3,
@@ -117,12 +119,11 @@ enum class Attribute {
     Hover = 9,
     Heroic = 10,
     Summoned = 11,
-    Invalid = 12
 };
 
 //! Damage bonus of unit.
 struct DamageBonus {
-    Attribute attribute;
+    Attribute attribute{Attribute::Invalid};
     float bonus;
 
     DamageBonus();
@@ -132,7 +133,7 @@ struct DamageBonus {
 
 //! Unit weapon.
 struct Weapon {
-    enum class TargetType { Ground = 1, Air = 2, Any = 3, Invalid = 4 };
+    enum class TargetType : uint8_t { Invalid = 0, Ground = 1, Air = 2, Any = 3 };
     TargetType type;
     float damage_;
     std::vector<DamageBonus> damage_bonus;  // Extra damage when attacking a unit of a certain attribute

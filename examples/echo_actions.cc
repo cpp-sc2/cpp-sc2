@@ -38,16 +38,16 @@ public:
 
         // Add targeting information.
         switch (action.target_type) {
-            case sc2::ActionRaw::TargetUnitTag:
+            case sc2::RawTargetType::TargetUnitTag:
                 last_action_text_ += "\nTargeting Unit: " + std::to_string(action.target_tag);
                 break;
 
-            case sc2::ActionRaw::TargetPosition:
+            case sc2::RawTargetType::TargetPosition:
                 last_action_text_ += "\nTargeting Pos: " + std::to_string(action.target_point.x) + ", " +
                                      std::to_string(action.target_point.y);
                 break;
 
-            case sc2::ActionRaw::TargetNone:
+            case sc2::RawTargetType::TargetNone:
             default:
                 last_action_text_ += "\nTargeting self";
         }
@@ -62,7 +62,7 @@ public:
         sc2::QueryInterface* query = Query();
         sc2::DebugInterface* debug = Debug();
 
-        if (Control()->GetLastStatus() != SC2APIProtocol::Status::in_game)
+        if (Control()->GetLastStatus() != SC2APIProtocol::Status::InGame)
             return;
 
         if (last_echoed_gameloop_ == obs->GetGameLoop())
@@ -83,7 +83,7 @@ public:
         // Find a selected unit. {
         const sc2::Unit* unit = nullptr;
         for (const auto& try_unit : obs->GetUnits()) {
-            if (try_unit->is_selected && try_unit->alliance == sc2::Unit::Self) {
+            if (try_unit->is_selected && try_unit->alliance == sc2::Alliance::Self) {
                 unit = try_unit;
                 break;
             }

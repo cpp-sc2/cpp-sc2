@@ -25,7 +25,7 @@ class ControlImp;
 
 /*! Errors that the api can encounter, if the OnError event in ClientEvents is overwritten it will contain a list of
  * errors encountered. */
-enum class ClientError {
+enum class ClientError : uint8_t {
     ErrorSC2,
     InvalidAbilityRemap, /*! An ability was improperly mapped to an ability id that doesn't exist. */
     InvalidResponse,     /*! The response does not contain a field that was expected. */

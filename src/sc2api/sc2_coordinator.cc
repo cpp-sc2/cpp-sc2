@@ -290,7 +290,7 @@ void CoordinatorImp::StepAgents() {
     auto step_agent = [this](Agent* a) {
         ControlInterface* control = a->Control();
 
-        if (control->GetAppState() != AppState::normal) {
+        if (control->GetAppState() != AppState::Normal) {
             return;
         }
 
@@ -317,7 +317,7 @@ void CoordinatorImp::StepAgents() {
 
     if (!process_settings_.multi_threaded) {
         for (auto a : agents_) {
-            if (a->Control()->GetAppState() != AppState::normal) {
+            if (a->Control()->GetAppState() != AppState::Normal) {
                 continue;
             }
 
@@ -338,7 +338,7 @@ void CoordinatorImp::StepAgentsRealtime() {
             return;
         }
 
-        if (control->GetAppState() != AppState::normal) {
+        if (control->GetAppState() != AppState::Normal) {
             return;
         }
 
@@ -379,7 +379,7 @@ void CoordinatorImp::StepAgentsRealtime() {
 void CoordinatorImp::StepReplayObservers() {
     // Run all replay observers.
     auto run_replay = [this](ReplayObserver* r) {
-        if (r->Control()->GetAppState() != AppState::normal) {
+        if (r->Control()->GetAppState() != AppState::Normal) {
             return;
         }
 
@@ -427,7 +427,7 @@ void CoordinatorImp::StepReplayObservers() {
     // Do everyones OnStep, if not multi threaded, in single threaded mode.
     if (!process_settings_.multi_threaded) {
         for (auto r : replay_observers_) {
-            if (r->Control()->GetAppState() != AppState::normal) {
+            if (r->Control()->GetAppState() != AppState::Normal) {
                 continue;
             }
 
@@ -440,7 +440,7 @@ void CoordinatorImp::StepReplayObservers() {
 void CoordinatorImp::StepReplayObserversRealtime() {
     // Run all replay observers.
     auto run_replay = [this](ReplayObserver* r) {
-        if (r->Control()->GetAppState() != AppState::normal) {
+        if (r->Control()->GetAppState() != AppState::Normal) {
             return;
         }
 
@@ -486,7 +486,7 @@ void CoordinatorImp::StepReplayObserversRealtime() {
     // Do everyones OnStep, if not multi threaded, in single threaded mode.
     if (!process_settings_.multi_threaded) {
         for (auto r : replay_observers_) {
-            if (r->Control()->GetAppState() != AppState::normal) {
+            if (r->Control()->GetAppState() != AppState::Normal) {
                 continue;
             }
 
@@ -503,7 +503,7 @@ bool CoordinatorImp::WaitForAllResponses() {
         bool has_responses = false;
 
         for (Agent* agent : agents_) {
-            if (!agent->Control()->HasResponsePending() || agent->Control()->GetAppState() != AppState::normal) {
+            if (!agent->Control()->HasResponsePending() || agent->Control()->GetAppState() != AppState::Normal) {
                 continue;
             }
 
@@ -522,7 +522,7 @@ bool CoordinatorImp::WaitForAllResponses() {
             }
 
             if (!replay_observer->Control()->HasResponsePending() ||
-                replay_observer->Control()->GetAppState() != AppState::normal) {
+                replay_observer->Control()->GetAppState() != AppState::Normal) {
                 continue;
             }
             has_responses = true;

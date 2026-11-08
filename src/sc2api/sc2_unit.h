@@ -55,7 +55,8 @@ struct PassengerUnit {
 class Unit {
 public:
     //! If the unit is shown on screen or not.
-    enum DisplayType {
+    enum class DisplayType : uint8_t {
+        Invalid = 0,
         //! Unit will be visible.
         Visible = 1,
         //! Unit is represented by a snapshot in the fog-of-war. This is for units that don't belong to the player.
@@ -68,7 +69,8 @@ public:
     };
 
     //! Relationship to this player.
-    enum Alliance {
+    enum class Alliance : uint8_t {
+        Invalid = 0,
         //! Belongs to the player.
         Self = 1,
         //! Ally of the player.
@@ -76,11 +78,11 @@ public:
         //! A neutral unit, usually a non-player unit like a mineral field.
         Neutral = 3,
         //! Enemy of the player.
-        Enemy = 4
+        Enemy = 4,
     };
 
     //! Unit cloak state.
-    enum CloakState {
+    enum class CloakState : uint8_t {
         //! Under the fog, so unknown whether it's cloaked or not.
         CloakedUnknown = 0,
         //! Cloaked enemy units, invisible until detected.
@@ -205,6 +207,10 @@ using Units = std::vector<const Unit*>;
 using Tags = std::vector<Tag>;
 using UnitIdxMap = std::unordered_map<Tag, size_t>;
 
+using DisplayType = Unit::DisplayType;
+using Alliance = Unit::Alliance;
+using CloakState = Unit::CloakState;
+
 Tags ConvertToTags(const Units& units);
 
 struct UnitDamage {
@@ -253,7 +259,7 @@ public:
         buildings_constructed_.push_back(u);
     }
     void AddUnitIdled(const Unit* u) {
-        if (u->alliance == Unit::Alliance::Self) {
+        if (u->alliance == Alliance::Self) {
             units_idled_.insert(u);
         }
     }

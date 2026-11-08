@@ -14,11 +14,12 @@
 namespace sc2 {
 
 //! Source of a score.
-enum class ScoreType {
+enum class ScoreType : uint8_t {
+    Invalid = 0,
     //! Map generated score (from curriculum maps with special scoring).
     Curriculum = 1,
     //! Summation of in-progress and current units/buildings value + minerals + vespene.
-    Melee = 2
+    Melee = 2,
 };
 
 struct ScoreEntry {

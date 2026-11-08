@@ -36,7 +36,7 @@ public:
     bool reported_hang_;
 
     AppTestBotHang() : reported_hang_(false) {
-        Add(TestAppBasic(DebugInterface::hang));
+        Add(TestAppBasic(AppTest::Hang));
     }
 
     void OnTestsBegin() override {
@@ -61,7 +61,7 @@ public:
     bool reported_crash_;
 
     AppTestBotCrash() : reported_crash_(false) {
-        Add(TestAppBasic(DebugInterface::crash));
+        Add(TestAppBasic(AppTest::Crash));
     }
 
     void OnTestsBegin() override {

@@ -145,7 +145,7 @@ public:
     }
     Units GetUnits() const final;
     Units GetUnits(Filter filter) const final;
-    Units GetUnits(Unit::Alliance alliance, Filter filter = {}) const final;
+    Units GetUnits(Alliance alliance, Filter filter = {}) const final;
     const Unit* GetUnit(Tag tag) const final;
     const RawActions& GetRawActions() const final {
         return raw_actions_;
@@ -259,7 +259,7 @@ const Unit* ObservationImp::GetUnit(Tag tag) const {
     return unit_pool_.GetExistingUnit(tag);
 }
 
-Units ObservationImp::GetUnits(Unit::Alliance alliance, Filter filter) const {
+Units ObservationImp::GetUnits(Alliance alliance, Filter filter) const {
     Units units;
     unit_pool_.ForEachExistingUnit([&](Unit& unit) {
         if (unit.alliance != alliance) {
@@ -948,7 +948,7 @@ public:
     std::vector<SC2APIProtocol::DebugGameState> debug_state_;
 
     struct DebugSetUnitValue {
-        enum class UnitValue { Energy, Life, Shields };
+        enum class UnitValue : uint8_t { Energy, Life, Shields };
         UnitValue unit_value;
         float value;
         Tag tag;
@@ -1080,51 +1080,51 @@ void DebugImp::DebugSphereOut(const Point3D& p, float r, Color color) {
 }
 
 void DebugImp::DebugShowMap() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::show_map);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::ShowMap);
 }
 
 void DebugImp::DebugEnemyControl() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::control_enemy);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::ControlEnemy);
 }
 
 void DebugImp::DebugIgnoreFood() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::food);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::Food);
 }
 
 void DebugImp::DebugIgnoreResourceCost() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::free);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::Free);
 }
 
 void DebugImp::DebugGiveAllResources() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::all_resources);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::AllResources);
 }
 
 void DebugImp::DebugGodMode() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::god);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::God);
 }
 
 void DebugImp::DebugIgnoreMineral() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::minerals);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::Minerals);
 }
 
 void DebugImp::DebugIgnoreGas() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::gas);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::Gas);
 }
 
 void DebugImp::DebugNoCooldowns() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::cooldown);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::Cooldown);
 }
 
 void DebugImp::DebugGiveAllTech() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::tech_tree);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::TechTree);
 }
 
 void DebugImp::DebugGiveAllUpgrades() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::upgrade);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::Upgrade);
 }
 
 void DebugImp::DebugFastBuild() {
-    debug_state_.push_back(SC2APIProtocol::DebugGameState::fast_build);
+    debug_state_.push_back(SC2APIProtocol::DebugGameState::FastBuild);
 }
 
 void DebugImp::DebugSetScore(float score) {
@@ -1503,7 +1503,7 @@ public:
 
 ControlImp::ControlImp(Client& client)
     : client_(client),
-      app_state_(AppState::normal),
+      app_state_(AppState::Normal),
       is_multiplayer_(false),
       observation_imp_(nullptr),
       query_imp_(nullptr),
@@ -1632,7 +1632,7 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
     for (const PlayerSetup& setup : players) {
         SC2APIProtocol::PlayerSetup* playerSetup = request_create_game->add_player_setup();
         playerSetup->set_type(SC2APIProtocol::PlayerType(setup.type));
-        playerSetup->set_race(SC2APIProtocol::Race(int(setup.race) + 1));
+        playerSetup->set_race(SC2APIProtocol::Race(int(setup.race)));
         playerSetup->set_player_name(setup.player_name);
         playerSetup->set_difficulty(SC2APIProtocol::Difficulty(setup.difficulty));
         playerSetup->set_ai_build(SC2APIProtocol::AIBuild(setup.ai_build));
@@ -1658,8 +1658,13 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
 
     bool success = true;
     if (response_create_game.has_error()) {
-        std::string errorCode = "Unknown";
+        std::string errorCode;
         switch (response_create_game.error()) {
+            case SC2APIProtocol::ResponseCreateGame::Unknown:
+            default: {
+                errorCode = "Unknown";
+                break;
+            }
             case SC2APIProtocol::ResponseCreateGame::MissingMap: {
                 errorCode = "Missing Map";
                 break;
@@ -1688,9 +1693,6 @@ bool ControlImp::CreateGame(const std::string& map_name, const std::vector<Playe
                 errorCode = "Invalid Player Setup";
                 break;
             }
-            default: {
-                break;
-            }
         }
 
         std::cerr << "CreateGame request returned an error code: " << errorCode << std::endl;
@@ -1714,7 +1716,7 @@ bool ControlImp::RequestJoinGame(PlayerSetup setup, const InterfaceSettings& set
     GameRequestPtr request = proto_.MakeRequest();
     SC2APIProtocol::RequestJoinGame* request_join_game = request->mutable_join_game();
 
-    request_join_game->set_race(SC2APIProtocol::Race(int(setup.race) + 1));
+    request_join_game->set_race(SC2APIProtocol::Race(int(setup.race)));
     request_join_game->set_player_name(setup.player_name);
 
     if (is_multiplayer_) {
@@ -1802,7 +1804,7 @@ bool ControlImp::PollLeaveGame() {
 }
 
 bool ControlImp::Step(int count) {
-    if (app_state_ != AppState::normal) {
+    if (app_state_ != AppState::Normal) {
         return false;
     }
 
@@ -1854,7 +1856,7 @@ bool ControlImp::Ping() {
 }
 
 GameResponsePtr ControlImp::WaitForResponse() {
-    assert(app_state_ == AppState::normal);
+    assert(app_state_ == AppState::Normal);
 
     GameResponsePtr response = proto_.WaitForResponseInternal();
 
@@ -1880,7 +1882,7 @@ GameResponsePtr ControlImp::WaitForResponse() {
     // it should have finished by now.
     assert(pi_.process_id);
     if (!IsProcessRunning(pi_.process_id)) {
-        app_state_ = AppState::crashed;
+        app_state_ = AppState::Crashed;
         std::cout << "Game application has terminated unexpectedly." << std::endl;
         Error(ClientError::SC2AppFailure);
         return response;
@@ -1893,14 +1895,14 @@ GameResponsePtr ControlImp::WaitForResponse() {
 
         if (!proto_.SendRequest(ping_request, true)) {
             // Mark the game app as unresponsive.
-            app_state_ = AppState::timeout;
+            app_state_ = AppState::Timeout;
             Error(ClientError::SC2ProtocolTimeout);
         } else {
             // Wait for a ping response. If this fails, the game is unresponsive.
             // TODO (?): Implement a timeout parameter for this wait.
             const GameResponsePtr response_ping = proto_.WaitForResponseInternal();
             if (response_ping) {
-                if (proto_.GetLastStatus() == SC2APIProtocol::Status::unknown) {
+                if (proto_.GetLastStatus() == SC2APIProtocol::Status::Unknown) {
                     Error(ClientError::SC2UnknownStatus);
                 }
 
@@ -1910,13 +1912,13 @@ GameResponsePtr ControlImp::WaitForResponse() {
                 return response;
             }
 
-            app_state_ = AppState::timeout;
+            app_state_ = AppState::Timeout;
             Error(ClientError::SC2ProtocolTimeout);
         }
     }
 
     // The game application has hanged. Try and terminate it.
-    app_state_ = AppState::timeout;
+    app_state_ = AppState::Timeout;
     for (int i = 0; i < 10 && IsProcessRunning(pi_.process_id); ++i) {
         TerminateProcess(pi_.process_id);
         SleepFor(2000);
@@ -1924,7 +1926,7 @@ GameResponsePtr ControlImp::WaitForResponse() {
 
     if (IsProcessRunning(pi_.process_id)) {
         // Failed to kill the running process.
-        app_state_ = AppState::timeout_zombie;
+        app_state_ = AppState::TimeoutZombie;
     }
 
     std::cout << "Game application has been terminated due to unresponsiveness." << std::endl;
@@ -1949,15 +1951,15 @@ AppState ControlImp::GetAppState() const {
 }
 
 bool ControlImp::IsInGame() const {
-    if (app_state_ != AppState::normal) {
+    if (app_state_ != AppState::Normal) {
         return false;
     }
 
-    return GetLastStatus() == SC2APIProtocol::Status::in_game || GetLastStatus() == SC2APIProtocol::Status::in_replay;
+    return GetLastStatus() == SC2APIProtocol::Status::InGame || GetLastStatus() == SC2APIProtocol::Status::InReplay;
 }
 
 bool ControlImp::IsFinishedGame() const {
-    if (app_state_ != AppState::normal) {
+    if (app_state_ != AppState::Normal) {
         return true;
     }
 
@@ -1973,7 +1975,7 @@ bool ControlImp::IsFinishedGame() const {
 }
 
 bool ControlImp::IsReadyForCreateGame() const {
-    if (app_state_ != AppState::normal) {
+    if (app_state_ != AppState::Normal) {
         return false;
     }
 
@@ -1984,7 +1986,7 @@ bool ControlImp::IsReadyForCreateGame() const {
 
     // TODO (?): For multiplayer, it may be possible to be in the ended state but not yet left the game. Must leave the
     // game before create game can be ready again.
-    return GetLastStatus() == SC2APIProtocol::Status::launched || GetLastStatus() == SC2APIProtocol::Status::ended;
+    return GetLastStatus() == SC2APIProtocol::Status::Launched || GetLastStatus() == SC2APIProtocol::Status::Ended;
 }
 
 bool ControlImp::HasResponsePending() const {
@@ -1992,7 +1994,7 @@ bool ControlImp::HasResponsePending() const {
 }
 
 bool ControlImp::GetObservation() {
-    if (app_state_ != AppState::normal) {
+    if (app_state_ != AppState::Normal) {
         return false;
     }
 
@@ -2092,15 +2094,15 @@ void ControlImp::IssueUnitDestroyedEvents() {
 
 void ControlImp::IssueUnitAddedEvents() {
     for (auto unit : observation_imp_->unit_pool_.GetNewUnits()) {
-        if (unit->alliance == Unit::Alliance::Self) {
+        if (unit->alliance == Alliance::Self) {
             client_.OnUnitCreated(unit);
-        } else if (unit->alliance == Unit::Alliance::Neutral && unit->display_type == Unit::DisplayType::Visible) {
+        } else if (unit->alliance == Alliance::Neutral && unit->display_type == DisplayType::Visible) {
             client_.OnNeutralUnitCreated(unit);
         }
     }
 
     for (auto unit : observation_imp_->unit_pool_.GetUnitsEnteringVision()) {
-        if (unit->alliance == Unit::Alliance::Enemy && unit->display_type == Unit::DisplayType::Visible) {
+        if (unit->alliance == Alliance::Enemy && unit->display_type == DisplayType::Visible) {
             client_.OnUnitEnterVision(unit);
         }
     }
@@ -2138,7 +2140,7 @@ void ControlImp::IssueIdleEvents(const Tags& commands) {
 
 void ControlImp::IssueBuildingCompletedEvents() {
     for (auto unit : observation_imp_->unit_pool_.GetCompletedBuildings()) {
-        if (unit->alliance == Unit::Alliance::Self) {
+        if (unit->alliance == Alliance::Self) {
             client_.OnBuildingConstructionComplete(unit);
         }
     }
@@ -2196,7 +2198,7 @@ bool ControlImp::IssueEvents(const Tags& commands) {
 }
 
 void ControlImp::OnGameStart() {
-    Units units = observation_imp_->GetUnits(Unit::Alliance::Self, [](const Unit& unit) {
+    Units units = observation_imp_->GetUnits(Alliance::Self, [](const Unit& unit) {
         return unit.unit_type == UNIT_TYPEID::TERRAN_COMMANDCENTER || unit.unit_type == UNIT_TYPEID::PROTOSS_NEXUS ||
                unit.unit_type == UNIT_TYPEID::ZERG_HATCHERY;
     });
