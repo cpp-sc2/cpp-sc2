@@ -19,7 +19,10 @@ set(civetweb_patches
     "${CMAKE_CURRENT_LIST_DIR}/0001-Setting-TCP_NODELAY-on-outbound-connections.patch"
     "${CMAKE_CURRENT_LIST_DIR}/0002-Moving-include-CTest-into-if-testing-guard.patch"
 )
-set(patch_executor git apply --ignore-whitespace ${civetweb_patches})
+set(patch_executor
+    ${GIT_EXECUTABLE} checkout -- .
+    COMMAND ${GIT_EXECUTABLE} apply --ignore-whitespace ${civetweb_patches}
+)
 
 if (APPLE)
     add_compile_options(

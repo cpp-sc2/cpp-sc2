@@ -25,6 +25,9 @@ option(BUILD_SC2_RENDERER "Build SC2 Renderer library" ON)
 option(BUILD_API_EXAMPLES "Build Examples" ON)
 option(BUILD_API_TESTS "Build Tests" ON)
 
+# Dependencies.
+find_package(Git REQUIRED)
+
 set(SC2_VERSION "5.0.14" CACHE STRING "Version of the target StarCraft II client")
 message(STATUS "Target SC2 version: ${SC2_VERSION}")
 
