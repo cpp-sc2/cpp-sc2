@@ -151,4 +151,9 @@ void UnitTestBot::OnNuclearLaunchDetected() {
         sequences_[current_sequence_]->OnNuclearLaunchDetected();
 }
 
+void UnitTestBot::OnCameraMove(const RawCameraMove& move) {
+    if (current_sequence_ < sequences_.size())
+        sequences_[current_sequence_]->OnCameraMove(move);
+}
+
 }  // namespace sc2
