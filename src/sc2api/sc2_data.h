@@ -261,6 +261,28 @@ struct EffectData {
 
 typedef std::vector<EffectData> Effects;
 
+//! Radar ring visible from a sensor unit (Sensor Tower, Raven, etc.).
+struct RadarRing {
+    RadarRing() = default;
+    RadarRing(const Point2D in_position, float in_radius) : position(in_position), radius(in_radius) {
+    }
+
+    //! Center position of the radar ring.
+    Point2D position;
+    //! Detection radius.
+    float radius = 0.0f;
+};
+
+//! An action error raised by the SC2 server when a command is rejected.
+struct ActionError {
+    //! Tag of the unit the action was directed at. 0 if not applicable.
+    uint64_t unit_tag = 0;
+    //! AbilityID of the rejected action.
+    uint32_t ability_id = 0;
+    //! Result code (SC2APIProtocol::ActionResult value).
+    uint32_t result = 0;
+};
+
 //! Power source information for Protoss.
 struct PowerSource {
     PowerSource(const Point2D in_position, float in_radius, Tag in_tag)
@@ -281,6 +303,12 @@ struct Effect {
     //! All the positions that this effect is impacting on the map.
     //! eg. The Lurker's attack impacts multiple positions in a line.
     std::vector<Point2D> positions;
+    //! Alliance of the unit that cast the effect (SC2APIProtocol::Alliance values).
+    int32_t alliance = 3;
+    //! Player id of the caster.
+    int32_t owner = 0;
+    //! Impact radius of the effect.
+    float radius = 0.0f;
 
     void ReadFromProto(const SC2APIProtocol::Effect& effect);
 };

@@ -566,7 +566,7 @@ bool CoordinatorImp::JoinGame() {
 
         if (!game_join_request) {
             std::cerr << "Unable to join game." << std::endl;
-            exit(1);
+            throw ClientConnectionError("Unable to join game (RequestJoinGame failed).");
         }
     }
 
@@ -614,7 +614,7 @@ bool CoordinatorImp::StartGame() {
     bool is_game_created = CreateGame();
     if (!is_game_created) {
         std::cerr << "Failed to create game." << std::endl;
-        exit(1);
+        throw ClientConnectionError("Failed to create game (CreateGame returned false).");
     }
     return JoinGame();
 }
@@ -708,8 +708,7 @@ void Coordinator::LaunchStarcraft() {
             std::cerr << imp_->process_settings_.process_path << " does not exist on your filesystem.";
         }
         std::cerr << std::endl;
-        assert(!"Could not find the executable. Supply a valid path.");
-        exit(1);
+        throw ClientConnectionError("StarCraft II executable not found at: " + imp_->process_settings_.process_path);
     }
 
     assert(!imp_->agents_.empty());
@@ -733,7 +732,7 @@ void Coordinator::Connect(int port) {
     if (!imp_->agents_.front()->Control()->Connect(imp_->process_settings_.net_address, port,
                                                    imp_->process_settings_.timeout_ms)) {
         std::cerr << "Failed to attach to starcraft." << std::endl;
-        exit(1);
+        throw ClientConnectionError(imp_->process_settings_.net_address, port);
     }
 
     // Assume starcraft has started after succesfully attaching to a server.

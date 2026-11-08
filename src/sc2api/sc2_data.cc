@@ -385,6 +385,12 @@ void Effect::ReadFromProto(const SC2APIProtocol::Effect& effect) {
         const SC2APIProtocol::Point2D& pos = effect.pos(i);
         positions.push_back(Point2D(pos.x(), pos.y()));
     }
+    if (effect.has_alliance())
+        alliance = static_cast<int32_t>(effect.alliance());
+    if (effect.has_owner())
+        owner = effect.owner();
+    if (effect.has_radius())
+        radius = effect.radius();
 }
 
 AbilityID GetGeneralizedAbilityID(uint32_t ability_id, const ObservationInterface& observation) {

@@ -91,6 +91,8 @@ public:
     SpatialActions rendered_actions_;
     std::vector<PowerSource> power_sources_;
     std::vector<Effect> effects_;
+    std::vector<RadarRing> radar_rings_;
+    std::vector<ActionError> action_errors_;
     std::vector<UpgradeID> upgrades_;
     std::vector<UpgradeID> upgrades_previous_;
     std::vector<ChatMessage> chat_;
@@ -164,6 +166,12 @@ public:
     }
     const std::vector<Effect>& GetEffects() const final {
         return effects_;
+    }
+    const std::vector<RadarRing>& GetRadarRings() const final {
+        return radar_rings_;
+    }
+    const std::vector<ActionError>& GetActionErrors() const final {
+        return action_errors_;
     }
     const std::vector<UpgradeID>& GetUpgrades() const final {
         return upgrades_;
@@ -617,6 +625,17 @@ bool ObservationImp::UpdateObservation() {
         chat_.push_back({message.player_id(), message.message()});
     }
 
+    action_errors_.clear();
+    action_errors_.reserve(response_->action_errors_size());
+    for (int i = 0; i < response_->action_errors_size(); ++i) {
+        const SC2APIProtocol::ActionError& err = response_->action_errors(i);
+        ActionError pod_err;
+        pod_err.unit_tag = err.unit_tag();
+        pod_err.ability_id = err.ability_id();
+        pod_err.result = static_cast<uint32_t>(err.result());
+        action_errors_.push_back(pod_err);
+    }
+
     ObservationRawPtr observation_raw;
     SET_SUBMESSAGE_RESPONSE(observation_raw, observation_, raw_data);
     if (observation_raw.HasErrors()) {
@@ -639,6 +658,13 @@ bool ObservationImp::UpdateObservation() {
     effects_.resize(observation_raw->effects_size());
     for (int i = 0; i < observation_raw->effects_size(); ++i) {
         effects_[i].ReadFromProto(observation_raw->effects(i));
+    }
+
+    radar_rings_.clear();
+    radar_rings_.reserve(observation_raw->radar_size());
+    for (int i = 0; i < observation_raw->radar_size(); ++i) {
+        const SC2APIProtocol::RadarRing& ring = observation_raw->radar(i);
+        radar_rings_.emplace_back(Point2D(ring.pos().x(), ring.pos().y()), ring.radius());
     }
 
     if (!observation_raw->has_player()) {
@@ -2154,6 +2180,86 @@ void ControlImp::IssueAlertEvents() {
             }
             case SC2APIProtocol::Alert::NydusWormDetected: {
                 client_.OnNydusDetected();
+                break;
+            }
+            case SC2APIProtocol::Alert::AlertError: {
+                client_.OnAlertError();
+                break;
+            }
+            case SC2APIProtocol::Alert::AddOnComplete: {
+                client_.OnAlertAddOnComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::BuildingComplete: {
+                client_.OnAlertBuildingComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::BuildingUnderAttack: {
+                client_.OnAlertBuildingUnderAttack();
+                break;
+            }
+            case SC2APIProtocol::Alert::LarvaHatched: {
+                client_.OnAlertLarvaHatched();
+                break;
+            }
+            case SC2APIProtocol::Alert::MergeComplete: {
+                client_.OnAlertMergeComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::MineralsExhausted: {
+                client_.OnAlertMineralsExhausted();
+                break;
+            }
+            case SC2APIProtocol::Alert::MorphComplete: {
+                client_.OnAlertMorphComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::MothershipComplete: {
+                client_.OnAlertMothershipComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::MULEExpired: {
+                client_.OnAlertMULEExpired();
+                break;
+            }
+            case SC2APIProtocol::Alert::NukeComplete: {
+                client_.OnAlertNukeComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::ResearchComplete: {
+                client_.OnAlertResearchComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::TrainError: {
+                client_.OnAlertTrainError();
+                break;
+            }
+            case SC2APIProtocol::Alert::TrainUnitComplete: {
+                client_.OnAlertTrainUnitComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::TrainWorkerComplete: {
+                client_.OnAlertTrainWorkerComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::TransformationComplete: {
+                client_.OnAlertTransformationComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::UnitUnderAttack: {
+                client_.OnAlertUnitUnderAttack();
+                break;
+            }
+            case SC2APIProtocol::Alert::UpgradeComplete: {
+                client_.OnAlertUpgradeComplete();
+                break;
+            }
+            case SC2APIProtocol::Alert::VespeneExhausted: {
+                client_.OnAlertVespeneExhausted();
+                break;
+            }
+            case SC2APIProtocol::Alert::WarpInComplete: {
+                client_.OnAlertWarpInComplete();
                 break;
             }
             default: {

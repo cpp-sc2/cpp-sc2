@@ -24,6 +24,7 @@ set(FETCHCONTENT_QUIET FALSE)
 option(BUILD_SC2_RENDERER "Build SC2 Renderer library" ON)
 option(BUILD_API_EXAMPLES "Build Examples" ON)
 option(BUILD_API_TESTS "Build Tests" ON)
+option(BUILD_UNIT_TESTS "Build doctest-based unit tests (no game client required)" OFF)
 
 # Dependencies.
 find_package(Git REQUIRED)
@@ -79,6 +80,10 @@ endif ()
 
 if (BUILD_API_TESTS)
     add_subdirectory(tests)
+endif ()
+
+if (BUILD_UNIT_TESTS)
+    add_subdirectory(tests/unit)
 endif ()
 
 if (WSL2_CROSS_COMPILE)
