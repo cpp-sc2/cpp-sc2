@@ -33,7 +33,7 @@ struct UnitOrder {
 
 //! A passenger on a transport.
 struct PassengerUnit {
-    //! The tag of the unit in the transport.
+    //! The unit's tag. A marine loaded into a bunker keeps the tag it had while visible.
     Tag tag = NullTag;
     //! The health of the unit in the transport.
     float health = 0.0F;

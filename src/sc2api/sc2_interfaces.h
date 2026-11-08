@@ -385,6 +385,48 @@ public:
     //!< \param ability The ability to be toggled.
     virtual void ToggleAutocast(Tag unit_tag, AbilityID ability) = 0;
 
+    //! Lets one passenger out of a transport. Equivalent to UnloadPassengers with that single slot.
+    //!< \param transport_tag The transport to select and unload from.
+    //!< \param passenger_index Index into Unit::passengers of that transport.
+    //!< \return False when the slot is skipped.
+    virtual bool UnloadPassenger(Tag transport_tag, int passenger_index) = 0;
+
+    //! Lets these passengers out of one transport in one call. Index 0 and index 2 unload those two slots.
+    //!
+    //! The raw unload-unit abilities return Error and leave the passenger aboard. Each unload is a cargo-panel
+    //! click, and that message carries only a unit index, so it applies to whichever unit is selected. This
+    //! selects the transport with ability 0, then clicks each slot. Ability 0 is a selection, not an order: the
+    //! game selects the unit, answers the action with Error, and it is not recorded in Commands(). One request
+    //! can carry several such calls. Inside a request the indices are the passenger list from before any of the
+    //! clicks, so 0 and 2 are the original slots. Clicking one slot twice unloads that passenger once. Selecting
+    //! a different transport between calls does switch the panel.
+    //!
+    //! The select is left out when the transport is selected already. With raw_affects_selection a raw unit
+    //! command selects the units it names and they stay selected, and a click does not change that. So when the
+    //! last raw unit command queued in this request names this transport alone (an order to it, or the select of
+    //! an earlier call), only the clicks are queued. Order the transport just before unloading it (a rally, say)
+    //! and the unload costs no select and no Error.
+    //!
+    //! With nothing selected and a single transport, a click still unloads that transport. With two loaded
+    //! transports it unloads one of them, not one you named. After a raw command has selected some other unit,
+    //! the click returns Error and unloads nobody. The selection is what names the transport.
+    //!
+    //! The click is honored only when the match was joined with raw_affects_selection and a feature-layer
+    //! interface. Dispatched with the other actions on SendActions().
+    //!< \param transport_tag The transport to select and unload from.
+    //!< \param passenger_indices Slots in Unit::passengers. Negative and repeated slots are skipped.
+    //!< \return How many cargo clicks were queued.
+    virtual int UnloadPassengers(Tag transport_tag, const std::vector<int>& passenger_indices) = 0;
+
+    //! Lets these units out of a transport. Each tag is matched against PassengerUnit::tag. A marine loaded into a
+    //! bunker keeps the tag it had while visible and leaves the unit list, so pass the tag you already stored.
+    //! Tags that are not aboard are skipped. The matched slots are unloaded by UnloadPassengers(Tag, indices): a
+    //! select unless the transport is selected already, then those clicks.
+    //!< \param transport The transport. Its passengers list supplies the slots.
+    //!< \param unit_tags Tags of the units to unload.
+    //!< \return How many cargo clicks were queued.
+    virtual int UnloadPassengers(const Unit& transport, const Tags& unit_tags) = 0;
+
     //! Enables or disables autocast of an ability on a list of units.
     //!< \param unit_tags The units to toggle the ability on.
     //!< \param ability The ability to be toggled.
