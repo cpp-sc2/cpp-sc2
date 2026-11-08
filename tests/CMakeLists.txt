@@ -5,6 +5,7 @@ set(sc2test_sources
     test_actions.cc
     test_app.cc
     test_feature_layer_mp.cc
+    test_expansion_locations.cc
     test_feature_layer.cc
     test_framework.cc
     test_movement_combat.cc

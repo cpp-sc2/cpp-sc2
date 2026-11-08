@@ -4,6 +4,7 @@
 #include "sc2utils/sc2_manage_process.h"
 #include "test_actions.h"
 #include "test_app.h"
+#include "test_expansion_locations.h"
 #include "test_feature_layer.h"
 #include "test_feature_layer_mp.h"
 #include "test_movement_combat.h"
@@ -43,6 +44,7 @@ int main(int argc, char* argv[]) {
     TEST(sc2::TestUnitCommand);
     TEST(sc2::TestPerformance);
     TEST(sc2::TestObservationInterface);
+    TEST(sc2::TestExpansionLocations);
     TEST(sc2::TestReplayObservation);
     // TEST(sc2::TestObservationActions);
 
