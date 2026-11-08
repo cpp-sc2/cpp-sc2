@@ -87,12 +87,46 @@ const char* RequestResponseIDToName(int type) {
     return "Unknown";
 }
 
+PendingMatch MatchPendingResponse(SC2APIProtocol::Response::ResponseCase pending_type, uint32_t pending_id,
+                                  const SC2APIProtocol::Response& response) {
+    if (response.has_id() && pending_id != 0 && response.id() < pending_id) {
+        return PendingMatch::Stale;
+    }
+
+    const bool type_ok = pending_type == response.response_case();
+    const bool id_matches = !response.has_id() || pending_id == 0 || response.id() == pending_id;
+
+    if (response.error_size() > 0) {
+        return id_matches ? PendingMatch::Accept : PendingMatch::Wait;
+    }
+
+    if (response.has_id() && pending_id != 0 && response.id() != pending_id) {
+        return PendingMatch::Mismatch;
+    }
+
+    if (!type_ok) {
+        if (response.has_id() && pending_id != 0 && response.id() == pending_id) {
+            return PendingMatch::Mismatch;
+        }
+        return PendingMatch::Wait;
+    }
+
+    return PendingMatch::Accept;
+}
+
 ProtoInterface::ProtoInterface()
     : address_("127.0.0.1"),
       port_(5000),
       default_timeout_ms_(kDefaultProtoInterfaceTimeout),
       latest_status_(SC2APIProtocol::Status::unknown),
-      response_pending_(SC2APIProtocol::Response::RESPONSE_NOT_SET) {
+      response_pending_(SC2APIProtocol::Response::RESPONSE_NOT_SET),
+      pending_id_(0),
+      next_request_id_(1) {
+}
+
+void ProtoInterface::ClearPending() {
+    response_pending_ = SC2APIProtocol::Response::RESPONSE_NOT_SET;
+    pending_id_ = 0;
 }
 
 bool ProtoInterface::ConnectToGame(const std::string& address, int port, int timeout_ms) {
@@ -143,47 +177,70 @@ bool ProtoInterface::SendRequest(GameRequestPtr& request, bool ignore_pending_re
         return false;
     }
 
+    if (!request->has_id()) {
+        if (next_request_id_ == 0) {
+            next_request_id_ = 1;
+        }
+        request->set_id(next_request_id_++);
+        if (next_request_id_ == 0) {
+            next_request_id_ = 1;
+        }
+    }
+
     connection_.Send(request.get());
 
     // Expect a certain response.
     response_pending_ = SC2APIProtocol::Response::ResponseCase(request->request_case());
+    pending_id_ = request->id();
     return true;
 }
 
 GameResponsePtr ProtoInterface::WaitForResponseInternal() {
     latest_status_ = SC2APIProtocol::Status::unknown;
-    SC2APIProtocol::Response* response = nullptr;
-    if (!connection_.Receive(response, default_timeout_ms_)) {
-        // If the receive fails, it means a timeout has occurred.
-        return nullptr;
-    }
 
-    for (int i = 0; error_callback_ && response && i < response->error_size(); ++i) {
-        error_callback_(response->error(i));
-    }
-
-    if (response) {
-        if (response->has_status()) {
-            latest_status_ = response->status();
+    for (;;) {
+        SC2APIProtocol::Response* response = nullptr;
+        if (!connection_.Receive(response, default_timeout_ms_)) {
+            // Timeout: this request is still owed.
+            return nullptr;
         }
-        if (response->error_size() > 0) {
+
+        GameResponsePtr response_ptr(response);
+        const PendingMatch match = MatchPendingResponse(response_pending_, pending_id_, *response_ptr);
+
+        if (match == PendingMatch::Stale) {
+            continue;
+        }
+
+        for (int i = 0; error_callback_ && i < response_ptr->error_size(); ++i) {
+            error_callback_(response_ptr->error(i));
+        }
+
+        if (response_ptr->has_status()) {
+            latest_status_ = response_ptr->status();
+        }
+
+        if (match == PendingMatch::Wait) {
+            continue;
+        }
+
+        if (match == PendingMatch::Mismatch) {
+            control_->Error(ClientError::ResponseMismatch);
+            ClearPending();
+            return response_ptr;
+        }
+
+        if (response_ptr->error_size() > 0) {
             std::cerr << "While waiting for Response" << RequestResponseIDToName(response_pending_)
                       << " received an error." << std::endl;
-            for (int i = 0; i < response->error_size(); ++i) {
-                std::cerr << "Error: " << response->error(i) << std::endl;
-            }
-        } else {
-            SC2APIProtocol::Response::ResponseCase actual_response = response->response_case();
-            if (response_pending_ != actual_response) {
-                // This is bad, it means we did not get the response that matches the last request.
-                control_->Error(ClientError::ResponseMismatch);
+            for (int i = 0; i < response_ptr->error_size(); ++i) {
+                std::cerr << "Error: " << response_ptr->error(i) << std::endl;
             }
         }
-    }
 
-    // No longer expecting a specific response.
-    response_pending_ = SC2APIProtocol::Response::RESPONSE_NOT_SET;
-    return GameResponsePtr(response);
+        ClearPending();
+        return response_ptr;
+    }
 }
 
 bool ProtoInterface::PingGame() {
